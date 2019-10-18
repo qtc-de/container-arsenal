@@ -1,0 +1,92 @@
+#!/bin/bash
+
+_car() {
+
+	# opts		=	completion options
+	# cur		=	current word
+	# prev		=	previous word
+	local opts cur prev second
+
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    prev="${COMP_WORDS[COMP_CWORD-1]}"
+    second="${COMP_WORDS[1]}"
+
+	# By default, COMPREPLY will be empty (no matches)
+    COMPREPLY=()
+
+	# If the previous word is 'car' we complete the following things:
+	if [[ "$prev" == "car" ]]; then
+		opts="run"
+		opts="$opts stop"
+		opts="$opts rm"
+		opts="$opts clean"
+		opts="$opts exec"
+		opts="$opts mirror"
+		opts="$opts list"
+		opts="$opts -h"
+		opts="$opts --help"
+
+	elif [[ "$second" == "run" ]]; then
+		opts=$(car list)
+		opts="$opts -h"
+		opts="$opts --rm"
+		opts="$opts --help"
+		opts="$opts --rebuild"
+	
+	elif [[ "$second" == "stop" ]] || [[ "$second" == "mirror" ]]; then
+		opts=$(car list)
+
+	elif [[ "$second" == "exec" ]]; then
+		opts=$(car list)
+		opts="$opts -h"
+		opts="$opts --it"
+		opts="$opts --cmd"
+		opts="$opts --help"
+
+	elif [[ "$second" == "rm" ]] || [[ "$second" == "clean" ]]; then
+		opts=$(car list)
+		opts="$opts all"
+		opts="$opts -h"
+		opts="$opts --help"
+
+	else
+		return 1
+	fi
+
+	container_list="$(car list) all"
+
+	for var in $(echo ${COMP_LINE} | sed -e 's/ /\n/g'); do
+
+		# If we do not exclude the current word here, full specified options
+		# like '--rm' would not get completed by an additional space.
+		if [[ "$var" == "$cur" ]]; then
+			continue;
+		fi
+
+		# If the command line contains a container name, we remove all container
+		# names from the complete options
+		for container in $container_list; do
+			if [[ "$container" == "$var" ]]; then
+				for c in $container_list; do
+					opts=( "${opts/${c}}" )
+				done
+				break
+			fi
+		done
+
+		# If the command line contains a valid complete option, we remove it
+		# from the complete options
+		for word in $opts; do
+			if [[ "$word" == "$var" ]]; then
+				opts=( "${opts/${var}}" )
+				break
+			fi
+		done
+
+	done
+
+	mapfile -t COMPREPLY < <(compgen -W "${opts}" -- "${cur}") 
+	return 0
+}
+
+complete -o default -F _car car

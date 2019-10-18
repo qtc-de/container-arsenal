@@ -1,0 +1,51 @@
+[containers]
+  volume_base_path = "~/arsenal"
+
+  [containers.ajp]
+  ajp_folder = "<@:BASE:@>/ajp"
+  target_port = "8009"
+  target_host = "172.17.0.1"
+  http_port = "80"
+
+  [containers.ftp]
+  ftp_folder = "<@:BASE:@>/ftp"
+  anon_folder = "<@:BASE:@>/ftp/anon"
+  user_folder = "<@:BASE:@>/ftp/user"
+  ftp_port = "21"
+
+  [containers.h2b]
+  h2b_folder = "<@:BASE:@>/h2b"
+  http_port = "80"
+
+  [containers.mysql]
+  mysql_folder = "<@:BASE:@>/mysql"
+  mysql_port = "127.0.0.1:3306"
+  root_password = "secureclarabibi123"
+  user_password = "clarabibi"
+
+  [containers.neo4j]
+  neo4j_folder = "<@:BASE:@>/neo4j"
+  http_port = "127.0.0.1:7474"
+  bolt_port = "127.0.0.1:7687"
+
+  [containers.nginx]
+  nginx_folder = "<@:BASE:@>/nginx"
+  download_folder = "<@:BASE:@>/nginx/download"
+  upload_folder = "<@:BASE:@>/nginx/upload"
+  http_port = "80"
+  https_port = "443"
+
+  [containers.samba]
+  samba_folder = "<@:BASE:@>/samba"
+  public_folder = "<@:BASE:@>/samba/public"
+  private_folder = "<@:BASE:@>/samba/private"
+  nb_port= "139"
+  smb_port = "445"
+
+  [containers.ssh]
+  ssh_folder = "<@:BASE:@>/ssh"
+  ssh_port = "22"
+
+  [containers.tftp]
+  tftp_folder = "<@:BASE:@>/tftp"
+  tftp_port = "69"

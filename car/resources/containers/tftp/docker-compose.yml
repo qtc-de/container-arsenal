@@ -1,0 +1,14 @@
+version: '3.7'
+
+services:
+
+  car.tftp:
+    container_name: car.tftp
+    image: car/tftp
+    build: .
+    volumes:
+      - ${car_tftp_folder}:/ftp
+      - ./scripts/start.sh:/scripts/start.sh
+      - ./config/mapfile:/config/mapfile
+    ports:
+      - "${car_tftp_port}:69/udp"

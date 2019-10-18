@@ -1,0 +1,14 @@
+version: '3.7'
+
+services:
+
+  car.h2b:
+    container_name: car.h2b
+    build: .
+    image: car/h2b
+    volumes:
+      - ${car_h2b_folder}:/dummy
+      - ./scripts/start.sh:/scripts/start.sh
+      - ./scripts/h2b.py:/scripts/h2b.py
+    ports:
+      - "${car_http_port}:5000"

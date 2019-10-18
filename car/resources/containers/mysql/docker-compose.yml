@@ -1,0 +1,19 @@
+version: '3.7'
+
+services:
+
+  car.mysql:
+      container_name: car.mysql
+      image: car/mysql
+      build: .
+      #      environment:
+      #        MYSQL_ROOT_PASSWORD: ${car_root_password}
+      #        MYSQL_DATABASE: Default
+      #        MYSQL_USER: default
+      #        MYSQL_PASSWORD: ${car_user_password}
+      volumes:
+        - ${car_mysql_folder}:/var/lib/mysql
+        - ./config:/etc/mysql/conf.d
+        - ./scripts/start.sh:/scripts/start.sh
+      ports:
+        - "${car_mysql_port}:3306"

@@ -1,0 +1,117 @@
+#!/usr/bin/python3 
+
+import sys
+import argparse 
+import car
+
+parser = argparse.ArgumentParser(description='''car provides easy access to a small set of useful docker containers''')
+subparsers = parser.add_subparsers(dest='command')
+
+parser_run = subparsers.add_parser('run', help='start a container')
+parser_run.add_argument('container', metavar='container', help='desired container name: ajp | ftp | h2b | mysql | neo4j | nginx | samba | ssh | tftp or .')
+parser_run.add_argument('--rm', dest='remove', action='store_true', help='automatically remove container after shutdown')
+parser_run.add_argument('--rebuild', dest='rebuild', action='store_true', help='force rebuilding of the specified container')
+
+parser_stop = subparsers.add_parser('stop', help='stop a running container')
+parser_stop.add_argument('container', metavar='container', help='desired container name: ajp | ftp | h2b | mysql | neo4j | nginx | samba | ssh | tftp or .')
+
+parser_rm = subparsers.add_parser('rm', help='remove a stopped container')
+parser_rm.add_argument('container', metavar='container', help='desired container name: ajp | ftp | h2b | mysql | neo4j | nginx | samba | ssh | tftp | all or .')
+
+parser_clean = subparsers.add_parser('clean', help='clean resource folders')
+parser_clean.add_argument('container', metavar='container', help='desired container name: ajp | ftp | h2b | mysql | neo4j | nginx | samba | ssh | tftp | all or .')
+
+parser_exec = subparsers.add_parser('exec', help='execute command inside a running container')
+parser_exec.add_argument('container', metavar='container', help='desired container name: ajp | ftp | h2b | mysql | neo4j | nginx | samba | ssh | tftp or .')
+parser_exec.add_argument('--it', dest='it', action='store_true', help='run command with an interactive terminal')
+parser_exec.add_argument('--cmd', dest='cmd', help='command to run (default sh with --it)')
+
+parser_mirror = subparsers.add_parser('mirror', help='copy a container folder to the current working directory')
+parser_mirror.add_argument('container', metavar='container', help='desired container name: ajp | ftp | h2b | mysql | neo4j | nginx | samba | ssh | tftp or .')
+
+parser_list = subparsers.add_parser('list', help='list available containers')
+
+def main():
+    '''
+    Starts car. The exact process is mainly controlled by its command line paramaters
+
+    Parameters:
+        None
+
+    Returns:
+        None
+    '''
+    car.init()
+    args = parser.parse_args()
+
+    if args.command == 'list':
+        containers = car.list_containers()
+        print('\n'.join(containers))
+        sys.exit(0)
+
+
+    if hasattr(args, 'container'):
+        c = args.container
+
+
+    if args.command == 'run':
+
+        if c == '.':
+            car.start_local(args.rebuild, args.remove)
+        else:
+            car.start_container(c, args.rebuild, args.remove)
+
+        sys.exit(0)
+
+
+    if args.command == 'stop':
+
+        if c == '.':
+            car.stop_local()
+        else:
+            car.stop_container(c)
+
+        sys.exit(0)
+
+
+    if args.command == 'rm':
+
+        if c == 'all':
+            car.rm_all_containers()
+        elif c == '.':
+            car.rm_local()
+        else:
+            car.rm_container(c)
+
+        sys.exit(0)
+
+
+    if args.command == 'mirror':
+
+        car.mirror(c)
+        sys.exit(0)
+
+
+    if args.command == 'exec':
+
+        if not args.cmd:
+            args.cmd = 'sh'
+            args.it = True
+        car.exec(c, args.cmd, interactive=args.it)
+        sys.exit(0)
+
+
+    if args.command == 'clean':
+
+        if c == 'all':
+            car.clean_all()
+        else:
+            car.clean(c)
+
+        sys.exit(0)
+
+    parser.print_help()
+
+
+if __name__ == '__main__': 
+    main()

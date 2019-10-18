@@ -1,0 +1,14 @@
+version: '3.7'
+
+services:
+
+  car.ssh:
+    container_name: car.ssh
+    image: car/ssh
+    build: .
+    volumes:
+      - ${car_ssh_folder}:/home/default
+      - ./scripts/start.sh:/scripts/start.sh
+      - ./config/sshd_config:/etc/sshd/sshd_config
+    ports:
+      - "${car_ssh_port}:22"

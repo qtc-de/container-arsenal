@@ -1,0 +1,17 @@
+version: '3.7'
+
+services:
+
+  car.nginx:
+    container_name: car.nginx
+    build: .
+    image: car/nginx
+    volumes:
+      - ${car_upload_folder}:/var/www/html/upload/
+      - ${car_download_folder}:/var/www/html/download/
+      - ./config:/etc/nginx/conf.d
+      - ./ssl:/etc/nginx/ssl/
+      - ./scripts/start.sh:/scripts/start.sh
+    ports:
+      - "${car_http_port}:80"
+      - "${car_https_port}:443"

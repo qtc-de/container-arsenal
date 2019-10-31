@@ -9,6 +9,6 @@ services:
     volumes:
       - ${car_ssh_folder}:/home/default
       - ./scripts/start.sh:/scripts/start.sh
-      - ./config/sshd_config:/etc/sshd/sshd_config
+      - ./config/sshd_config:/etc/ssh/sshd_config
     ports:
       - "${car_ssh_port}:22"

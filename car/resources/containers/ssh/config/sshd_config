@@ -6,6 +6,7 @@ ChallengeResponseAuthentication no
 
 AllowTcpForwarding yes
 PermitTunnel yes
+GatewayPorts clientspecified
 PermitRootLogin no
 
 X11Forwarding no

@@ -25,7 +25,36 @@ Docker becomes more and more popular among pentesters. To be honest, I think a l
 bit and when they start to run everything inside a dedicated container. However, for the services mentioned above,
 Docker seems to be ideal to get a easy manageable solution.
 
-For a description on how to install it, please see the [INSTALL.md](./INSTALL.md) file in this repository.
+
+### Installation
+
+-----
+
+**Via setup.py**
+
+To install container-arsenal via *setup.py*, make sure you have Python 3.6 or greater installed. 
+Then run this command from the command prompt:
+
+```
+$ pip3 install -r requirements.txt --user
+$ python3 setup.py install --user
+```
+
+
+**As pip package** (recommended)
+
+If you want to generate a pip package instead, run the following command from the command prompt:
+
+```
+$ python3 setup.py sdist
+```
+
+You can then install container-arsenal via pip using:
+
+```
+$ pip3 install dist/car-1.0.0.tar.gz --user
+```
+
 
 ### Example Workflow
 

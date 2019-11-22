@@ -3,6 +3,7 @@
 
   [containers.ajp]
   ajp_folder = "<@:BASE:@>/ajp"
+  log_folder = "<@:BASE:@>/ajp"
   target_port = "8009"
   target_host = "172.17.0.1"
   http_port = "80"

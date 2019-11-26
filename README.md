@@ -25,7 +25,36 @@ Docker becomes more and more popular among pentesters. To be honest, I think a l
 bit and when they start to run everything inside a dedicated container. However, for the services mentioned above,
 Docker seems to be ideal to get a easy manageable solution.
 
-For a description on how to install it, please see the [INSTALL.md](./INSTALL.md) file in this repository.
+
+### Installation
+
+-----
+
+**Via setup.py**
+
+To install container-arsenal via *setup.py*, make sure you have Python 3.6 or greater installed. 
+Then run this command from the command prompt:
+
+```
+$ pip3 install -r requirements.txt --user
+$ python3 setup.py install --user
+```
+
+
+**As pip package** (recommended)
+
+If you want to generate a pip package instead, run the following command from the command prompt:
+
+```
+$ python3 setup.py sdist
+```
+
+You can then install container-arsenal via pip using:
+
+```
+$ pip3 install dist/car-1.0.0.tar.gz --user
+```
+
 
 ### Example Workflow
 
@@ -218,3 +247,5 @@ The code of this repository was written on the fly. In some locations it is a li
 it harms your system, since user input from the ``car.toml`` file does not get sanitized and is used in ``subprocess`` calls from python. I will improve
 the project in these regards and be happy for each suggestion. If you just use the version from this repository without any modifications on the ``car.toml``
 file, it should be quite secure, but again: no guarantees!
+
+*Copyright 2019, Tobias Neitzel and the container-arsenal contributors.*

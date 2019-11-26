@@ -247,3 +247,5 @@ The code of this repository was written on the fly. In some locations it is a li
 it harms your system, since user input from the ``car.toml`` file does not get sanitized and is used in ``subprocess`` calls from python. I will improve
 the project in these regards and be happy for each suggestion. If you just use the version from this repository without any modifications on the ``car.toml``
 file, it should be quite secure, but again: no guarantees!
+
+*Copyright 2019, Tobias Neitzel and the container-arsenal contributors.*

@@ -114,6 +114,7 @@ with open("README.md", "r") as fh:
                 'resources/containers/h2b/scripts/*',
                 'resources/containers/mysql/*',
                 'resources/containers/mysql/config/*',
+                'resources/containers/mysql/scripts/*',
                 'resources/containers/neo4j/*',
                 'resources/containers/neo4j/scripts/*',
                 'resources/containers/nginx/*',

@@ -30,30 +30,24 @@ Docker seems to be ideal to get a easy manageable solution.
 
 -----
 
-**Via setup.py**
+1. **Via setup.py**  
+    
+    To install container-arsenal via *setup.py*, make sure you have Python 3.6 or greater installed. 
+    Then run this command from the command prompt:
 
-To install container-arsenal via *setup.py*, make sure you have Python 3.6 or greater installed. 
-Then run this command from the command prompt:
+        $ pip3 install -r requirements.txt --user
+        $ python3 setup.py install --user
 
-```
-$ pip3 install -r requirements.txt --user
-$ python3 setup.py install --user
-```
+2. **As pip package** (recommended)  
+    
+    If you want to generate a pip package instead, run the following command from the command prompt:
 
+        $ python3 setup.py sdist
 
-**As pip package** (recommended)
+    You can then install container-arsenal via pip using:
 
-If you want to generate a pip package instead, run the following command from the command prompt:
-
-```
-$ python3 setup.py sdist
-```
-
-You can then install container-arsenal via pip using:
-
-```
-$ pip3 install dist/car-1.0.0.tar.gz --user
-```
+        $ pip3 install -r requirements.txt --user
+        $ pip3 install dist/car-1.0.0.tar.gz --user
 
 
 ### Example Workflow

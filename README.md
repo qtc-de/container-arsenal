@@ -114,7 +114,7 @@ pentester@kali:~/container-arsenal$ car clean ssh
 -----
 
 The following paragraph lists all currently available containers inside the arsenal. Notice that each container folder contains a 
-seperate *README.md* where you can find more specific information about the corresponding container. Just click on the links listed
+separate *README.md* where you can find more specific information about the corresponding container. Just click on the links listed
 below!
 
 * [ajp](car/resources/containers/ajp) - AJP proxy server to access JSERV ports via HTTP.
@@ -124,7 +124,7 @@ below!
 * [neo4j](car/resources/containers/neo4j) - Plain Neo4j database. Useful for tools like BloodHound.
 * [nginx](car/resources/containers/nginx) - nginx server with WebDav enabled. Supports HTTP and HTTPS.
 * [samba](car/resources/containers/samba) - samba share that supports authenticated and anonymous access.
-* [ssh](car/resources/containers/ssh) - ssh server with randomly genrated user account. Remote portforwarding is enabled.
+* [ssh](car/resources/containers/ssh) - ssh server with randomly generated user account. Remote port-forwarding is enabled.
 * [tftp](car/resources/containers/tftp) - A simple tftp server.
 
 

@@ -12,48 +12,43 @@ During a penetration test it is often required to install additional services on
 Some common examples include:
 
 * Hosting a FTP server to provide a payload that can be loaded via XXE.
-* Hosting a SMB share to allow file sharing with a Windows machine.
+* Hosting a SAMBA share to allow file sharing with a Windows machine.
 * Hosting a WebDaV server to allow easy uploads from a remote host. 
 * Hosting a ssh server to forward ports via remote port forwarding.
+* Hosting an AJP proxy to connect to *tomcat's JSERV* ports.
 * [...]
 
-While I'm usually working in a VM with snapshots from a clean state, installing these kind of services
+While I'm usually working on a VM with snapshots from a clean state, installing these kind of services
 feels still wrong. I always get the feeling that I pollute my machine with stuff that I actually do not
 want to be on it.
 
 Docker becomes more and more popular among pentesters. To be honest, I think a lot of people overdo it a little
 bit and when they start to run everything inside a dedicated container. However, for the services mentioned above,
-Docker seems to be ideal to get a easy manageable solution.
+Docker seems to be ideal to get an easy manageable solution.
 
 
 ### Installation
 
 -----
 
-**Via setup.py**
+1. **Via setup.py**  
+    
+    To install container-arsenal via *setup.py*, make sure you have Python 3.6 or greater installed. 
+    Then run this command from the command prompt:
 
-To install container-arsenal via *setup.py*, make sure you have Python 3.6 or greater installed. 
-Then run this command from the command prompt:
+        $ pip3 install -r requirements.txt --user
+        $ python3 setup.py install --user
 
-```
-$ pip3 install -r requirements.txt --user
-$ python3 setup.py install --user
-```
+2. **As pip package** (recommended)  
+    
+    If you want to generate a pip package instead, run the following command from the command prompt:
 
+        $ python3 setup.py sdist
 
-**As pip package** (recommended)
+    You can then install container-arsenal via pip using:
 
-If you want to generate a pip package instead, run the following command from the command prompt:
-
-```
-$ python3 setup.py sdist
-```
-
-You can then install container-arsenal via pip using:
-
-```
-$ pip3 install dist/car-1.0.0.tar.gz --user
-```
+        $ pip3 install -r requirements.txt --user
+        $ pip3 install dist/car-1.0.0.tar.gz --user
 
 
 ### Example Workflow
@@ -112,6 +107,26 @@ clean resource folder, you could either remove it manually or run ``car clean ss
 pentester@kali:~/container-arsenal$ car clean ssh
 [+] Removing top level resource folder '/home/pentester/arsenal/ssh' (container: ssh)
 ```
+
+
+### Available Containers
+
+-----
+
+The following paragraph lists all currently available containers inside the arsenal. Notice that each container folder contains a 
+separate *README.md* where you can find more specific information about the corresponding container. Just click on the links listed
+below!
+
+* [ajp](car/resources/containers/ajp) - AJP proxy server to access JSERV ports via HTTP.
+* [ftp](car/resources/containers/ftp) - vsftpd server that allows authenticated and anonymous access.
+* [h2b](car/resources/containers/h2b) - A http-to-binary proxy that allows accessing non-HTTP services via HTTP.
+* [mysql](car/resources/containers/mysql) - Just a mysql server with randomly generated, password protected user accounts.
+* [neo4j](car/resources/containers/neo4j) - Plain Neo4j database. Useful for tools like BloodHound.
+* [nginx](car/resources/containers/nginx) - nginx server with WebDav enabled. Supports HTTP and HTTPS.
+* [samba](car/resources/containers/samba) - samba share that supports authenticated and anonymous access.
+* [ssh](car/resources/containers/ssh) - ssh server with randomly generated user account. Remote port-forwarding is enabled.
+* [tftp](car/resources/containers/tftp) - A simple tftp server.
+
 
 ### Configuration
 

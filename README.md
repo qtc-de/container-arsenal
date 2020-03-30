@@ -263,4 +263,4 @@ it harms your system, since user input from the ``car.toml`` file does not get s
 the project in these regards and be happy for each suggestion. If you just use the version from this repository without any modifications on the ``car.toml``
 file, it should be quite secure, but again: no guarantees!
 
-*Copyright 2019, Tobias Neitzel and the container-arsenal contributors.*
+*Copyright 2020, Tobias Neitzel and the container-arsenal contributors.*

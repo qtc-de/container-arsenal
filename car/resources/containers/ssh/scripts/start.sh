@@ -18,6 +18,10 @@ echo "default:${PASSWORD}" | chpasswd &>/dev/null
 echo "[+] Adjusting volume permissions."
 chown -R default:default /home/default
 
+echo "[+] Creating login log."
+echo -n "" > /tmp/logins
+chmod 666 /tmp/logins
+tail -f /tmp/logins &
 
 echo "[+] Starting sshd"
 /usr/sbin/sshd -D

@@ -127,6 +127,7 @@ with open("README.md", "r") as fh:
                 'resources/containers/ssh/*',
                 'resources/containers/ssh/config/*',
                 'resources/containers/ssh/scripts/*',
+                'resources/containers/ssh/resources/*',
                 'resources/containers/tftp/*',
                 'resources/containers/tftp/scripts/*',
                 'resources/containers/tftp/config/*',

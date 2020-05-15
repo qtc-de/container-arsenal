@@ -6,6 +6,8 @@ services:
     container_name: car.ssh
     image: car/ssh
     build: .
+    environment:
+      ENABLE_ROOT: 0
     volumes:
       - ${car_ssh_folder}:/home/default
       - ./scripts/start.sh:/scripts/start.sh

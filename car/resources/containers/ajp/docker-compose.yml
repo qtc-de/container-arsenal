@@ -17,9 +17,3 @@ services:
       - ./scripts/start.sh:/scripts/start.sh
     ports:
       - "127.0.0.1:${car_http_port}:80"
-    networks:
-      - car_network
-
-networks:
-  car_network:
-    name: car-network

@@ -12,9 +12,3 @@ services:
       - ./scripts/h2b.py:/scripts/h2b.py
     ports:
       - "127.0.0.1:${car_http_port}:5000"
-    networks:
-      - car_network
-
-networks:
-  car_network:
-    name: car-network

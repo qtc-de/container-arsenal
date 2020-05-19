@@ -17,9 +17,3 @@ services:
         - ./scripts/start.sh:/scripts/start.sh
       ports:
         - "${car_mysql_port}:3306"
-      networks:
-      - car_network
-
-networks:
-  car_network:
-    name: car-network

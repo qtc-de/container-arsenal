@@ -12,3 +12,9 @@ services:
       - ./config/mapfile:/config/mapfile
     ports:
       - "${car_tftp_port}:69/udp"
+    networks:
+      - car_network
+
+networks:
+  car_network:
+    name: car-network

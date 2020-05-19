@@ -15,9 +15,3 @@ services:
     ports:
       - "${car_http_port}:80"
       - "${car_https_port}:443"
-    networks:
-      - car_network
-
-networks:
-  car_network:
-    name: car-network

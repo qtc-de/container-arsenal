@@ -15,9 +15,3 @@ services:
     ports:
       - "${car_nb_port}:139"
       - "${car_smb_port}:445"
-    networks:
-      - car_network
-
-networks:
-  car_network:
-    name: car-network

@@ -13,9 +13,3 @@ services:
       - ./config/vsftpd.conf:/etc/vsftpd/vsftpd.conf
     ports:
       - "${car_ftp_port}:21"
-    networks:
-      - car_network
-
-networks:
-  car_network:
-    name: car-network

@@ -15,3 +15,9 @@ services:
       - ./config/sshd_config:/etc/ssh/sshd_config
     ports:
       - "${car_ssh_port}:22"
+    networks:
+      - car_network
+
+networks:
+  car_network:
+    name: car-network

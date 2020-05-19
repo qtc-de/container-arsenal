@@ -16,7 +16,7 @@ services:
       - ./config/jk_workers.properties:/usr/local/apache2/conf/extra/jk_workers.properties
       - ./scripts/start.sh:/scripts/start.sh
     ports:
-      - "${car_http_port}:80"
+      - "127.0.0.1:${car_http_port}:80"
     networks:
       - car_network
 

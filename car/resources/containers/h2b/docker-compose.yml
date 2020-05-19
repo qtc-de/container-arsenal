@@ -11,7 +11,7 @@ services:
       - ./scripts/start.sh:/scripts/start.sh
       - ./scripts/h2b.py:/scripts/h2b.py
     ports:
-      - "${car_http_port}:5000"
+      - "127.0.0.1:${car_http_port}:5000"
     networks:
       - car_network
 

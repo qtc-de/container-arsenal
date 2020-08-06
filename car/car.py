@@ -1,4 +1,5 @@
-import os, sys
+import os
+import sys
 import toml
 import shutil
 import subprocess
@@ -13,7 +14,8 @@ this.volume_base_path = None
 
 def init():
     '''
-    Initializes the car module by setting configuration options which were read in from a .toml file
+    Initializes the car module by setting configuration options which were read in
+    from a .toml file
 
     Parameters:
         None
@@ -21,12 +23,12 @@ def init():
     Returns:
         None
     '''
-    user_home = os.path.expanduser("~") 
+    user_home = os.path.expanduser("~")
     user_config = user_home + "/.config/car/car.toml"
-    module_path = os.path.abspath(os.path.dirname(__file__)) 
+    module_path = os.path.abspath(os.path.dirname(__file__))
     path = module_path + "/resources/car.toml"
 
-    #if the user has specified his own config file, read this one
+    # if the user has specified his own config file, read this one
     if os.path.isfile(user_config):
         path = user_config
 
@@ -55,6 +57,7 @@ def list_containers():
         containers              (list)              List of available containers
     '''
     return this.containers
+
 
 def expand(raw):
     '''
@@ -137,18 +140,18 @@ def clean(name):
 
     # The folder does not exist, so we are done
     if not os.path.isdir(path):
-        return 
+        return
 
     # Well, we can't catch everything but at least some very dumb calls
     if path == "/" or path == "/home" or path == os.path.expanduser("~"):
         print(f"[-] Removing '{path}' is probably a mistake.")
-        print(f"[-] Stopping script execution.")
+        print('[-] Stopping script execution.')
         sys.exit(1)
 
     # The next restriction could be annoying. But I guess we keep it for security reasons:
     if not path.endswith(name):
-        print(f"[-] Top level resource directories need the same name as the container.")
-        print(f"[-] Stopping script execution.")
+        print("[-] Top level resource directories need the same name as the container.")
+        print("[-] Stopping script execution.")
         sys.exit(1)
 
     print(f"[+] Removing top level resource folder '{path}' (container: {name})")
@@ -186,7 +189,7 @@ def get_container_config(name):
         container_conf[key] = expand(container_conf[key])
 
     return container_conf
-    
+
 
 def start_container(name, rebuild=False, remove=False):
     '''
@@ -218,13 +221,13 @@ def start_container(name, rebuild=False, remove=False):
         subprocess.call(cmd, cwd=base_folder)
 
     # While the permissions of volumes are handeled by the docker containers,
-    # the actual resource folders will be created by the docker deamon and 
+    # the actual resource folders will be created by the docker deamon and
     # are owned by root. To allow an easy cleanup process, we create non existing
     # resource folders during container startup with permissions of the current user
     resource_folder = get_resource_folder(name)
     if not os.path.isdir(resource_folder):
         print(f"[+] Resource folder '{resource_folder}' does not exist.")
-        print(f"[+] Creating new resource folder.")
+        print("[+] Creating new resource folder.")
         os.makedirs(resource_folder)
 
     cmd = ['sudo']
@@ -239,7 +242,7 @@ def start_container(name, rebuild=False, remove=False):
     # to send a signal to a root process. However, the ctrl-c is still
     # catched by the container and therefore we can just catch the exception
     # and do nothing.
-    try: 
+    try:
         print(f"[+] Running: '{' '.join(cmd)}'")
         subprocess.call(cmd, cwd=base_folder)
     except PermissionError:
@@ -275,7 +278,7 @@ def start_local(rebuild=False, remove=False):
         print(f"[+] Running: '{' '.join(cmd)}'")
         subprocess.call(cmd)
 
-    try: 
+    try:
         cmd = ['sudo', 'docker-compose', 'up']
         print(f"[+] Running: '{' '.join(cmd)}'")
         subprocess.call(cmd)
@@ -411,7 +414,7 @@ def mirror(name):
 
     if os.path.exists(f'./{name}'):
         print(f"[-] Directory/File with name '{name}' does already exist in the current folder.")
-        print(f"[-] Stopping mirror process.")
+        print("[-] Stopping mirror process.")
         sys.exit(1)
 
     print(f"[+] Copying base folder of container '{name}' to current working directory.")
@@ -427,7 +430,7 @@ def mirror(name):
     with open(f'./{name}/docker-compose.yml', 'w') as compose_file:
         compose_file.write(content)
 
-    print(f"[+] Done.")
+    print("[+] Done.")
 
 
 def exec(name, command, interactive=False):

@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
-from os.path import expanduser, abspath, dirname, isdir, isfile, makedirs
+from os import makedirs
+from os.path import expanduser, abspath, dirname, isdir, isfile
 from shutil import copy
 
 from setuptools import setup, find_packages

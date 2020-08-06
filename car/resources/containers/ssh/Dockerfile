@@ -22,6 +22,7 @@ RUN set -ex \
 RUN mkdir /scripts
 COPY config/sshd_config /etc/ssh/
 COPY scripts/start.sh /scripts/start.sh
+COPY resources/chisel /bin/chisel
 
 # exposed resources of the container
 VOLUME /home/default

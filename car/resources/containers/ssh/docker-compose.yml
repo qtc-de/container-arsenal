@@ -6,9 +6,12 @@ services:
     container_name: car.ssh
     image: car/ssh
     build: .
+    environment:
+      ENABLE_ROOT: 0
     volumes:
       - ${car_ssh_folder}:/home/default
       - ./scripts/start.sh:/scripts/start.sh
+      - ./scripts/force_command.sh:/scripts/force_command.sh
       - ./config/sshd_config:/etc/ssh/sshd_config
     ports:
       - "${car_ssh_port}:22"

@@ -10,5 +10,5 @@ services:
       - ${car_neo4j_folder}:/data
       - ./scripts/start.sh:/scripts/start.sh
     ports:
-      - "${car_http_port}:7474"
-      - "${car_bolt_port}:7687"
+      - "127.0.0.1:${car_http_port}:7474"
+      - "127.0.0.1:${car_bolt_port}:7687"

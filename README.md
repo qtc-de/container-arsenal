@@ -1,17 +1,19 @@
-# container arsenal
+### Container Arsenal
 
-Container arsenal is a collection of docker containers that have been proven to be useful during
-penetration testing / ctf playing. Additionally, container arsenal ships a python script which
-allows easy starting and stopping the containers.
+*container-arsenal* (*car*) is a collection of *docker containers* that have been proven to be useful during
+security assessments / CTFs. Each container is represented by a *docker-compose* file and its corresponding
+resources. Additionally, container arsenal ships a *Python* script that can be used to manage the
+containers.
 
 ![](https://github.com/qtc-de/container-arsenal/workflows/master%20Python%20CI/badge.svg?branch=master)
 ![](https://github.com/qtc-de/container-arsenal/workflows/develop%20Python%20CI/badge.svg?branch=develop)
+
 
 ### Description
 
 -----
 
-During a penetration test it is often required to install additional services on your attacking machine.
+During a security assessment it is often required to install additional services on your attacking machine.
 Some common examples include:
 
 * Hosting a FTP server to provide a payload that can be loaded via XXE.
@@ -34,80 +36,82 @@ Docker seems to be ideal to get an easy manageable solution.
 
 -----
 
-1. **Via setup.py**  
-    
-    To install container-arsenal via *setup.py*, make sure you have Python 3.6 or greater installed. 
-    Then run this command from the command prompt:
+*car* can be build and installed as a *pip package*. The following command installs *car* for your current user profile:
 
-        $ pip3 install -r requirements.txt --user
-        $ python3 setup.py install --user
+```console
+$pip3 install car
+```
 
-2. **As pip package** (recommended)  
-    
-    If you want to generate a pip package instead, run the following command from the command prompt:
+You can also build *car* from source by running the following commands:
 
-        $ python3 setup.py sdist
+```console
+$ git clone https://github.com/qtc-de/container-arsenal
+$ cd container-arsenal
+$ python3 setup.py sdist
+$ pip3 install dist/*
+```
 
-    You can then install container-arsenal via pip using:
+Additionally, *car* ships a [bash-completion](./car/resources/bash_completion.d/car) script.
+The completion script is installed automatically, but relies on the [completion-helpers](https://github.com/qtc-de/completion-helpers)
+package. If *completion-helpers* is already installed, autocompletion for *car* should
+work after installing the pip package. Otherwise, you may need to copy the completion
+script manually:
 
-        $ pip3 install -r requirements.txt --user
-        $ pip3 install dist/car-1.0.0.tar.gz --user
-
+```console
+$ cp car/resources/bash_completion.d/car ~/.bash_completion.d
+```
 
 ### Example Workflow
 
 -----
 
-Imagine you play a CTF and forward a port from a remote Linux host there you only have a non interactive reverse shell.
-You can use a SSH server for this purpose and you want to create one quickly on the fly. With the container arsenal installed,
+Imagine you play a CTF and want to forward a port from a remote Linux host there you only have a non interactive reverse shell.
+You can use a *SSH* server for this purpose and you want to create one quickly on the fly. With the *container-arsenal* installed,
 you would just type:
 
-```bash
-pentester@kali:~/container-arsenal$ car run ssh
-[+] Creating volume base directory at '/home/pentester/arsenal'
+```console
+[pentester@kali ~]$ car run ssh
 [+] Resource folder '/home/pentester/arsenal/ssh' does not exist.
 [+] Creating new resource folder.
 [+] Running: 'sudo car_ssh_folder=/home/pentester/arsenal/ssh car_ssh_port=22 docker-compose up'
-[sudo] password for pentester:
+Creating network "ssh_default" with the default driver
 Creating car.ssh ... done
 Attaching to car.ssh
+car.ssh    | [+] IP address of the container: 172.19.0.2
 car.ssh    | [+] No password was specified.
-car.ssh    | [+] Generated random password for user 'default': 2eTXqBRv
+car.ssh    | [+] Generated random password for user 'default': 1C4GMsSq
 car.ssh    | [+] Adjusting volume permissions.
+car.ssh    | [+] Creating login log.
 car.ssh    | [+] Starting sshd
 ```
 
-And your ssh server is up and running. As you can see, a random 8-digit password is created automatically for the user 'default'
-and a resource folder on your local filesystem ``/home/pentester/arsenal/ssh`` was created. You can now ssh into the host and create 
-a file. The corresponding file can then be found inside the corresponding ressource folder:
+And your ssh server is up and running. As you can see, a random 8-digit password is created automatically for the user *default*
+and a resource folder on your local filesystem ``~/arsenal/ssh`` was created. To verify that everything is working one can ssh
+into the container and create a file. The corresponding file can then be found inside the corresponding resource folder:
 
-```bash
-pentester@kali:~$ ssh 127.0.0.1 -l default
+```console
+[pentester@kali ~]$ ssh 127.0.0.1 -l default
 default@127.0.0.1's password: 
-eef374b3613a:~$ echo test > file
-eef374b3613a:~$ Connection to 127.0.0.1 closed.
-pentester@kali:~$ ls -l /home/pentester/arsenal/ssh/
-total 4
--rw-r--r-- 1 pentester pentester 5 Oct 15 09:00 file
+~ $ echo test > file
+~ $ Connection to 127.0.0.1 closed.
+[pentester@kali ~]$ ls -l arsenal/ssh/file 
+-rw-r--r-- 1 pentester pentester 5 Aug  6 18:00 arsenal/ssh/file
 ```
 
 To stop the container, you can simply close it from the launching terminal by pressing ``ctrl-c`` or you launch ``car stop ssh``
 from a different terminal.
 
-```bash
-pentester@kali:~/container-arsenal$ car stop ssh
-[...]
-car.ssh    | [+] Starting sshd
-^CGracefully stopping... (press Ctrl+C again to force)
+```console
+[pentester@kali ~]$ car stop ssh
+[+] Running: 'sudo car_ssh_folder=/home/pentester/arsenal/ssh car_ssh_port=22 docker-compose stop'
 Stopping car.ssh ... done
-pentester@kali:~/container-arsenal$
 ```
 
 The resource folder of the corresponding container will stay alive and can be reused on the next startup. If you want to start with a 
 clean resource folder, you could either remove it manually or run ``car clean ssh`` like in this example:
 
-```bash
-pentester@kali:~/container-arsenal$ car clean ssh
+```console
+[pentester@kali ~]$ car clean ssh
 [+] Removing top level resource folder '/home/pentester/arsenal/ssh' (container: ssh)
 ```
 
@@ -118,7 +122,7 @@ pentester@kali:~/container-arsenal$ car clean ssh
 
 The following paragraph lists all currently available containers inside the arsenal. Notice that each container folder contains a 
 separate *README.md* where you can find more specific information about the corresponding container. Just click on the links listed
-below!
+below:
 
 * [ajp](car/resources/containers/ajp) - AJP proxy server to access JSERV ports via HTTP.
 * [ftp](car/resources/containers/ftp) - vsftpd server that allows authenticated and anonymous access.
@@ -135,7 +139,7 @@ below!
 
 -----
 
-After installing the container arsenal, a configuration file will be placed at ``~/.config/car/car.toml``. 
+After installing the *container-arsenal*, a configuration file will be placed at ``~/.config/car/car.toml``. 
 This configuration file contains default mappings for the provided containers. The configuration for the
 **samba** container looks for example like this:
 
@@ -156,9 +160,9 @@ This configuration file contains default mappings for the provided containers. T
 As you can see, the configuration file does specify a *volume_base_path*, which is by default set to ``~/arsenal``.
 This is there your container volumes will be stored. The individual locations for the volumes are configured
 in the different container sections. The above **samba** container will run with two volumes that will be mapped
-to **~/arsenal/samba/public** and **~/arsenal/samba/private**. 
+to ``~/arsenal/samba/public`` and ``~/arsenal/samba/private``. 
 
-The top level folder **~/arsenal/samba** is also included in the configuration file, but will not be mapped into
+The top level folder ``~/arsenal/samba`` is also included in the configuration file, but will not be mapped into
 the container. Each container needs a top level folder definition with the naming scheme ``<CONTAINER_NAME>_folder``.
 *car* needs this top level folder information for managing resource and permissions. For containers that do not
 require subfolders, like the **ssh** container, a top level folder is even sufficient.
@@ -191,20 +195,22 @@ sometimes you want only some quick changes that only apply for one particular si
 recommended solution. As an example, imagine that I need a ssh container that is running on port 2222 instead of 22.
 In this case, the first step I take is to mirror the ssh container:
 
-```bash
-pentester@kali:~/container-arsenal$ car mirror ssh
+```console
+[pentester@kali ~]$ car mirror ssh
 [+] Copying base folder of container 'ssh' to current working directory.
 [+] Done.
-pentester@kali:~/container-arsenal$ cd ssh
-pentester@kali:~/container-arsenal/ssh$ ls -l
-total 16
--rw-r--r-- 1 pentester pentester  815 Oct 15 08:56 Dockerfile
-drwxr-xr-x 2 pentester pentester 4096 Oct 15 08:56 config
--rw-r--r-- 1 pentester pentester  284 Oct 15 09:05 docker-compose.yml
-drwxr-xr-x 2 pentester pentester 4096 Oct 15 08:56 scripts
+[pentester@kali ~]$ ls -l ssh/
+total 28
+-rw-r--r-- 1 pentester pentester  849 Aug  6 17:57 Dockerfile
+-rw-r--r-- 1 pentester pentester 1590 Aug  6 17:57 README.md
+drwxr-xr-x 2 pentester pentester 4096 Aug  6 17:57 config
+-rw-r--r-- 1 pentester pentester  382 Aug  6 18:05 docker-compose.yml
+drwxr-xr-x 2 pentester pentester 4096 Aug  6 17:57 resources
+drwxr-xr-x 2 pentester pentester 4096 Aug  6 17:57 scripts
+-rwxr-xr-x 1 pentester pentester  913 Aug  6 17:57 toggle-root.sh
 ```
 
-As you can see, mirroring just copies the directory of the docker container to your current working directory. Inside 
+As you can see, mirroring just copies the directory of the corresponding docker container to your current working directory. Inside 
 this directory you can find all files that were used for the container configuration. Inside the ``docker-compose.yml``
 file, all environment variables that were mentioned before, are replaced by their default values. A mirrored ``docker-compose.yml``
 looks therefore like this:
@@ -226,31 +232,35 @@ services:
       - "22:22"
 ```
 
-If I want to apply my custom port change now, I can simply modify the mapping inside the ``docker-compose.yml`` and run
-``car run .``:
+If you want to apply your custom port change now, you can simply modify the mapping inside the ``docker-compose.yml`` and then run:
 
-```
-pentester@kali:~/container-arsenal/ssh$ car run .
+```console
+[pentester@kali ssh]$ car run .
 [+] Running: 'sudo docker-compose up'
 Recreating car.ssh ... done
 Attaching to car.ssh
+car.ssh    | [+] IP address of the container: 172.19.0.2
 car.ssh    | [+] No password was specified.
-car.ssh    | [+] Generated random password for user 'default': 6ePBlEqx
+car.ssh    | [+] Generated random password for user 'default': uXWO2tDB
 car.ssh    | [+] Adjusting volume permissions.
+car.ssh    | [+] Creating login log.
 car.ssh    | [+] Starting sshd
 ```
 
 On another terminal, we can quickly verify that the ssh server is now exposed on port 2222:
 
 ```bash
-pentester@kali:~/arsenal/ssh$ ss -tln
-State         Recv-Q        Send-Q               Local Address:Port               Peer Address:Port
-LISTEN        0             128                        0.0.0.0:111                     0.0.0.0:*
-LISTEN        0             128                              *:2222                          *:*
-LISTEN        0             128                           [::]:111                        [::]:*
+[pentester@kali ~]$ ss -tln
+State       Recv-Q      Send-Q           Local Address:Port           Peer Address:Port      Process      
+LISTEN      0           128                    0.0.0.0:111                 0.0.0.0:*                      
+LISTEN      0           4096                         *:2222                      *:*                      
+LISTEN      0           128                       [::]:111                    [::]:*  
 ```
 
+
 ### Acknowledgements
+
+-----
 
 When creating the containers for this project I looked on many different repositories for useful Dockerfiles. Certain parts of the Dockerfiles
 provided inside this repository are probably very similar to the one of other repositories. I did not wrote down all the references,
@@ -260,6 +270,8 @@ For all the others I want to say thank your for providing access to their Docker
 
 
 ### Further Notes
+
+-----
 
 The code of this repository was written on the fly. In some locations it is a little bit ugly and may contains some bugs. It could even be that
 it harms your system, since user input from the ``car.toml`` file does not get sanitized and is used in ``subprocess`` calls from python. I will improve

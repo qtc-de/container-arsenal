@@ -67,7 +67,7 @@ class PostInstall(install):
              None
         '''
         config_dir = f'{user_home}/.config/car/'
-        config_file = f'{user_home}/.config/car/cat.toml'
+        config_file = f'{user_home}/.config/car/car.toml'
         default_config = f'{module_path}/car/resources/car.toml'
 
         makedirs(config_dir, exist_ok=True)

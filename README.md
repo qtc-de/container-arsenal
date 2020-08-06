@@ -4,6 +4,9 @@ Container arsenal is a collection of docker containers that have been proven to 
 penetration testing / ctf playing. Additionally, container arsenal ships a python script which
 allows easy starting and stopping the containers.
 
+![](https://github.com/qtc-de/container-arsenal/workflows/master%20Python%20CI/badge.svg?branch=master)
+![](https://github.com/qtc-de/container-arsenal/workflows/develop%20Python%20CI/badge.svg?branch=develop)
+
 ### Description
 
 -----

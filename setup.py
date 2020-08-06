@@ -69,7 +69,7 @@ class PostInstall(install):
         config_file = f'{user_home}/.config/car/cat.toml'
         default_config = f'{module_path}/car/resources/car.toml'
 
-        makedirs(config_fir, exist_ok=True)
+        makedirs(config_dir, exist_ok=True)
 
         if isfile(config_file):
             copy(config_file, f'{config_file}.back')

@@ -192,8 +192,8 @@ services:
 
 If you want persistent configuration changes, the ``car.toml`` file is the correct location to make these. However,
 sometimes you want only some quick changes that only apply for one particular situation. In this case, mirroring is the
-recommended solution. As an example, imagine that I need a ssh container that is running on port 2222 instead of 22.
-In this case, the first step I take is to mirror the ssh container:
+recommended solution. As an example, imagine that you need a *ssh container* that is running on port 2222 instead of 22.
+In this case, the first step you take is to mirror the *ssh container*:
 
 ```console
 [pentester@kali ~]$ car mirror ssh

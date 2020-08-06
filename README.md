@@ -39,7 +39,7 @@ Docker seems to be ideal to get an easy manageable solution.
 *car* can be build and installed as a *pip package*. The following command installs *car* for your current user profile:
 
 ```console
-$ pip3 install car
+$ pip3 install container-arsenal
 ```
 
 You can also build *car* from source by running the following commands:

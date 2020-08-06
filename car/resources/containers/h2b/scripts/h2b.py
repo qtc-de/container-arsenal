@@ -3,6 +3,7 @@ from flask import Flask, request
 
 app = Flask(__name__)
 
+
 @app.route('/')
 def server_status():
     return 'Proxy is ready!'
@@ -15,10 +16,10 @@ def forward():
     port = request.args.get('port', type=int)
     content = request.get_data()
 
-    if host == None:
+    if host is None:
         return "Error! GET parameter 'host' needs to be specified."
 
-    if port == None:
+    if port is None:
         return "Error! GET parameter 'port' needs to be specified."
 
     if content == b'':

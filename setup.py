@@ -80,7 +80,7 @@ class PostInstall(install):
 
 setup(
     url='https://github.com/qtc-de/container-arsenal',
-    name=name,
+    name='container-arsenal',
     author='Tobias Neitzel (@qtc_de)',
     version='1.1.0',
     author_email='',

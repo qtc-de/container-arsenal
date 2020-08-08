@@ -4,7 +4,7 @@ from os import makedirs
 from os.path import expanduser, abspath, dirname, isdir, isfile
 from shutil import copy
 
-from setuptools import setup, find_packages
+from setuptools import setup
 from setuptools.command.install import install
 
 
@@ -82,14 +82,14 @@ setup(
     url='https://github.com/qtc-de/container-arsenal',
     name='container-arsenal',
     author='Tobias Neitzel (@qtc_de)',
-    version='1.1.1',
+    version='1.1.2',
     author_email='',
 
     description='A small arsenal of useful docker containers and a script to easy start, stop and manage them.',
     long_description=long_description,
     long_description_content_type='text/markdown',
 
-    packages=find_packages(),
+    packages=['car'],
     package_data={
                         name: [
                             'resources/*',

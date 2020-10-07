@@ -10,10 +10,10 @@ services:
       HOST: ${car_target_host}
       PORT: ${car_target_port}
     volumes:
-      - ${car_log_folder}:/usr/local/apache2/logs/
-      - ./config/httpd.conf:/usr/local/apache2/conf/httpd.conf
-      - ./config/ajp.conf:/usr/local/apache2/conf/extra/ajp.conf
-      - ./config/jk_workers.properties:/usr/local/apache2/conf/extra/jk_workers.properties
+      - ${car_log_folder}:/var/log/apache2
+      - ./config/httpd.conf:/etc/apache2/httpd.conf
+      - ./config/ajp.conf:/etc/apache2/ajp.conf
+      - ./config/jk_workers.properties:/etc/apache2/jk_workers.properties
       - ./scripts/start.sh:/scripts/start.sh
     ports:
       - "127.0.0.1:${car_http_port}:80"

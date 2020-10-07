@@ -1,18 +1,16 @@
-FROM httpd:latest
+FROM alpine:3.12.0
 
 RUN set -ex \
-    && apt update \
-    && apt -y install libapache2-mod-jk \
-    && apt clean
-
-RUN set -ex \
+    && apk add --no-cache apache2 \
     && mkdir /scripts \
-    && chown 1000:1000 /usr/local/apache2/logs
+    && chown 1000:1000 /var/log/apache2 \
+    && ln -s /etc/apache2 /var/www/conf
 
-COPY config/httpd.conf /usr/local/apache2/conf/httpd.conf
-COPY config/ajp.conf /usr/local/apache2/conf/extra/ajp.conf
-COPY config/jk_workers.properties /usr/local/apache2/conf/extra/jk_workers.properties
+COPY config/httpd.conf /etc/apache2/httpd.conf
+COPY config/ajp.conf /etc/apache2/ajp.conf
+COPY config/jk_workers.properties /etc/apache2/jk_workers.properties
+
+COPY resources/mod_jk.so /usr/lib/apache2/mod_jk.so
 COPY scripts/start.sh /scripts/start.sh
 
-
-ENTRYPOINT ["bash", "/scripts/start.sh"]
+ENTRYPOINT ["sh", "/scripts/start.sh"]

@@ -15,8 +15,8 @@ if [ -z ${PORT} ]; then
 fi
 
 echo "[+] Adjusting host and port values inside the jk_workes.properties file."
-sed -i -e "s/<@:HOST:@>/${HOST}/" /etc/apache2/jk_workers.properties
-sed -i -e "s/<@:PORT:@>/${PORT}/" /etc/apache2/jk_workers.properties
+sed -e "s/<@:HOST:@>/${HOST}/" /etc/apache2/jk_workers.properties | \
+sed -e "s/<@:PORT:@>/${PORT}/" > /etc/apache2/jk_workers_local.properties
 
 echo "[+] Adjusting volume permissions."
 chown 1000:1000 /var/log/apache2

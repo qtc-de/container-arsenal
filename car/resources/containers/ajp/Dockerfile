@@ -2,7 +2,7 @@ FROM alpine:3.12.0
 
 RUN set -ex \
     && apk add --no-cache apache2 \
-    && mkdir /scripts \
+    && mkdir /scripts /var/www/shm \
     && chown 1000:1000 /var/log/apache2 \
     && ln -s /etc/apache2 /var/www/conf
 

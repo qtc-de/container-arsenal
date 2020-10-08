@@ -1,33 +1,16 @@
-FROM alpine:latest
+FROM alpine:3.12.0
 
-# update the system and install vsftpd
 RUN set -ex \
-    && apk --no-cache update \
-    && apk --no-cache upgrade \
-    &&  apk add vsftpd --no-cache
-
-# add ftp user
-RUN set -ex \
-    && adduser --disabled-password --gecos "" default
-
-# create required folders
-RUN set -ex \
-    && mkdir /scripts \
-    && mkdir /empty \
-    && mkdir -p /ftp/anon \
-    && mkdir -p /ftp/user \
-    && chown default:default /ftp/user \
-    && chown default:default /ftp/anon \
+    && apk add vsftpd --no-cache \
+    && adduser --disabled-password --gecos "" --shell /bin/false default \
+    && mkdir /scripts /empty \
+    && mkdir -p /ftp/anon /ftp/user \
+    && chown default:default /ftp/anon /ftp/user \
     && chmod 750 /ftp/user \
-    && chmod 777 /ftp/anon
+    && chmod 777 /ftp/anon \
+    && chmod 555 /ftp
 
-# copy some files
 COPY config/vsftpd.conf /etc/vsftpd/
 COPY scripts/start.sh /scripts/start.sh
-
-# exposed resources of the container
-VOLUME /ftp
-
-EXPOSE 21/tcp
 
 ENTRYPOINT ["ash", "/scripts/start.sh"]

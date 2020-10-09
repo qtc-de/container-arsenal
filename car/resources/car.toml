@@ -1,4 +1,5 @@
 [containers]
+  sudo_required = true
   volume_base_path = "~/arsenal"
 
   [containers.ajp]

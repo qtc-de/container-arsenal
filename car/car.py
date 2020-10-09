@@ -2,6 +2,7 @@ import os
 import sys
 import toml
 import shutil
+import termcolor
 import subprocess
 
 this = sys.modules[__name__]
@@ -9,7 +10,128 @@ this = sys.modules[__name__]
 this.config = None
 this.containers = None
 this.module_path = None
+this.sudo_required = None
 this.volume_base_path = None
+
+
+def keyword(key, suffix=None, end="\n"):
+    '''
+    Helper function that prints a highlighted keyword and an opional suffix.
+
+    Parameters:
+        key             (string)                Keyword to print
+        suffix          (string)                Text to print after keyword
+        end             (string)                End character for the last print
+    '''
+    if suffix is None:
+        termcolor.cprint(key, "yellow", end=end)
+    else:
+        termcolor.cprint(key, "yellow", end=" ")
+        print(suffix, end=end)
+
+
+def plain(text, key, text2=None, end="\n"):
+    '''
+    Helper function that prints a highlighted keyword, prefixed by non highlighted
+    text and followed by an optional suffix.
+
+    Parameters:
+        text            (string)                Prefix text before the keyword
+        key             (string)                Keyword to print
+        text2           (string)                Text to print after keyword
+        end             (string)                End character for the last print
+    '''
+    print(text, end=" ")
+    keyword(key, text2, end=end)
+
+
+def info(text, key=None, text2=None, end="\n"):
+    '''
+    Helper function that prints a highlighted keyword, prefixed by non highlighted
+    text and followed by an optional suffix. At the beginning of the line, the
+    character sequence '[+]' is added.
+
+    Parameters:
+        text            (string)                Prefix text before the keyword
+        key             (string)                Keyword to print
+        text2           (string)                Text to print after keyword
+        end             (string)                End character for the last print
+    '''
+    if key is None:
+        print("[+] " + text, end=end)
+    else:
+        print("[+] " + text, end=" ")
+        keyword(key, text2, end)
+
+
+def error(text, key=None, text2=None, end="\n"):
+    '''
+    Helper function that prints a highlighted keyword, prefixed by non highlighted
+    text and followed by an optional suffix. At the beginning of the line, the
+    character sequence '[-]' is added.
+
+    Parameters:
+        text            (string)                Prefix text before the keyword
+        key             (string)                Keyword to print
+        text2           (string)                Text to print after keyword
+        end             (string)                End character for the last print
+    '''
+    if key is None:
+        print("[-] " + text, end=end)
+    else:
+        print("[-] " + text, end=" ")
+        keyword(key, text2, end)
+
+
+def verbose_call(cmd, dry=False, cwd=None):
+    '''
+    Wrapper aroud subprocess.call that prints the specified command before executing it.
+
+    Parameters:
+        cmd             (list[string])          Command sequence to execute
+        sudo            (boolean)               Prefix the command by sudo
+        dry             (boolean)               Don't execute the command
+        cwd             (string)                Current working directory for the command
+    '''
+    if this.sudo_required:
+        cmd = ["sudo"] + cmd
+
+    info("Running: ", ' '.join(cmd))
+    if not dry:
+
+        try:
+            subprocess.call(cmd, cwd=cwd)
+
+        except PermissionError:
+            pass
+
+        except KeyboardInterrupt:
+            pass
+
+
+def prepare_call(config, cmds=None):
+    '''
+    Helper function that turns car specific environment variables into a list that can be
+    prefixed befor a docker-compose command.
+
+    Parameters:
+        config          (dict)                  Container configuration
+        cmd             (list[string])          Optional commands to follow the environment
+    '''
+    cmd = []
+    for key, value in config.items():
+
+        env_variable = f"car_{key}"
+
+        if env_variable in os.environ:
+            value = os.environ.get(env_variable)
+
+        cmd.append(f'{env_variable}={value}')
+
+    for command in cmds:
+        cmd.append(command)
+
+    return cmd
 
 
 def init():
@@ -40,9 +162,10 @@ def init():
     this.containers = os.listdir(f'{module_path}/resources/containers')
     this.config = module_config
     this.module_path = module_path
+    this.sudo_required = module_config['containers']['sudo_required']
 
     if not os.path.isdir(this.volume_base_path):
-        print(f"[+] Creating volume base directory at '{this.volume_base_path}'")
+        info("Creating volume base directory at", this.volume_base_path)
         os.makedirs(this.volume_base_path)
 
 
@@ -88,7 +211,7 @@ def check_existence(name, verbose=True, exit=True):
     if name not in this.containers:
 
         if verbose:
-            print(f"[-] Unable to find container with name: '{name}'")
+            error("Unable to find container with name:", name)
         if exit:
             sys.exit(1)
         return False
@@ -144,17 +267,19 @@ def clean(name):
 
     # Well, we can't catch everything but at least some very dumb calls
     if path == "/" or path == "/home" or path == os.path.expanduser("~"):
-        print(f"[-] Removing '{path}' is probably a mistake.")
-        print('[-] Stopping script execution.')
+        error("Removing", path, "is probably a mistake.")
+        error('Stopping script execution.')
         sys.exit(1)
 
     # The next restriction could be annoying. But I guess we keep it for security reasons:
     if not path.endswith(name):
-        print("[-] Top level resource directories need the same name as the container.")
-        print("[-] Stopping script execution.")
+        error("Top level resource directories need the same name as the container.")
+        error("Stopping script execution.")
         sys.exit(1)
 
-    print(f"[+] Removing top level resource folder '{path}' (container: {name})")
+    info("Removing top level resource folder ", path, end=" ")
+    plain("(container:", name, end="")
+    print(")")
     shutil.rmtree(path)
 
 
@@ -211,14 +336,8 @@ def start_container(name, rebuild=False, remove=False):
     container_conf = get_container_config(name)
 
     if rebuild:
-
-        cmd = ['sudo']
-        for key, value in container_conf.items():
-            cmd.append(f'car_{key}={value}')
-        cmd.append('docker-compose')
-        cmd.append('build')
-        print(f"[+] Running: '{' '.join(cmd)}'")
-        subprocess.call(cmd, cwd=base_folder)
+        cmd = prepare_call(container_conf, ['docker-compose', 'build'])
+        verbose_call(cmd, cwd=base_folder)
 
     # While the permissions of volumes are handeled by the docker containers,
     # the actual resource folders will be created by the docker deamon and
@@ -226,38 +345,17 @@ def start_container(name, rebuild=False, remove=False):
     # resource folders during container startup with permissions of the current user
     resource_folder = get_resource_folder(name)
     if not os.path.isdir(resource_folder):
-        print(f"[+] Resource folder '{resource_folder}' does not exist.")
-        print("[+] Creating new resource folder.")
+
+        info("Resource folder", resource_folder, "does not exist.")
+        info("Creating new resource folder.")
         os.makedirs(resource_folder)
 
-    cmd = ['sudo']
-    for key, value in container_conf.items():
-        cmd.append(f'car_{key}={value}')
-
-    cmd.append('docker-compose')
-    cmd.append('up')
-
-    # When using ctrl-c to kill the container, subprocess will try to
-    # kill it on its own and receive a permission denied, since it tries
-    # to send a signal to a root process. However, the ctrl-c is still
-    # catched by the container and therefore we can just catch the exception
-    # and do nothing.
-    try:
-        print(f"[+] Running: '{' '.join(cmd)}'")
-        subprocess.call(cmd, cwd=base_folder)
-    except PermissionError:
-        pass
-    except KeyboardInterrupt:
-        pass
+    cmd = prepare_call(container_conf, ['docker-compose', 'up'])
+    verbose_call(cmd, cwd=base_folder)
 
     if remove:
-        cmd = ['sudo']
-        for key, value in container_conf.items():
-            cmd.append(f'car_{key}={value}')
-        cmd.append('docker-compose')
-        cmd.append('down')
-        print(f"[+] Running: '{' '.join(cmd)}'")
-        subprocess.call(cmd, cwd=base_folder)
+        cmd = prepare_call(container_conf, ['docker-compose', 'down'])
+        verbose_call(cmd, cwd=base_folder)
 
 
 def start_local(rebuild=False, remove=False):
@@ -274,23 +372,15 @@ def start_local(rebuild=False, remove=False):
         None
     '''
     if rebuild:
-        cmd = ['sudo', 'docker-compose', 'build']
-        print(f"[+] Running: '{' '.join(cmd)}'")
-        subprocess.call(cmd)
+        cmd = ['docker-compose', 'build']
+        verbose_call(cmd)
 
-    try:
-        cmd = ['sudo', 'docker-compose', 'up']
-        print(f"[+] Running: '{' '.join(cmd)}'")
-        subprocess.call(cmd)
-    except PermissionError:
-        pass
-    except KeyboardInterrupt:
-        pass
+    cmd = ['docker-compose', 'up']
+    verbose_call(cmd)
 
     if remove:
-        cmd = ['sudo', 'docker-compose', 'down']
-        print(f"[+] Running: '{' '.join(cmd)}'")
-        subprocess.call(cmd)
+        cmd = ['docker-compose', 'down']
+        verbose_call(cmd)
 
 
 def stop_container(name):
@@ -308,16 +398,8 @@ def stop_container(name):
     base_folder = get_container_folder(name)
     container_conf = get_container_config(name)
 
-    cmd = ['sudo']
-
-    for key, value in container_conf.items():
-        cmd.append(f'car_{key}={value}')
-
-    cmd.append('docker-compose')
-    cmd.append('stop')
-
-    print(f"[+] Running: '{' '.join(cmd)}'")
-    subprocess.call(cmd, cwd=base_folder)
+    cmd = prepare_call(container_conf, ['docker-compose', 'stop'])
+    verbose_call(cmd, cwd=base_folder)
 
 
 def stop_local():
@@ -331,12 +413,8 @@ def stop_local():
     Returns:
         None
     '''
-    cmd = ['sudo']
-    cmd.append('docker-compose')
-    cmd.append('stop')
-
-    print(f"[+] Running: '{' '.join(cmd)}'")
-    subprocess.call(cmd)
+    cmd = ['docker-compose', 'stop']
+    verbose_call(cmd)
 
 
 def rm_container(name):
@@ -353,16 +431,8 @@ def rm_container(name):
     base_folder = get_container_folder(name)
     container_conf = get_container_config(name)
 
-    cmd = ['sudo']
-
-    for key, value in container_conf.items():
-        cmd.append(f'car_{key}={value}')
-
-    cmd.append('docker-compose')
-    cmd.append('down')
-
-    print(f"[+] Running: '{' '.join(cmd)}'")
-    subprocess.call(cmd, cwd=base_folder)
+    cmd = prepare_call(container_conf, ['docker-compose', 'down'])
+    verbose_call(cmd, cwd=base_folder)
 
 
 def rm_all_containers():
@@ -389,12 +459,8 @@ def rm_local():
     Returns:
         None
     '''
-    cmd = ['sudo']
-    cmd.append('docker-compose')
-    cmd.append('down')
-
-    print(f"[+] Running: '{' '.join(cmd)}'")
-    subprocess.call(cmd)
+    cmd = ['docker-compose', 'down']
+    verbose_call(cmd)
 
 
 def mirror(name):
@@ -413,11 +479,11 @@ def mirror(name):
     base_folder = get_container_folder(name)
 
     if os.path.exists(f'./{name}'):
-        print(f"[-] Directory/File with name '{name}' does already exist in the current folder.")
-        print("[-] Stopping mirror process.")
+        error("Directory/File with name", name, "does already exist in the current folder.")
+        error("Stopping mirror process.")
         sys.exit(1)
 
-    print(f"[+] Copying base folder of container '{name}' to current working directory.")
+    info("Copying base folder of container", name, "to current working directory.")
     shutil.copytree(base_folder, f'./{name}')
 
     with open(f'./{name}/docker-compose.yml', 'r') as compose_file:
@@ -430,7 +496,7 @@ def mirror(name):
     with open(f'./{name}/docker-compose.yml', 'w') as compose_file:
         compose_file.write(content)
 
-    print("[+] Done.")
+    info("Done.")
 
 
 def exec(name, command, interactive=False):
@@ -439,6 +505,8 @@ def exec(name, command, interactive=False):
 
     Paramaters:
         name                (string)                Name of a container
+        command             (string)                Command to execute
+        interactive         (boolean)               Interactive command?
 
     Returns:
         None
@@ -446,7 +514,7 @@ def exec(name, command, interactive=False):
     check_existence(name)
     container_name = f'car.{name}'
 
-    cmd = ['sudo', 'docker', 'exec']
+    cmd = ['docker', 'exec']
 
     if interactive:
         cmd.append('-it')
@@ -454,10 +522,80 @@ def exec(name, command, interactive=False):
     cmd.append(container_name)
     cmd.append(command)
 
+    verbose_call(cmd)
+
+
+def show_env(name):
+    '''
+    Display possible environment variables for the corresponding container.
+
+    Paramaters:
+        name                (string)                Name of a container
+
+    Returns:
+        None
+    '''
+    check_existence(name)
+    base_folder = get_container_folder(name)
+    env_info_file = base_folder + "/env_info.txt"
+
+    offset = 30
+    info("Available variables are:")
+    info("Name".ljust(offset), end="")
+    print("Value".ljust(offset), end="")
+    print("Description")
+
     try:
-        print(f"[+] Running: '{' '.join(cmd)}'")
-        subprocess.call(cmd)
-    except PermissionError:
-        pass
-    except KeyboardInterrupt:
-        pass
+
+        with open(env_info_file) as f:
+
+            lines = f.readlines()
+            for line in lines:
+
+                filtered = " ".join(line.split())
+                split = filtered.split()
+
+                variable_name = split[0]
+                variable_value = split[1]
+                variable_desc = split[2]
+
+                print("[+] ", end="")
+                termcolor.cprint(variable_name.ljust(offset), "yellow", end="")
+                termcolor.cprint(variable_value.ljust(offset), "yellow", end="")
+                termcolor.cprint(variable_desc, "blue")
+
+    except FileNotFoundError:
+
+        error("Unable to find", "env_info.txt", "for container", end=" ")
+        termcolor.cprint(name, "yellow")
+
+
+def wipe(name):
+    '''
+    Removes the image of the specified container.
+
+    Paramaters:
+        name                (string)                Name of a container
+
+    Returns:
+        None
+    '''
+    check_existence(name)
+    container_name = f'car/{name}'
+
+    cmd = ['docker', 'image', 'rm', container_name]
+    verbose_call(cmd)
+
+
+def wipe_all():
+    '''
+    Removes all car images.
+
+    Parameters:
+        None
+
+    Returns:
+        None
+    '''
+    for container in this.containers:
+        wipe(container)

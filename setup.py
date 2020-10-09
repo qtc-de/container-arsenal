@@ -99,6 +99,7 @@ setup(
                             'resources/containers/ajp/*',
                             'resources/containers/ajp/config/*',
                             'resources/containers/ajp/scripts/*',
+                            'resources/containers/ajp/resources/*',
                             'resources/containers/ftp/*',
                             'resources/containers/ftp/config/*',
                             'resources/containers/ftp/scripts/*',

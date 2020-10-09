@@ -6,7 +6,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def server_status():
-    return 'Proxy is ready!'
+    return 'Proxy is ready!\n'
 
 
 @app.route('/forward', methods=['GET', 'POST'])
@@ -17,13 +17,13 @@ def forward():
     content = request.get_data()
 
     if host is None:
-        return "Error! GET parameter 'host' needs to be specified."
+        return "Error! GET parameter 'host' needs to be specified.\n"
 
     if port is None:
-        return "Error! GET parameter 'port' needs to be specified."
+        return "Error! GET parameter 'port' needs to be specified.\n"
 
     if content == b'':
-        return "No HTTP body found. Nothing to forward."
+        return "No HTTP body found. Nothing to forward.\n"
 
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 
@@ -31,7 +31,6 @@ def forward():
         target = (host, port)
 
         try:
-
             s.connect(target)
             s.sendall(content)
 
@@ -43,5 +42,4 @@ def forward():
                 master_data += data
 
         except ConnectionRefusedError:
-
-            return f"Error your target '{host}:{port}' refused the connection"
+            return f"Error your target '{host}:{port}' refused the connection\n"

@@ -7,7 +7,6 @@ services:
     build: .
     image: car/h2b
     volumes:
-      - ${car_h2b_folder}:/dummy
       - ./scripts/start.sh:/scripts/start.sh
       - ./scripts/h2b.py:/scripts/h2b.py
     ports:

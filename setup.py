@@ -127,6 +127,7 @@ setup(
                  },
     install_requires=[
                         'toml',
+                        'termcolor'
                      ],
     scripts=[
                 f'bin/{name}',

@@ -52,8 +52,8 @@ def main():
     Returns:
         None
     '''
-    car.init()
     args = parser.parse_args()
+    car.init(args.dry)
 
     if args.command == 'list':
         containers = car.list_containers()

@@ -7,6 +7,7 @@ import subprocess
 
 this = sys.modules[__name__]
 
+this.dry = None
 this.config = None
 this.containers = None
 this.module_path = None
@@ -83,7 +84,7 @@ def error(text, key=None, text2=None, end="\n"):
         keyword(key, text2, end)
 
 
-def verbose_call(cmd, dry=False, cwd=None):
+def verbose_call(cmd, cwd=None):
     '''
     Wrapper aroud subprocess.call that prints the specified command before executing it.
 
@@ -97,7 +98,7 @@ def verbose_call(cmd, dry=False, cwd=None):
         cmd = ["sudo"] + cmd
 
     info("Running: ", ' '.join(cmd))
-    if not dry:
+    if not this.dry:
 
         try:
             subprocess.call(cmd, cwd=cwd)
@@ -134,13 +135,13 @@ def prepare_call(config, cmds=None):
     return cmd
 
 
-def init():
+def init(dry):
     '''
     Initializes the car module by setting configuration options which were read in
     from a .toml file
 
     Parameters:
-        None
+        dry             (boolean)               Only print docker-compose commands instead of running them
 
     Returns:
         None
@@ -163,6 +164,7 @@ def init():
     this.config = module_config
     this.module_path = module_path
     this.sudo_required = module_config['containers']['sudo_required']
+    this.dry = dry
 
     if not os.path.isdir(this.volume_base_path):
         info("Creating volume base directory at", this.volume_base_path)

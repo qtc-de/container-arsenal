@@ -33,7 +33,7 @@ server with *AJP* enabled (notice that the webinterface is filtered and it is no
 
 ```console
 [qtc@kali ~]$ nmap -p8009,8080 172.17.0.1
-Starting Nmap 7.80 ( https://nmap.org ) at 2020-10-08 07:13 CEST
+Starting Nmap 7.80 ( https://nmap.org ) at 2020-10-11 06:13 CEST
 Nmap scan report for 172.17.0.1
 Host is up (0.00011s latency).
 
@@ -41,7 +41,7 @@ PORT     STATE    SERVICE
 8009/tcp open     ajp13
 8080/tcp filtered http-proxy
 
-Nmap done: 1 IP address (1 host up) scanned in 1.27 seconds
+Nmap done: 1 IP address (1 host up) scanned in 1.31 seconds
 ```
 
 To access the *tomcat* server via *AJP*, we startup the *ajp* container of *container-arsenal*. However,

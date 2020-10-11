@@ -1,0 +1,3 @@
+car_ftp_port        FTP port mapped to your local machine.
+car_user_folder     Volume location for the FTP user folder.
+car_anon_folder     Volume location for the FTP anonymous folder.

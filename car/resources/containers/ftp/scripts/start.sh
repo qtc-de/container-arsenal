@@ -19,8 +19,7 @@ chmod 440 /etc/vsftpd/vsftpd_active.conf
 
 # Make sure that volumes have the correct permissions
 echo "[+] Adjusting volume permissions..."
-chown default:default /ftp/user
-chown default:default /ftp/anon
+chown default:default /ftp/user /ftp/anon
 chmod 750 /ftp/user
 chmod 777 /ftp/anon
 chmod 555 /ftp

@@ -16,7 +16,7 @@ see two different directories:
 ```console
 [qtc@kali ~]$ ftp 172.18.0.2
 Connected to 172.18.0.2.
-220 pc/ftp server
+220 container arsenal FTP Server server
 Name (172.18.0.2:qtc): anonymous
 230 Login successful.
 Remote system type is UNIX.

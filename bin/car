@@ -22,6 +22,9 @@ parser_stop.add_argument('container', metavar='container', help=container_help)
 parser_rm = subparsers.add_parser('rm', help='remove a stopped container')
 parser_rm.add_argument('container', metavar='container', help=container_help_all)
 
+parser_build = subparsers.add_parser('build', help='build a container')
+parser_build.add_argument('container', metavar='container', help=container_help_all)
+
 parser_env = subparsers.add_parser('env', help='list environment variables for the corresponding container')
 parser_env.add_argument('container', metavar='container', help=container_help[:5])
 
@@ -89,6 +92,15 @@ def main():
             car.rm_local()
         else:
             car.rm_container(c)
+
+        sys.exit(0)
+
+    if args.command == 'build':
+
+        if c == 'all':
+            car.build_all()
+        else:
+            car.build(c)
 
         sys.exit(0)
 

@@ -609,3 +609,34 @@ def wipe_all():
     '''
     for container in this.containers:
         wipe(container)
+
+
+def build(name):
+    '''
+    Builds the specified container.
+
+    Paramaters:
+        name                (string)                Name of a container
+
+    Returns:
+        None
+    '''
+    check_existence(name)
+    base_folder = get_container_folder(name)
+
+    cmd = prepare_call(container_conf, ['docker-compose', 'build'])
+    verbose_call(cmd, cwd=base_folder)
+
+
+def build_all():
+    '''
+    Build all containers of the arsenal.
+
+    Paramaters:
+        None
+
+    Returns:
+        None
+    '''
+    for container in this.containers:
+        build(container)

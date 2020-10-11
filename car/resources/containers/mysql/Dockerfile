@@ -1,4 +1,4 @@
-FROM mariadb:latest
+FROM mariadb:10.5.6
 
 RUN set -ex \
     && mkdir /scripts \

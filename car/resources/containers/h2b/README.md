@@ -2,15 +2,20 @@
 
 ----
 
-This docker container implements a proxy server which forwards the body of incoming *HTTP* requests to different hosts.
+This docker container implements a proxy server which forwards the body of incoming *HTTP* requests to a different host.
 The response from the targeted server is encapsulated into a *HTTP* response message and send back to the client.
-To specify a target, simply send the two *GET* parameters ``host`` and ``port`` inside of your *HTTP* request. The
+To specify a target, simply send the two *GET* parameters ``host`` and ``port`` inside of the *HTTP* request. The
 body of the *HTTP* request is then forwarded to the corresponding target.
 
 Currently the container is running the *Flask development server*. I guess this should be sufficient for the purpose of this project.
 However, one could also set up a *nginx reverse-proxy* in front of the actual application, but I think it is an overkill.
 
-In the following, an example usage of the container is presented. Firts of all, the container needs to be started:
+
+### Example Usage
+
+----
+
+In the following, an example usage of the container is demonstrated. First of all, the container needs to be started:
 
 ```console
 [qtc@kali h2b]$ car run h2b
@@ -25,7 +30,7 @@ car.h2b    |  * Debug mode: off
 car.h2b    |  * Running on http://0.0.0.0:5000/ (Press CTRL+C to quit)
 ```
 
-When we open a *netcat* listener on port ``4444``:
+When we open a *netcat* listener on a machine within our local network on port ``4444``:
 
 ```console
 [qtc@kali ~]$ nc -vlp 4444
@@ -34,11 +39,12 @@ Ncat: Listening on :::4444
 Ncat: Listening on 0.0.0.0:4444
 ```
 
-Now we can send a *POST* message to ``http://127.0.0.1/forward?host=172.17.0.1&port=4444`` and the content should arrive at the *netcat* listener:
+Now we can send a *POST* request, containing our remote target within the ``host`` and ``port`` *GET* parameters.
+The corresponding content should arrive at our netcat listener.
 
 ```console
 [qtc@kali ~]$ curl -X POST 'http://127.0.0.1/forward?host=172.20.0.1&port=4444' -d "Test Message"
-...
+[...]
 
 [qtc@kali ~]$ nc -vlp 4444
 Ncat: Version 7.80 ( https://nmap.org/ncat )
@@ -61,19 +67,22 @@ Ncat: Connection from 172.20.0.2:43786.
 Test Message
 Hello :)
 [qtc@kali ~]$ 
-...
+[...]
 
-[pentester@kali ~]$ curl -X POST 'http://127.0.0.1/forward?host=172.20.0.1&port=4444' -d "Test Message"
-
+[qtc@kali ~]$ curl -X POST 'http://127.0.0.1/forward?host=172.20.0.1&port=4444' -d "Test Message"
 Hello :)
 ```
+
+When you are facing a *SSL* protected service, you can specify ``ssl=true`` as an additional *GET* paramater.
+The forwarded connection is then made using *SSL* without applying certificate validation.
+
 
 ### Why it is useful?
 
 ----
 
-A lot of pentesting tools are specially focused on *HTTP*, but could also be useful in other situations. As an example, consider *sqlmap*.
-Recently I identified a service that communicated by using plain XML messages. A valid request looked like this:
+A lot of tools are specially focused on *HTTP*, but could also be useful in other situations. As an example, consider *sqlmap*.
+Recently I saw a service that communicated by using plain *XML* messages. A valid request looked like this:
 
 ```xml
 <search>
@@ -85,13 +94,14 @@ Recently I identified a service that communicated by using plain XML messages. A
 </search>
 ```
 
-It was rather easy to identify that the ``<name>-tag`` is vulnerable to *SQLi* attacks, but the injection was blind and it was difficult
+It was rather easy to identify that the ``<name>-tag`` is vulnerable to *SQL injection* attacks, but the injection was blind and it was difficult
 to extract information from the database. It would be great to use *sqlmap* in these situations, but as far as I know, *sqlmap* does not
 support *non-HTTP* protocols. 
 
 By using this docker container, you can simply solve the above mentioned problem. First of all, you wrap the *XML* message mentioned above
 inside a *HTTP POST* request. Instead of using this request with *sqlmap* against the targeted service directly, you use it against this docker
 container and specify the targeted host and port by using the corresponding *GET* parameters inside the *HTTP* request.
+
 
 ### Limitations
 
@@ -111,5 +121,16 @@ In future, support for some known statefull protocols may be added. Feel free to
 
 ----
 
+The following configuration options can be adjusted within your ``car.toml`` file:
+
 * ``h2b_folder``: Top level ressource folder of the container. In the current configuration this folder is not used.
 * ``http_port``: HTTP port of the container that exposes the proxy interface.
+
+You can also specify these options by using environment variables. The command ``car env h2b`` explains their corresponding usage:
+
+```console
+[qtc@kali ~]$ car env h2b
+[+] Available environment variables are:
+[+] Name                               Current Value                      Description
+[+] car_http_port                      80                                 HTTP proxy port mapped to your local machine.
+```

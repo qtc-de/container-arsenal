@@ -97,7 +97,7 @@ def verbose_call(cmd, cwd=None):
     if this.sudo_required:
         cmd = ["sudo"] + cmd
 
-    info("Running: ", ' '.join(cmd))
+    info("Running:", ' '.join(cmd))
     if not this.dry:
 
         try:

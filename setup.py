@@ -82,7 +82,7 @@ setup(
     url='https://github.com/qtc-de/container-arsenal',
     name='container-arsenal',
     author='Tobias Neitzel (@qtc_de)',
-    version='1.1.2',
+    version='2.0.0',
     author_email='',
 
     description='A small arsenal of useful docker containers and a script to easy start, stop and manage them.',

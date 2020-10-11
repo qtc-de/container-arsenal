@@ -623,6 +623,7 @@ def build(name):
     '''
     check_existence(name)
     base_folder = get_container_folder(name)
+    container_conf = get_container_config(name)
 
     cmd = prepare_call(container_conf, ['docker-compose', 'build'])
     verbose_call(cmd, cwd=base_folder)

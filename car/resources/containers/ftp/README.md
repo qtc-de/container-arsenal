@@ -24,8 +24,8 @@ Using binary mode to transfer files.
 ftp> ls
 200 PORT command successful. Consider using PASV.
 150 Here comes the directory listing.
-drwxrwxrwx    2 ftp      ftp          4096 Oct 07 06:43 anon
-drwxr-x---    2 ftp      ftp          4096 Oct 07 06:44 user
+drwxrwxrwx    2 ftp      ftp          4096 Oct 11 05:25 anon
+drwxr-x---    2 ftp      ftp          4096 Oct 11 05:26 user
 226 Directory send OK.
 ```
 
@@ -73,7 +73,7 @@ user ``default`` can use both directories ``anon`` and ``user`` for read and wri
 ```console
 [qtc@kali ~]$ ftp 172.18.0.2
 Connected to 172.18.0.2.
-220 pc/ftp server
+220 container arsenal FTP Server server
 Name (172.18.0.2:qtc): default
 331 Please specify the password.
 Password:
@@ -101,3 +101,14 @@ the behavior of the container:
 * ``anon_folder``: This is the resource folder that is used for anonymous user uploads (mounted as volume into the container).
 * ``user_folder``: This is the resource folder that is used for authenticated uploads (mounted as volume into the container).
 * ``ftp_port``: The port where the FTP server is listening on your local machine.
+
+You can also specify these options by using environment variables. The command ``car env ftp`` explains their corresponding usage:
+
+```console
+[qtc@kali ~]$ car env ftp
+[+] Available environment variables are:
+[+] Name                               Current Value                      Description
+[+] car_ftp_port                       21                                 FTP port mapped to your local machine.
+[+] car_user_folder                    /home/qtc/arsenal/ftp/user         Volume location for the FTP user folder.
+[+] car_anon_folder                    /home/qtc/arsenal/ftp/anon         Volume location for the FTP anonymous folder.
+```

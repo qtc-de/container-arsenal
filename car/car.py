@@ -110,7 +110,7 @@ def verbose_call(cmd, cwd=None):
             pass
 
 
-def prepare_call(config, cmds=None):
+def prepare_call(config, cmds=[]):
     '''
     Helper function that turns car specific environment variables into a list that can be
     prefixed befor a docker-compose command.
@@ -539,12 +539,20 @@ def show_env(name):
     '''
     check_existence(name)
     base_folder = get_container_folder(name)
+    container_conf = get_container_config(name)
     env_info_file = base_folder + "/env_info.txt"
 
-    offset = 30
-    info("Available variables are:")
+    value_dict = {}
+    variables = prepare_call(container_conf)
+
+    for variable in variables:
+        split = variable.split("=")
+        value_dict[split[0]] = split[1]
+
+    offset = 35
+    info("Available environment variables are:")
     info("Name".ljust(offset), end="")
-    print("Value".ljust(offset), end="")
+    print("Current Value".ljust(offset), end="")
     print("Description")
 
     try:
@@ -558,8 +566,8 @@ def show_env(name):
                 split = filtered.split()
 
                 variable_name = split[0]
-                variable_value = split[1]
-                variable_desc = split[2]
+                variable_desc = " ".join(split[1:])
+                variable_value = value_dict.get(variable_name, "")
 
                 print("[+] ", end="")
                 termcolor.cprint(variable_name.ljust(offset), "yellow", end="")

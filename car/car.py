@@ -84,24 +84,36 @@ def error(text, key=None, text2=None, end="\n"):
         keyword(key, text2, end)
 
 
-def verbose_call(cmd, cwd=None):
+def verbose_call(cmd, cwd=None, env=None):
     '''
     Wrapper aroud subprocess.call that prints the specified command before executing it.
 
     Parameters:
         cmd             (list[string])          Command sequence to execute
-        sudo            (boolean)               Prefix the command by sudo
-        dry             (boolean)               Don't execute the command
         cwd             (string)                Current working directory for the command
+        env             (dict)                  Environment for the subprocess.call function
     '''
     if this.sudo_required:
-        cmd = ["sudo"] + cmd
+        cmd = ["sudo", "-E"] + cmd
 
+    if env:
+        info("Environment Variables:")
+        for key, value in env.items():
+
+            print("[+]", end="\t")
+            termcolor.cprint(key.ljust(30), "blue", end="")
+
+            if len(value) > 45:
+                value = value[0:45] + "[...]"
+
+            termcolor.cprint(value, "yellow")
+
+    info("")
     info("Running:", ' '.join(cmd))
     if not this.dry:
 
         try:
-            subprocess.call(cmd, cwd=cwd)
+            subprocess.call(cmd, cwd=cwd, env=env)
 
         except PermissionError:
             pass
@@ -110,16 +122,20 @@ def verbose_call(cmd, cwd=None):
             pass
 
 
-def prepare_call(config, cmds=[]):
+def prepare_env(config):
     '''
-    Helper function that turns car specific environment variables into a list that can be
-    prefixed befor a docker-compose command.
+    Helper function that turns car specific environment variables into a dictionary that can
+    be passed as the 'env' argument in the subprocess.call function.
 
     Parameters:
         config          (dict)                  Container configuration
-        cmd             (list[string])          Optional commands to follow the environment
+
+    Returns:
+        env             (dict)                  Environment dictionary
     '''
-    cmd = []
+    env = dict()
+    env["PATH"] = os.environ.get("PATH")
+
     for key, value in config.items():
 
         env_variable = f"car_{key}"
@@ -127,12 +143,9 @@ def prepare_call(config, cmds=[]):
         if env_variable in os.environ:
             value = os.environ.get(env_variable)
 
-        cmd.append(f'{env_variable}={value}')
+        env[env_variable] = value
 
-    for command in cmds:
-        cmd.append(command)
-
-    return cmd
+    return env
 
 
 def init(dry):
@@ -279,7 +292,7 @@ def clean(name):
         error("Stopping script execution.")
         sys.exit(1)
 
-    info("Removing top level resource folder ", path, end=" ")
+    info("Removing top level resource folder", path, end=" ")
     plain("(container:", name, end="")
     print(")")
     shutil.rmtree(path)
@@ -333,13 +346,13 @@ def start_container(name, rebuild=False, remove=False):
         None
     '''
     check_existence(name)
-
     base_folder = get_container_folder(name)
+
     container_conf = get_container_config(name)
+    env = prepare_env(container_conf)
 
     if rebuild:
-        cmd = prepare_call(container_conf, ['docker-compose', 'build'])
-        verbose_call(cmd, cwd=base_folder)
+        verbose_call(['docker-compose', 'build'], cwd=base_folder, env=env)
 
     # While the permissions of volumes are handeled by the docker containers,
     # the actual resource folders will be created by the docker deamon and
@@ -352,12 +365,10 @@ def start_container(name, rebuild=False, remove=False):
         info("Creating new resource folder.")
         os.makedirs(resource_folder)
 
-    cmd = prepare_call(container_conf, ['docker-compose', 'up'])
-    verbose_call(cmd, cwd=base_folder)
+    verbose_call(['docker-compose', 'up'], cwd=base_folder, env=env)
 
     if remove:
-        cmd = prepare_call(container_conf, ['docker-compose', 'down'])
-        verbose_call(cmd, cwd=base_folder)
+        verbose_call(['docker-compose', 'down'], cwd=base_folder, env=env)
 
 
 def start_local(rebuild=False, remove=False):
@@ -400,8 +411,8 @@ def stop_container(name):
     base_folder = get_container_folder(name)
     container_conf = get_container_config(name)
 
-    cmd = prepare_call(container_conf, ['docker-compose', 'stop'])
-    verbose_call(cmd, cwd=base_folder)
+    env = prepare_env(container_conf)
+    verbose_call(['docker-compose', 'stop'], cwd=base_folder, env=env)
 
 
 def stop_local():
@@ -433,8 +444,8 @@ def rm_container(name):
     base_folder = get_container_folder(name)
     container_conf = get_container_config(name)
 
-    cmd = prepare_call(container_conf, ['docker-compose', 'down'])
-    verbose_call(cmd, cwd=base_folder)
+    env = prepare_env(container_conf)
+    verbose_call(['docker-compose', 'down'], cwd=base_folder, env=env)
 
 
 def rm_all_containers():
@@ -540,14 +551,9 @@ def show_env(name):
     check_existence(name)
     base_folder = get_container_folder(name)
     container_conf = get_container_config(name)
+
     env_info_file = base_folder + "/env_info.txt"
-
-    value_dict = {}
-    variables = prepare_call(container_conf)
-
-    for variable in variables:
-        split = variable.split("=")
-        value_dict[split[0]] = split[1]
+    env = prepare_env(container_conf)
 
     offset = 35
     info("Available environment variables are:")
@@ -567,7 +573,7 @@ def show_env(name):
 
                 variable_name = split[0]
                 variable_desc = " ".join(split[1:])
-                variable_value = value_dict.get(variable_name, "")
+                variable_value = env.get(variable_name, "")
 
                 print("[+] ", end="")
                 termcolor.cprint(variable_name.ljust(offset), "yellow", end="")
@@ -577,7 +583,8 @@ def show_env(name):
     except FileNotFoundError:
 
         error("Unable to find", "env_info.txt", "for container", end=" ")
-        termcolor.cprint(name, "yellow")
+        termcolor.cprint(name, "yellow", end="")
+        print(".")
 
 
 def wipe(name):
@@ -625,8 +632,8 @@ def build(name):
     base_folder = get_container_folder(name)
     container_conf = get_container_config(name)
 
-    cmd = prepare_call(container_conf, ['docker-compose', 'build'])
-    verbose_call(cmd, cwd=base_folder)
+    env = prepare_env(container_conf)
+    verbose_call(['docker-compose', 'build'], cwd=base_folder, env=env)
 
 
 def build_all():

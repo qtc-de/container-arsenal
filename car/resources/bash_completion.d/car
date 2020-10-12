@@ -11,14 +11,16 @@ _car() {
 
     _count_args "" "--cmd"
     _get_first_arg
+
     COMPREPLY=()
+    CONTAINERS="neo4j h2b mysql tftp nginx ftp samba ajp ssh"
 
 	if [[ $args -eq 1 ]]; then
 
         if [[ $cur == -* ]]; then
-            opts="-h --help"
+            opts="-h --help --dry"
         else
-            opts="run stop rm clean exec mirror list"
+            opts="run stop rm build env wipe clean exec mirror list"
         fi
 
 
@@ -27,7 +29,7 @@ _car() {
         if [[ $cur == -* || $args -ge 3 ]]; then
             opts="-h --help --rm --rebuild"
         else
-            opts=$(car list)
+            opts=$CONTAINERS
         fi
 	
 
@@ -38,7 +40,7 @@ _car() {
         elif [[ $cur == -* || $args -ge 3 ]]; then
             opts="-h --help --it --cmd"
         else
-            opts=$(car list)
+            opts=$CONTAINERS
         fi
 
 
@@ -46,14 +48,23 @@ _car() {
         opts="-h --help"
 
 
-	elif _comp_contains "stop mirror rm clean" $arg; then
+	elif _comp_contains "stop mirror env" $arg; then
 
         if [[ $cur == -* || $args -ge 3 ]]; then
             opts="-h --help"
         else
-            opts=$(car list)
+            opts=$CONTAINERS
         fi
 
+
+	elif _comp_contains "rm clean build wipe" $arg; then
+
+        if [[ $cur == -* || $args -ge 3 ]]; then
+            opts="-h --help"
+        else
+            opts=$CONTAINERS
+            opts="$opts all"
+        fi
 
     else
         return 1

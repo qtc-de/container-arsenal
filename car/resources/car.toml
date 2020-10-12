@@ -22,8 +22,10 @@
   [containers.mysql]
   mysql_folder = "<@:BASE:@>/mysql"
   mysql_port = "127.0.0.1:3306"
-  root_password = "secureclarabibi123"
-  user_password = "clarabibi"
+  root_password = ""
+  mysql_password = ""
+  mysql_user = "default"
+  mysql_database = "default"
 
   [containers.neo4j]
   neo4j_folder = "<@:BASE:@>/neo4j"

@@ -7,30 +7,41 @@ if [ "$(ls -A /var/lib/mysql)" ]; then
 else 
 
 	if [ -z ${MYSQL_ROOT_PASSWORD} ]; then
-	  PASSWORD=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 12 | head -n 1)
-	  echo "[+] No root password was specified."
+	  PASSWORD=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 16 | head -n 1)
 	  echo "[+] Generated random root password: ${PASSWORD}"
 	  export MYSQL_ROOT_PASSWORD=${PASSWORD}
-	fi
+    else
+      echo "[+] Specified MySQL root password:  ${MYSQL_ROOT_PASSWORD}"
+    fi
 
 	if [ -z ${MYSQL_USER} ]; then
-	  echo "[+] No database user specified."
-	  echo "[+] Database user 'default' will be created."
+	  echo "[+] Using following MySQL user:     default"
 	  export MYSQL_USER="default"
-	fi
+    else
+      echo "[+] Using specified MySQL user:     ${MYSQL_USER}"
+    fi
 
 	if [ -z ${MYSQL_PASSWORD} ]; then
 	  PASSWORD=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
-	  echo "[+] No user password was specified."
 	  echo "[+] Generated random user password: ${PASSWORD}"
 	  export MYSQL_PASSWORD=${PASSWORD}
-	fi
+    else
+      echo "[+] Specified MySQL user password:  ${MYSQL_PASSWORD}"
+    fi
 
 	if [ -z ${MYSQL_DATABASE} ]; then
-	  echo "[+] No database name specified."
-	  echo "[+] Database 'default' will be created."
+	  echo "[+] Using following MySQL database: default"
 	  export MYSQL_DATABASE="default"
-	fi
+    else
+      echo "[+] Using specified MySQL database: ${MYSQL_DATABASE}"
+    fi
+
+    (sleep 20;  \
+        echo "[+] Repeating MySQL credentials for easy access:"; \
+        echo "[+] Root password:    $MYSQL_ROOT_PASSWORD"; \
+        echo "[+] User password:    $MYSQL_PASSWORD"; \
+        echo "[+] MySQL user:       $MYSQL_USER"; \
+        echo "[+] MySQL database:   $MYSQL_DATABASE") &
 fi
 
 echo "[+] Adjusting volume permissions."

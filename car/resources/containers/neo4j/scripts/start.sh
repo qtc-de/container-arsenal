@@ -3,11 +3,9 @@
 set -e
 
 if [ -z ${PASSWORD} ]; then
-
   PASSWORD=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
   echo "[+] No password was specified."
   echo "[+] Generated random password: ${PASSWORD}"
-
 fi
 
 
@@ -38,12 +36,10 @@ if [ -f /var/lib/neo4j/data/dbms/started_before ]; then
 	sed -i -e 's/dbms.security.auth_enabled=false/#dbms.security.auth_enabled=false/' /var/lib/neo4j/conf/neo4j.conf
 
 else
-
 	echo "[+] Setting password for user 'neo4j'."
 	rm -f /var/lib/neo4j/data/dbms/auth /var/lib/neo4j/data/dbms/auth.ini
 	echo -n "[+] " && gosu neo4j:neo4j neo4j-admin set-initial-password ${PASSWORD}
 	touch /var/lib/neo4j/data/dbms/started_before
-
 fi
 
 echo "[+] Adjusting volume permissions."

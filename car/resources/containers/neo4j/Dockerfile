@@ -1,4 +1,4 @@
-FROM neo4j:latest
+FROM neo4j:4.1.3
 
 RUN set -ex \
     && mkdir /scripts \

@@ -96,7 +96,7 @@ From the server banner at the end of the response you can see, that we are indee
 
 ----
 
-The following configuration options can be adjusted within your ``car.toml`` file:
+The following configuration options can be adjusted within your ``car.toml`` configuration file:
 
 * ``http_port``: *HTTP* proxy port on your local machine.
 * ``target_host``: Targeted server that exposes the *AJP* listener.

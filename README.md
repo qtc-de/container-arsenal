@@ -258,6 +258,41 @@ LISTEN      0           128                       [::]:111                    [:
 ```
 
 
+### About Sudo
+
+----
+
+By default, *container-arsenal* uses ``sudo`` to invoke all docker relevant commands. This is probably not required
+when being part of the *docker-group*. In these cases, you can apply the following setting within your ``car.toml``
+configuration file:
+
+```console
+[qtc@kali ~]$ head ~/.conf/car/car.toml 
+[containers]
+  sudo_required = false
+  [...]
+```
+
+When running with ``sudo_required=true``, each *docker-command* is prefixed with ``sudo -E``. The ``-E`` switch
+for ``sudo`` is used to inherit all environment variables of the parent process and is normally not recommended
+(as probably unwanted environment variables are inherited too). However, in the case of *container-arsenal* the
+command in executed from within a dedicated environment, that just contains container relevant environment variables.
+Therefore, this should not be an issue.
+
+Usage of ``sudo -E`` might be forbidden for users that are only able to run certain commands with ``sudo``. *container-arsenal*
+assumes that you are able to run ``(ALL)`` commands as sudo, as in this case the following applies:
+
+> SETENV and NOSETENV
+> These tags override the value of the setenv option on a per-command basis. Note that if SETENV has been set for a command,
+> the user may disable the env_reset option from the command line via the -E option. Additionally, environment variables set
+> on the command line are not subject to the restrictions imposed by env_check, env_delete, or env_keep. As such, only trusted
+> users should be allowed to set variables in this manner. If the command matched is ALL, the SETENV tag is implied for that command;
+> this default may be overridden by use of the NOSETENV tag.
+
+If you are only allowed to launch ``docker`` via ``sudo``, you should think about your configuration, as being able to run ``docker``
+is usually almost equivalent to full *root* access to the system.
+
+
 ### Acknowledgements
 
 -----

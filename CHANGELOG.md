@@ -14,9 +14,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   * *env* (display available environment variables for a container)
   * *build* (build a container without running it)
   * *wipe* (remove a car container image)
+* Add colored output.
+* Add non-sudo support (for users that are member of the docker group)
 
 ### Changed
 
+* Changed calling convention for sudo calls to ``sudo -E``
 * Improve container sizes:
   * *ajp*:
   * *ftp*:
@@ -26,7 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   * *ssh*:
 * *h2b* now suppors *TLS* connections.
 * *mysql* now starts with some default data you can perform tests again.
-* *samba* does no longer include a *NETBIOS Name Server*
+* *samba* does no longer include a *NETBIOS Name Server*.
 * removed *chisel* from the *ssh* container and from the complete history (too big)
 
 

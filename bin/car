@@ -43,6 +43,7 @@ parser_mirror = subparsers.add_parser('mirror', help='copy a container folder to
 parser_mirror.add_argument('container', metavar='container', help=container_help)
 
 parser_list = subparsers.add_parser('list', help='list available containers')
+parser_images = subparsers.add_parser('images', help='list allready build car containers')
 
 
 def main():
@@ -61,6 +62,10 @@ def main():
     if args.command == 'list':
         containers = car.list_containers()
         print('\n'.join(containers))
+        sys.exit(0)
+
+    if args.command == 'images':
+        containers = car.show_images()
         sys.exit(0)
 
     if hasattr(args, 'container'):
@@ -99,6 +104,8 @@ def main():
 
         if c == 'all':
             car.build_all()
+        elif c == '.':
+            car.build_local()
         else:
             car.build(c)
 

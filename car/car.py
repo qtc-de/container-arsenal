@@ -94,11 +94,18 @@ def verbose_call(cmd, cwd=None, env=None):
         env             (dict)                  Environment for the subprocess.call function
     '''
     if this.sudo_required:
-        cmd = ["sudo", "-E"] + cmd
+
+        if env:
+            cmd = ["sudo", "-E"] + cmd
+        else:
+            cmd = ["sudo"] + cmd
 
     if env:
         info("Environment Variables:")
         for key, value in env.items():
+
+            if key == "PATH":
+                continue
 
             print("[+]", end="\t")
             termcolor.cprint(key.ljust(30), "blue", end="")
@@ -108,7 +115,8 @@ def verbose_call(cmd, cwd=None, env=None):
 
             termcolor.cprint(value, "yellow")
 
-    info("")
+        info("")
+
     info("Running:", ' '.join(cmd))
     if not this.dry:
 
@@ -648,3 +656,44 @@ def build_all():
     '''
     for container in this.containers:
         build(container)
+
+
+def build_local():
+    '''
+    Builds the container from the current working directory.
+    Basically just an alias for 'docker-compose build'.
+
+    Paramaters:
+        None
+
+    Returns:
+        None
+    '''
+    cmd = ['docker-compose', 'build']
+    verbose_call(cmd)
+
+
+def show_images():
+    '''
+    Print a list of currently build car images.
+
+    Paramaters:
+        None
+
+    Returns:
+        None
+    '''
+    cmd = ['docker', 'images']
+    if this.sudo_required:
+        cmd = ["sudo"] + cmd
+
+    info("Running:", ' '.join(cmd))
+    output = subprocess.check_output(cmd)
+    output = output.decode('utf-8')
+    lines = output.split('\n')
+
+    info(lines[0])
+    for line in lines[1:]:
+
+        if line.startswith("car"):
+            info(line)

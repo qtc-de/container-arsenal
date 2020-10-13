@@ -36,6 +36,12 @@ if [ -f /var/lib/neo4j/data/dbms/started_before ]; then
 	sed -i -e 's/dbms.security.auth_enabled=false/#dbms.security.auth_enabled=false/' /var/lib/neo4j/conf/neo4j.conf
 
 else
+    # For the mysql container this is done in the docker file. However, for neo4j this causes
+    # the corresponding docker-layer to be of ~100MB size. Therefore, it is done in the startup
+    # script.
+    usermod -u 1000 neo4j &> /dev/null
+    groupmod -g 1000 neo4j &> /dev/null
+    chown -R neo4j:neo4j /data
 	echo "[+] Setting password for user 'neo4j'."
 	rm -f /var/lib/neo4j/data/dbms/auth /var/lib/neo4j/data/dbms/auth.ini
 	echo -n "[+] " && gosu neo4j:neo4j neo4j-admin set-initial-password ${PASSWORD}
@@ -46,4 +52,4 @@ echo "[+] Adjusting volume permissions."
 chown -R neo4j:neo4j /data
 
 echo "[+] Starting neo4j."
-/sbin/tini -g -- /docker-entrypoint.sh neo4j
+/docker-entrypoint.sh neo4j console

@@ -43,7 +43,6 @@
   samba_folder = "<@:BASE:@>/samba"
   public_folder = "<@:BASE:@>/samba/public"
   private_folder = "<@:BASE:@>/samba/private"
-  nb_port= "139"
   smb_port = "445"
 
   [containers.ssh]

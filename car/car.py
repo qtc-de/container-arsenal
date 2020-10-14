@@ -563,10 +563,24 @@ def show_env(name):
     env_info_file = base_folder + "/env_info.txt"
     env = prepare_env(container_conf)
 
-    offset = 35
+    offset1, offset2 = (0, 0)
+    for key, value in env.items():
+
+        if key == 'PATH':
+            continue
+
+        if len(key) > offset1:
+            offset1 = len(key)
+
+        if len(value) > offset2:
+            offset2 = len(value)
+
+    offset1 += 5
+    offset2 += 5
+
     info("Available environment variables are:")
-    info("Name".ljust(offset), end="")
-    print("Current Value".ljust(offset), end="")
+    info("Name".ljust(offset1), end="")
+    print("Current Value".ljust(offset2), end="")
     print("Description")
 
     try:
@@ -584,8 +598,8 @@ def show_env(name):
                 variable_value = env.get(variable_name, "")
 
                 print("[+] ", end="")
-                termcolor.cprint(variable_name.ljust(offset), "yellow", end="")
-                termcolor.cprint(variable_value.ljust(offset), "yellow", end="")
+                termcolor.cprint(variable_name.ljust(offset1), "yellow", end="")
+                termcolor.cprint(variable_value.ljust(offset2), "yellow", end="")
                 termcolor.cprint(variable_desc, "blue")
 
     except FileNotFoundError:

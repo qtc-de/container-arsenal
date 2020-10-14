@@ -102,7 +102,7 @@ The following configuration options can be adjusted within your ``car.toml`` con
 * ``target_host``: Targeted server that exposes the *AJP* listener.
 * ``target_port``: *AJP* port of the targeted server. Most of the times ``8009`` (the default) is what you want.
 * ``ajp_folder``: Top level ressource folder of the *AJP* container.
-* ``log_folder``: Folder where *mod_jk* logs are stored.
+* ``log_folder``: Folder where *mod_jk* logs are stored (volume).
 
 You can also specify these options by using environment variables. The command ``car env ajp`` explains their corresponding usage:
 
@@ -111,7 +111,7 @@ You can also specify these options by using environment variables. The command `
 [+] Available variables are:
 [+] Name                               Current Value                      Description
 [+] car_http_port                      80                                 HTTP proxy port on your local machine.
-[+] car_log_folder                     /home/qtc/arsenal/ajp              Folder where *mod_jk* logs are stored.
-[+] car_target_host                    172.17.0.1                         Targeted server that exposes the *AJP* listener.
+[+] car_log_folder                     /home/qtc/arsenal/ajp              Folder where mod_jk logs are stored (volume).
+[+] car_target_host                    172.17.0.1                         Targeted server that exposes the AJP listener.
 [+] car_target_port                    8009                               AJP port of the targeted server. Most of the times 8009 (the default) is what you want.
 ```

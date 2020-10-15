@@ -256,6 +256,23 @@ def get_resource_folder(name):
     return expand(this.config['containers'][name][f'{name}_folder'])
 
 
+def create_resource_folder(name):
+    '''
+    Creates the resource folder for a container if it does not already exist.
+
+    Parameters:
+        name                (string)                Name of a container.
+
+    Returns:
+        None
+    '''
+    resource_folder = get_resource_folder(name)
+    if not os.path.isdir(resource_folder):
+        info("Resource folder", resource_folder, "does not exist.")
+        info("Creating new resource folder.")
+        os.makedirs(resource_folder)
+
+
 def get_container_folder(name):
     '''
     Returns the path of the container directory, where the compose file is located.
@@ -366,13 +383,7 @@ def start_container(name, rebuild=False, remove=False):
     # the actual resource folders will be created by the docker deamon and
     # are owned by root. To allow an easy cleanup process, we create non existing
     # resource folders during container startup with permissions of the current user
-    resource_folder = get_resource_folder(name)
-    if not os.path.isdir(resource_folder):
-
-        info("Resource folder", resource_folder, "does not exist.")
-        info("Creating new resource folder.")
-        os.makedirs(resource_folder)
-
+    resource_folder = create_resource_folder(name)
     verbose_call(['docker-compose', 'up'], cwd=base_folder, env=env)
 
     if remove:
@@ -395,6 +406,16 @@ def start_local(rebuild=False, remove=False):
     if rebuild:
         cmd = ['docker-compose', 'build']
         verbose_call(cmd)
+
+    if not os.path.isfile('./.car_name'):
+        error("Unable to find", ".car_name", "file.")
+        error("Resource folder is not generated automatically.")
+
+    else:
+        with open(f'./.car_name') as name_file:
+            name = name_file.readline().strip()
+        check_existence(name)
+        create_resource_folder(name)
 
     cmd = ['docker-compose', 'up']
     verbose_call(cmd)
@@ -516,6 +537,9 @@ def mirror(name):
 
     with open(f'./{name}/docker-compose.yml', 'w') as compose_file:
         compose_file.write(content)
+
+    with open(f'./{name}/.car_name', 'w') as name_file:
+        name_file.write(name)
 
     info("Done.")
 

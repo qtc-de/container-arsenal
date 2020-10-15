@@ -2,13 +2,13 @@
 
 set -e
 
-if [ -z ${HOST} ]; then
+if [ -z ${TARGET_HOST} ]; then
   echo "[-] Error. Environment variable 'HOST' needs to be set."
   echo "[-] Set the 'HOST' environment variable to the targeted AJP server."
   exit 1
 fi
 
-if [ -z ${PORT} ]; then
+if [ -z ${TARGET_PORT} ]; then
   echo "[-] Error. Environment variable 'PORT' needs to be set."
   echo "[-] Set the 'PORT' environment variable to the targeted port on the AJP server."
   exit 1

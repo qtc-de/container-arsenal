@@ -15,8 +15,11 @@ if [ -z ${PORT} ]; then
 fi
 
 echo "[+] Adjusting host and port values inside the jk_workes.properties file."
-sed -e "s/<@:HOST:@>/${HOST}/" /etc/apache2/jk_workers.properties | \
-sed -e "s/<@:PORT:@>/${PORT}/" > /etc/apache2/jk_workers_local.properties
+sed -e "s/<@:HOST:@>/${TARGET_HOST}/" /etc/apache2/jk_workers.properties | \
+sed -e "s/<@:PORT:@>/${TARGET_PORT}/" > /etc/apache2/jk_workers_local.properties
+
+echo "[+] Adjusting listening port in httpd.conf."
+sed -e "s/<@:PORT:@>/${LISTEN_PORT}/" /etc/apache2/httpd_raw.conf > /etc/apache2/httpd.conf
 
 echo "[+] Adjusting volume permissions."
 chown 1000:1000 /var/log/apache2

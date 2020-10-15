@@ -92,6 +92,15 @@ LISTEN                   0                        4096                          
 From the server banner at the end of the response you can see, that we are indeed talking to the *tomcat* server.
 
 
+### Networking Mode
+
+----
+
+As network performance is relevant for the *ajp* container, the container runs with *host networking mode*. This means that the *network isolation* that *docker*
+usually provides doesn't apply for this container. However, isolation for each other ressources like the file system or the process name space is still
+in place.
+
+
 ### Configuration Options
 
 ----

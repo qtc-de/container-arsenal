@@ -6,7 +6,7 @@ RUN set -ex \
     && chown 1000:1000 /var/log/apache2 \
     && ln -s /etc/apache2 /var/www/conf
 
-COPY config/httpd.conf /etc/apache2/httpd.conf
+COPY config/httpd.conf /etc/apache2/httpd_raw.conf
 COPY config/ajp.conf /etc/apache2/ajp.conf
 COPY config/jk_workers.properties /etc/apache2/jk_workers.properties
 

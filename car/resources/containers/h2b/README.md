@@ -132,5 +132,5 @@ You can also specify these options by using environment variables. The command `
 [qtc@kali ~]$ car env h2b
 [+] Available environment variables are:
 [+] Name                               Current Value                      Description
-[+] car_http_port                      80                                 HTTP proxy port mapped to your local machine.
+[+] car_http_port                      80                                 HTTP proxy port opened on your local machine.
 ```

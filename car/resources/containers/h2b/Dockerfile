@@ -1,7 +1,7 @@
 FROM alpine:3.12.0
 
 RUN set -ex \
-    && apk --no-cache add python3 py3-pip \
+    && apk --no-cache add python3 py3-pip su-exec \
     && pip3 install Flask \
     && apk del py3-pip \
     && mkdir /scripts

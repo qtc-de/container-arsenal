@@ -1,4 +1,4 @@
-#!/bin/ash
+#!/bin/sh
 
 set -e 
 
@@ -14,7 +14,7 @@ fi
 echo "default:${PASSWORD}" | chpasswd &>/dev/null
 
 if [ ${ENABLE_ROOT} -eq 1 ]; then
-  PASSWORD=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 12 | head -n 1)
+  PASSWORD=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 16 | head -n 1)
   echo "[+] Root account enabled."
   echo "[+] Generated random password for user 'root': ${PASSWORD}"
   echo "root:${PASSWORD}" | chpasswd &>/dev/null

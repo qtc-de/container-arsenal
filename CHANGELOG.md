@@ -19,6 +19,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+* Change some containers to operate in *Host Network Mode* per default. This increases
+  the overall network performance and solves problems with random ports on the *(T)FTP*
+  containers. Containers where performance does not matter were left in bridge mode.
 * Changed calling convention for sudo calls to ``sudo -E``
 * Improve container sizes:
   * *ajp*:
@@ -30,7 +33,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * *h2b* now suppors *TLS* connections.
 * *mysql* now starts with some default data you can perform tests again.
 * *samba* does no longer include a *NETBIOS Name Server*.
-* removed *chisel* from the *ssh* container and from the complete history (too big)
+* removed *chisel* from the *ssh* container and from the complete repo history (too big).
 
 
 ## [1.1.2] - Aug 8, 2020

@@ -17,7 +17,7 @@
 
   [containers.h2b]
   h2b_folder = "<@:BASE:@>/h2b"
-  http_port = "80"
+  http_port = "8080"
 
   [containers.mysql]
   mysql_folder = "<@:BASE:@>/mysql"

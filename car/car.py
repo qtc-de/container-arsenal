@@ -320,7 +320,9 @@ def clean(name):
     info("Removing top level resource folder", path, end=" ")
     plain("(container:", name, end="")
     print(")")
-    shutil.rmtree(path)
+
+    subprocess.call(["rm", "-r", path])
+
 
 
 def clean_all():

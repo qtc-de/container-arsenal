@@ -1,5 +1,14 @@
 #!/bin/sh
 
+if [ -z ${LOCAL_UID} ]; then
+    LOCAL_UID=1000
+fi
+
+echo "[+] Adjusting uid values."
+usermod -u ${LOCAL_UID} mysql
+groupmod -g ${LOCAL_UID} mysql
+chown -R ${LOCAL_UID}:${LOCAL_UID} /var/lib/mysql
+
 if [ "$(ls -A /var/lib/mysql)" ]; then
 	echo "[+] mysql directory is already populated."
 	echo "[+] Leaving users / databases and passwords untouched."
@@ -43,9 +52,6 @@ else
         echo "[+] MySQL user:       $MYSQL_USER"; \
         echo "[+] MySQL database:   $MYSQL_DATABASE") &
 fi
-
-echo "[+] Adjusting volume permissions."
-chown 1000:1000 /var/lib/mysql
 
 echo "[+] Starting mysql daemon"
 /usr/local/bin/docker-entrypoint.sh mysqld

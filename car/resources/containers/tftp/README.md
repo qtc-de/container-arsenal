@@ -1,7 +1,17 @@
-## tftp
+### tftp
 
-This container does start a tftp server. The corresponding file storage folder
-will be mapped to the top level resource folder of the container.
+----
+
+This container starts a *tftp* server that allows uploads and downloads using the *TFTP* protocol.
+The corresponding storage location is mapped to the top level resource folder of the container
+and can be accessed from your local host system (docker volume).
+
+
+### Example Usage
+
+----
+
+
 
 ## Configuration Options:
 

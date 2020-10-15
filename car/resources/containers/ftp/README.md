@@ -90,6 +90,17 @@ local: test remote: test
 5 bytes sent in 0.00 secs (53.6573 kB/s)
 ```
 
+### Networking Mode
+
+----
+
+Using *FTP* in combination with docker has some difficulties, as the *FTP* protocol uses additional ports apart from *21* for the
+actual data transfer. These issues can be solved by applying specific options in the *vsftpd configuration file*. However,
+as the main goal of *container-arsenal* is to achieve file and process level *isolation*, the *ftp container* is run in *host networking mode*.
+This means, that the network stack of the container is not *isolated*, but uses your ordinary *host network* instead. This solves
+all networking concerning problems.
+
+
 ### Configuration Options
 
 ----

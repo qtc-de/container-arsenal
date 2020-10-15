@@ -13,7 +13,7 @@ echo "default:${PASSWORD}" | chpasswd &> /dev/null
 # The vsftpd.conf file needs to be owned by root. In order to leave volume
 # permissions untouched, we create a root owned copy
 echo "[+] Doing some config file magic..."
-cp /etc/vsftpd/vsftpd.conf /etc/vsftpd/vsftpd_active.conf
+sed -e "s/<@:PORT:@>/${FTP_PORT}/" /etc/vsftpd/vsftpd.conf > /etc/vsftpd/vsftpd_active.conf
 chown root:root /etc/vsftpd/vsftpd_active.conf
 chmod 440 /etc/vsftpd/vsftpd_active.conf
 

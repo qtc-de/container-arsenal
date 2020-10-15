@@ -24,9 +24,5 @@ chmod 750 /ftp/user
 chmod 777 /ftp/anon
 chmod 555 /ftp
 
-echo -n "[+] The container IP address is: "
-IP=$(ip a | grep  -e "eth0$" | egrep -o "inet \d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}" | cut -f2 -d" ")
-echo "$IP"
-
 echo "[+] Starting vsftpd."
 /usr/sbin/vsftpd /etc/vsftpd/vsftpd_active.conf

@@ -4,9 +4,9 @@ if [ -z ${LOCAL_UID} ]; then
     LOCAL_UID=1000
 fi
 
-echo "[+] Adjusting uid values."
-usermod -u ${LOCAL_UID} mysql
-groupmod -g ${LOCAL_UID} mysql
+echo "[+] Adjusting UID values."
+usermod -u ${LOCAL_UID} mysql &> /dev/null
+groupmod -g ${LOCAL_UID} mysql &> /dev/null
 chown -R ${LOCAL_UID}:${LOCAL_UID} /var/lib/mysql
 
 if [ "$(ls -A /var/lib/mysql)" ]; then

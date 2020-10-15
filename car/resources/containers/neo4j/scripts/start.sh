@@ -2,12 +2,21 @@
 
 set -e
 
+if [ -z ${LOCAL_UID} ]; then
+    LOCAL_UID=1000
+fi
+
+echo "[+] Adjusting UID values."
+usermod -u ${LOCAL_UID} neo4j &> /dev/null
+groupmod -g ${LOCAL_UID} neo4j &> /dev/null
+chown -R neo4j:neo4j /data
+chown neo4j:neo4j /logs
+
 if [ -z ${PASSWORD} ]; then
   PASSWORD=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
   echo "[+] No password was specified."
   echo "[+] Generated random password: ${PASSWORD}"
 fi
-
 
 if [ -f /var/lib/neo4j/data/dbms/started_before ]; then
 
@@ -36,12 +45,6 @@ if [ -f /var/lib/neo4j/data/dbms/started_before ]; then
 	sed -i -e 's/dbms.security.auth_enabled=false/#dbms.security.auth_enabled=false/' /var/lib/neo4j/conf/neo4j.conf
 
 else
-    # For the mysql container this is done in the docker file. However, for neo4j this causes
-    # the corresponding docker-layer to be of ~100MB size. Therefore, it is done in the startup
-    # script.
-    usermod -u 1000 neo4j &> /dev/null
-    groupmod -g 1000 neo4j &> /dev/null
-    chown -R neo4j:neo4j /data
 	echo "[+] Setting password for user 'neo4j'."
 	rm -f /var/lib/neo4j/data/dbms/auth /var/lib/neo4j/data/dbms/auth.ini
 	echo -n "[+] " && gosu neo4j:neo4j neo4j-admin set-initial-password ${PASSWORD}

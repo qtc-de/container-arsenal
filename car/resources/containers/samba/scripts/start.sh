@@ -4,9 +4,12 @@ if [[ -z ${LOCAL_UID} ]] || [[ ${LOCAL_UID} -eq 0 ]]; then
     LOCAL_UID=1000
 fi
 
-echo "[+] Adjusting UID values."
-addgroup -g ${LOCAL_UID} default
-adduser -D -H -G default -s /bin/false -u ${LOCAL_UID} default
+if ! id "default" &>/dev/null; then
+    echo "[+] Creating default user..."
+    adduser --disabled-password -H --gecos "" --shell /bin/false -u ${LOCAL_UID} default
+fi
+
+echo "[+] Adjusting volume permissions..."
 chown default:default /share/public /share/private
 chmod 775 /share/private /share/public /bin/add-smb-user
 

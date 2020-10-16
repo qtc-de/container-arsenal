@@ -2,7 +2,7 @@
 
 set -e
 
-if [ -z ${LOCAL_UID} ]; then
+if [[ -z ${LOCAL_UID} ]] || [[ ${LOCAL_UID} -eq 0 ]]; then
     LOCAL_UID=1000
 fi
 

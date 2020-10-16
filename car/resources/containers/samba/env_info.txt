@@ -1,3 +1,4 @@
 car_smb_port        SMB port that is mapped to your local machine.
 car_public_folder   Public resource folder mapped into the container (volume).
 car_private_folder  Private resource folder mapped into the container (volume).
+car_local_uid       UID of the SMB user.

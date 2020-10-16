@@ -2,3 +2,4 @@ car_http_port       HTTP port that is mapped to your local system.
 car_https_port      HTTPS port that is mapped to your local system.
 car_upload_folder   Upload resource folder of the container (volume).
 car_download_folder Download resource folder of the container (volume).
+car_local_uid       UID of the nginx user.

@@ -16,6 +16,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   * *wipe* (remove a car container image)
 * Add colored output.
 * Add non-sudo support (for users that are member of the docker group)
+* Add arbitrary UID support. Previously, volume permissions were always set
+  to 1000:1000, which was annoying when using a different UID. Now, car always
+  uses your local UID (except you are root, when UID 1000 is the default).
 
 ### Changed
 

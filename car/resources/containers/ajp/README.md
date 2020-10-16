@@ -33,7 +33,7 @@ server with *AJP* enabled (notice that the webinterface is filtered and it is no
 
 ```console
 [qtc@kali ~]$ nmap -p8009,8080 172.17.0.1
-Starting Nmap 7.80 ( https://nmap.org ) at 2020-10-11 06:13 CEST
+Starting Nmap 7.80 ( https://nmap.org ) at 2020-10-16 05:13 CEST
 Nmap scan report for 172.17.0.1
 Host is up (0.00011s latency).
 
@@ -52,19 +52,28 @@ the ``car_target_host`` environment variables during the startup:
 
 ```console
 [qtc@kali ~]$ car_target_host=172.17.0.1 car run ajp
-[+] Running: sudo car_ajp_folder=/home/qtc/arsenal/ajp car_log_folder=/home/qtc/arsenal/ajp car_target_port=8009 car_target_host=172.17.0.1 car_http_port=80 docker-compose up
-Creating network "ajp_default" with the default driver
-Creating car.ajp ... done
+[+] Environment Variables:
+[+]	car_local_uid                 1000
+[+]	car_ajp_folder                /home/qtc/arsenal/ajp
+[+]	car_log_folder                /home/qtc/arsenal/ajp
+[+]	car_target_port               8009
+[+]	car_target_host               172.17.0.1
+[+]	car_http_port                 80
+[+] 
+[+] Running: sudo -E docker-compose up
+Starting car.ajp ... done
 Attaching to car.ajp
 car.ajp    | [+] Adjusting host and port values inside the jk_workes.properties file.
+car.ajp    | [+] Adjusting listening port in httpd.conf.
 car.ajp    | [+] Adjusting volume permissions.
 car.ajp    | [+] Starting AJP proxy server.
-car.ajp    | [Sat Oct 10 07:31:13.102802 2020] [mpm_prefork:notice] [pid 9] AH00163: Apache/2.4.46 (Unix) mod_jk/1.2.48 configured -- resuming normal operations
-car.ajp    | [Sat Oct 10 07:31:13.102823 2020] [core:notice] [pid 9] AH00094: Command line: 'httpd -D FOREGROUND'
+car.ajp    | [Fri Oct 16 05:15:33.546941 2020] [core:warn] [pid 10] AH00098: pid file /run/apache2/httpd.pid overwritten -- Unclean shutdown of previous Apache run?
+car.ajp    | [Fri Oct 16 05:15:33.547982 2020] [mpm_prefork:notice] [pid 10] AH00163: Apache/2.4.46 (Unix) mod_jk/1.2.48 configured -- resuming normal operations
+car.ajp    | [Fri Oct 16 05:15:33.548004 2020] [core:notice] [pid 10] AH00094: Command line: 'httpd -D FOREGROUND'
 ```
 
-Now we can access the *tomcat* server by using the webserver exposed by the container. You can either target the IP address of the container
-directly or use the port that was mapped to your host system:
+Now we can access the *tomcat* server by using the webserver exposed by the container. Notice that the container runs in *host networking mode*. This means that it
+does not has its own IP address but uses the *network namespace* of your local machien instead. Therefore, you cann access thr webserver via *localhost*.
 
 ```html
 [qtc@kali ~]$ ss -tlnp
@@ -117,10 +126,11 @@ You can also specify these options by using environment variables. The command `
 
 ```console
 [qtc@kali ~]$ car env ajp
-[+] Available variables are:
-[+] Name                               Current Value                      Description
-[+] car_http_port                      80                                 HTTP proxy port on your local machine.
-[+] car_log_folder                     /home/qtc/arsenal/ajp              Folder where mod_jk logs are stored (volume).
-[+] car_target_host                    172.17.0.1                         Targeted server that exposes the AJP listener.
-[+] car_target_port                    8009                               AJP port of the targeted server. Most of the times 8009 (the default) is what you want.
+[+] Available environment variables are:
+[+] Name                Current Value                   Description
+[+] car_http_port       80                              HTTP proxy port on your local machine.
+[+] car_log_folder      /home/qtc/arsenal/ajp           Folder where mod_jk logs are stored (volume).
+[+] car_target_host     172.17.0.1                      Targeted server that exposes the AJP listener.
+[+] car_target_port     8009                            AJP port of the targeted server. Most of the times 8009 (the default) is what you want.
+[+] car_local_uid       1000                            UID of the Apache user.
 ```

@@ -1,7 +1,5 @@
 FROM alpine:3.12.0
 
-COPY scripts/add-smb-user.sh /bin/add-smb-user
-
 RUN set -ex \
     && apk --no-cache add samba  \
     && mkdir -p /scripts /config /share/public /share/private

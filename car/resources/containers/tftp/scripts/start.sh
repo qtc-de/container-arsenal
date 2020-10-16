@@ -8,7 +8,7 @@ fi
 
 if ! id "default" &>/dev/null; then
     echo "[+] Creating default user..."
-    adduser --disabled-password --gecos "" --shell /bin/false -u ${LOCAL_UID} default
+    adduser --disabled-password -H --gecos "" --shell /bin/false -u ${LOCAL_UID} default
 fi
 
 echo "[+] Adjusting volume permissions."

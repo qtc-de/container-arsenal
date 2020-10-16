@@ -143,6 +143,7 @@ def prepare_env(config):
     '''
     env = dict()
     env["PATH"] = os.environ.get("PATH")
+    env["car_local_uid"] = str(os.getuid())
 
     for key, value in config.items():
 

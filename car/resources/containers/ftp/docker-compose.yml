@@ -8,6 +8,7 @@ services:
     build: .
     environment:
       FTP_PORT: ${car_ftp_port}
+      LOCAL_UID: ${car_local_uid}
     volumes:
       - ${car_user_folder}:/ftp/user
       - ${car_anon_folder}:/ftp/anon

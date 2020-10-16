@@ -8,6 +8,7 @@ services:
     build: .
     environment:
       LISTEN_PORT: ${car_tftp_port}
+      LOCAL_UID: ${car_local_uid}
     volumes:
       - ${car_tftp_folder}:/ftp
       - ./scripts/start.sh:/scripts/start.sh

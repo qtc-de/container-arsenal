@@ -2,6 +2,15 @@
 
 set -e 
 
+if [[ -z ${LOCAL_UID} ]] || [[ ${LOCAL_UID} -eq 0 ]]; then
+    LOCAL_UID=1000
+fi
+
+if ! id "default" &>/dev/null; then
+    echo "[+] Creating default user..."
+    adduser --disabled-login --gecos "" --shell /bin/false -u ${LOCAL_UID} default
+fi
+
 echo "[+] Adjusting volume permissions."
 chown default:default /ftp
 

@@ -2,3 +2,4 @@ car_http_port       HTTP proxy port on your local machine.
 car_log_folder      Folder where mod_jk logs are stored (volume).
 car_target_host     Targeted server that exposes the AJP listener. 
 car_target_port     AJP port of the targeted server. Most of the times 8009 (the default) is what you want.
+car_local_uid       UID of the Apache user.

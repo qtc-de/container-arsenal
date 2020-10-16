@@ -2,6 +2,15 @@
 
 set -e 
 
+if [[ -z ${LOCAL_UID}]] || [[ ${LOCAL_UID} -eq 0 ]]; then
+    LOCAL_UID=1000
+fi
+
+if ! id "default" &>/dev/null; then
+    echo "[+] Creating default user..."
+    adduser --disabled-password --gecos "" -u ${LOCAL_UID} default \
+fi
+
 IP=$(ip a | grep inet | grep -v 127.0.0.1 | grep -o "\([0-9]\{1,3\}\.\?\)\{4\}" | head -n 1)
 echo "[+] IP address of the container: ${IP}" 
 

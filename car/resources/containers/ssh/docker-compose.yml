@@ -12,7 +12,7 @@ services:
     volumes:
       - ${car_ssh_folder}:/home/default
       - ./scripts/start.sh:/scripts/start.sh
-      - ./scripts/force_command.sh:/scripts/force_command.sh
       - ./config/sshd_config:/etc/ssh/sshd_config
+      - ./config/sshrc:/etc/ssh/sshrc
     ports:
       - "${car_ssh_port}:22"

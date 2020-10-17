@@ -15,5 +15,4 @@ PrintMotd no
 AcceptEnv LANG LC_*
 Subsystem	sftp	/usr/lib/openssh/sftp-server
 
-LogLevel DEBUG
-ForceCommand /scripts/force_command.sh
+LogLevel INFO

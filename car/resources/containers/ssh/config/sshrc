@@ -1,0 +1,11 @@
+#!/bin/sh
+
+LOGFILE="/var/log/ssh_logins.log"
+
+if [[ ! -w ${LOGFILE} ]]; then
+    echo "[-] ${LOGFILE} does not exist or is not writable."
+    echo "[-] Dropping connection."
+    exit 1
+fi
+
+echo "[+]    Connection from: ${SSH_CLIENT}    User: ${USER}" >> ${LOGFILE}

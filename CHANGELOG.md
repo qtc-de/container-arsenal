@@ -27,12 +27,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   containers. Containers where performance does not matter were left in bridge mode.
 * Changed calling convention for sudo calls to ``sudo -E``
 * Improve container sizes:
-  * *ajp*:
-  * *ftp*:
-  * *h2b*:
-  * *nginx*:
-  * *samba*:
-  * *ssh*:
+  * *ajp*: ``236MB`` -> ``9.63MB``
+  * *ftp*: ``9.95MB`` -> ``6.72MB``
+  * *h2b* ``540MB`` -> ``53.3MB``
+  * *nginx*: ``22.5MB`` -> ``10.2MB``
+  * *samba*: ``105MB`` -> ``46.1MB``
+  * *ssh*: ``16.6MB`` ->  ``11.7MB``
 * *h2b* now supports *TLS* connections.
 * *mysql* now starts with some default data you can perform tests again.
 * *samba* does no longer include a *NETBIOS Name Server*.

@@ -6,12 +6,12 @@ services:
     container_name: car.samba
     image: car/samba
     build: .
+    environment:
+      LOCAL_UID: ${car_local_uid}
     volumes:
       - ${car_public_folder}:/share/public
       - ${car_private_folder}:/share/private
       - ./scripts/start.sh:/scripts/start.sh
       - ./config/smb.conf:/config/smb.conf
-      - ./config/supervisord.conf:/config/supervisord.conf
     ports:
-      - "${car_nb_port}:139"
       - "${car_smb_port}:445"

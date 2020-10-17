@@ -1,0 +1,7 @@
+car_mysql_user          Default MySQL user that is created for database access.
+car_mysql_port          MySQL port that is mapped to your local system.
+car_mysql_folder        Local folder where database contents are stored (volume).
+car_root_password       Password for the MySQL root account.
+car_mysql_database      Default MySQL database.
+car_mysql_password      Password for the default MySQL user account.
+car_local_uid           UID of the MySQL user.

@@ -1,0 +1,3 @@
+car_tftp_port       TFTP port opened on your local machine.
+car_tftp_folder     TFTP root folder used as volume in the container.
+car_local_uid       UID of the TFTP user.

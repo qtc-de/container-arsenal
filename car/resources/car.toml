@@ -1,4 +1,5 @@
 [containers]
+  sudo_required = true
   volume_base_path = "~/arsenal"
 
   [containers.ajp]
@@ -16,13 +17,15 @@
 
   [containers.h2b]
   h2b_folder = "<@:BASE:@>/h2b"
-  http_port = "80"
+  http_port = "8080"
 
   [containers.mysql]
   mysql_folder = "<@:BASE:@>/mysql"
   mysql_port = "127.0.0.1:3306"
-  root_password = "secureclarabibi123"
-  user_password = "clarabibi"
+  root_password = ""
+  mysql_password = ""
+  mysql_user = "default"
+  mysql_database = "default"
 
   [containers.neo4j]
   neo4j_folder = "<@:BASE:@>/neo4j"
@@ -40,7 +43,6 @@
   samba_folder = "<@:BASE:@>/samba"
   public_folder = "<@:BASE:@>/samba/public"
   private_folder = "<@:BASE:@>/samba/private"
-  nb_port= "139"
   smb_port = "445"
 
   [containers.ssh]

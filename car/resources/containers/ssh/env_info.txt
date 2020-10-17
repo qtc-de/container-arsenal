@@ -1,0 +1,3 @@
+car_ssh_folder      SSH resource folder. Mapped as a volume into the container.
+car_ssh_port        SSH port mapped to your local machine.
+car_local_uid       UID of the SSH user.

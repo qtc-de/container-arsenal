@@ -7,13 +7,14 @@ services:
     build: .
     image: car/ajp
     environment:
-      HOST: ${car_target_host}
-      PORT: ${car_target_port}
+      TARGET_HOST: ${car_target_host}
+      TARGET_PORT: ${car_target_port}
+      LISTEN_PORT: ${car_http_port}
+      LOCAL_UID: ${car_local_uid}
     volumes:
-      - ${car_log_folder}:/usr/local/apache2/logs/
-      - ./config/httpd.conf:/usr/local/apache2/conf/httpd.conf
-      - ./config/ajp.conf:/usr/local/apache2/conf/extra/ajp.conf
-      - ./config/jk_workers.properties:/usr/local/apache2/conf/extra/jk_workers.properties
+      - ${car_log_folder}:/var/log/apache2
+      - ./config/httpd_raw.conf:/etc/apache2/httpd_raw.conf
+      - ./config/ajp.conf:/etc/apache2/ajp.conf
+      - ./config/jk_workers.properties:/etc/apache2/jk_workers.properties
       - ./scripts/start.sh:/scripts/start.sh
-    ports:
-      - "${car_http_port}:80"
+    network_mode: "host"

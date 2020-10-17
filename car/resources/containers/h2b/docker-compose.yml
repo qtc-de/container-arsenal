@@ -6,9 +6,9 @@ services:
     container_name: car.h2b
     build: .
     image: car/h2b
+    environment:
+      FLASK_PORT: ${car_http_port}
     volumes:
-      - ${car_h2b_folder}:/dummy
       - ./scripts/start.sh:/scripts/start.sh
       - ./scripts/h2b.py:/scripts/h2b.py
-    ports:
-      - "${car_http_port}:5000"
+    network_mode: "host"

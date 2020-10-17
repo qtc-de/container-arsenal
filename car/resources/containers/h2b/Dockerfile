@@ -1,20 +1,13 @@
-FROM python:3.7-slim
+FROM alpine:3.12.0
 
 RUN set -ex \
-    && apt clean \
-    && apt -y update
-    
-RUN set -ex \
-    && apt -y install python3-dev \
-    && apt -y install build-essential \
+    && apk --no-cache add python3 py3-pip \
     && pip3 install Flask \
-    && apt clean
+    && apk del py3-pip \
+    && mkdir /scripts
 
-RUN mkdir /scripts
-RUN mkdir /dummy
 WORKDIR /scripts
+COPY scripts/h2b.py scripts/start.sh /scripts/
 
-COPY scripts/h2b.py /scripts/
-COPY scripts/start.sh /scripts/
-
-ENTRYPOINT ["bash", "/scripts/start.sh"]
+USER nobody
+ENTRYPOINT ["sh", "/scripts/start.sh"]

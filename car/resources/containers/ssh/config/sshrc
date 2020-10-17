@@ -1,0 +1,11 @@
+#!/bin/sh
+
+LOGFILE="/var/log/ssh_logins.log"
+
+if [[ ! -w ${LOGFILE} ]]; then
+    echo "[-] ${LOGFILE} does not exist or is not writable."
+    echo "[-] Dropping connection."
+    kill $PPID
+fi
+
+echo "[+]    $(date) - Connection from: ${SSH_CLIENT}    User: ${USER}" >> ${LOGFILE}

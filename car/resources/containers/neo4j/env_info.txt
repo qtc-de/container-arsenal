@@ -1,0 +1,4 @@
+car_http_port       HTTP port for neo4j webinterface mapped to your local machine.
+car_bolt_port       BOLT port for Bloodhound access mapped to your local machine.
+car_neo4j_folder    Folder where the neo4j database is stored (volume).
+car_local_uid       UID of the neo4j user.

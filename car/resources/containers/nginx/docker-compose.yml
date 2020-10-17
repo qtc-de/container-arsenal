@@ -6,6 +6,8 @@ services:
     container_name: car.nginx
     build: .
     image: car/nginx
+    environment:
+      LOCAL_UID: ${car_local_uid}
     volumes:
       - ${car_upload_folder}:/var/www/html/upload/
       - ${car_download_folder}:/var/www/html/download/

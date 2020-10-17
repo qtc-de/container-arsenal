@@ -219,7 +219,7 @@ services:
     build: .
     environment:
       ENABLE_ROOT: 0
-      LOCAL_UID: ${car_local_uid}
+      LOCAL_UID: 1002
     volumes:
       - /home/qtc/arsenal/ssh:/home/default
       - ./scripts/start.sh:/scripts/start.sh

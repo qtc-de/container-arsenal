@@ -538,6 +538,8 @@ def mirror(name):
     for key, value in container_conf.items():
         content = content.replace('${car_' + key + '}', value)
 
+    content = content.replace('${car_local_uid}', str(os.getuid()))
+
     with open(f'./{name}/docker-compose.yml', 'w') as compose_file:
         compose_file.write(content)
 

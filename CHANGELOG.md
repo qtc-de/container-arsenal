@@ -33,10 +33,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   * *nginx*:
   * *samba*:
   * *ssh*:
-* *h2b* now suppors *TLS* connections.
+* *h2b* now supports *TLS* connections.
 * *mysql* now starts with some default data you can perform tests again.
 * *samba* does no longer include a *NETBIOS Name Server*.
-* removed *chisel* from the *ssh* container and from the complete repo history (too big).
+* removed *chisel* from the *ssh* container and from the complete repo history (just to big).
+  Probably made some mistakes during the cleanup. Do not expect older versions to still
+  function correctly :D
 
 
 ## [1.1.2] - Aug 8, 2020

@@ -7,17 +7,16 @@ on a different host. *AJP* is the *Apache JServ Protocol* and is used to establi
 channel between frontend and backend servers.
 
 Then you install a *tomcat* server, the port ``8080`` is usually used for the webinterface. Additionally
-the port ``8009`` is also opened by default and provides an *AJP* listener. While the webinterface at ``8080``
-supports ordinary *HTTP* messages, the *AJP* listener on ``8009`` expects incoming messages to follow the
+the port ``8009`` is also opened by default and provides an *AJP* listener. Whereas the webinterface at ``8080``
+supports ordinary *HTTP* requests, the *AJP* listener on ``8009`` expects incoming requests to follow the
 *AJP* specification. This is useful, in situations where you do not want *tomcat* as your frontend server.
 In this case, you set up an ordinary *Apache2 web server* as the frontend and forward incoming requests to the
 *tomcat* by using *AJP* on port ``8009``. Since the *AJP* protocol is a binary protocol, this is more efficient
-than just forwarding plain *HTTP* messages.
+than just forwarding plain *HTTP* requests.
 
 Summarized: *AJP* is just another way to access the contents of a webserver. Sometimes you find the ordinary
 webinterface of an application blocked (e.g. by firewall rules), but the *AJP* port is open. In these cases,
 you can still perform some webserver enumeration on the *AJP* port.
-
 That being said, all the ordinary tools usually focus on *HTTP* servers and are not compatible with *AJP*.
 In these cases you can use this container. It opens a webserver on your local machine which forwards all
 incoming requests to an *AJP* listener of your choice.
@@ -67,13 +66,12 @@ car.ajp    | [+] Adjusting host and port values inside the jk_workes.properties 
 car.ajp    | [+] Adjusting listening port in httpd.conf.
 car.ajp    | [+] Adjusting volume permissions.
 car.ajp    | [+] Starting AJP proxy server.
-car.ajp    | [Fri Oct 16 05:15:33.546941 2020] [core:warn] [pid 10] AH00098: pid file /run/apache2/httpd.pid overwritten -- Unclean shutdown of previous Apache run?
-car.ajp    | [Fri Oct 16 05:15:33.547982 2020] [mpm_prefork:notice] [pid 10] AH00163: Apache/2.4.46 (Unix) mod_jk/1.2.48 configured -- resuming normal operations
-car.ajp    | [Fri Oct 16 05:15:33.548004 2020] [core:notice] [pid 10] AH00094: Command line: 'httpd -D FOREGROUND'
+car.ajp    | [Sat Oct 17 22:24:11.141990 2020] [mpm_prefork:notice] [pid 10] AH00163: Apache/2.4.46 (Unix) mod_jk/1.2.48 configured -- resuming normal operations
+car.ajp    | [Sat Oct 17 22:24:11.142012 2020] [core:notice] [pid 10] AH00094: Command line: 'httpd -D FOREGROUND'
 ```
 
-Now we can access the *tomcat* server by using the webserver exposed by the container. Notice that the container runs in *host networking mode*. This means that it
-does not has its own IP address but uses the *network namespace* of your local machien instead. Therefore, you cann access thr webserver via *localhost*.
+Now we can access the *tomcat* server by using the webserver exposed by the container. Notice that the container runs in *host networking mode*. Therefore,
+it does not have its own IP address but uses the *network namespace* of your local machine instead. You can access the webserver via *localhost*.
 
 ```html
 [qtc@kali ~]$ ss -tlnp
@@ -106,8 +104,7 @@ From the server banner at the end of the response you can see, that we are indee
 ----
 
 As network performance is relevant for the *ajp* container, the container runs with *host networking mode*. This means that the *network isolation* that *docker*
-usually provides doesn't apply for this container. However, isolation for each other ressources like the file system or the process name space is still
-in place.
+usually provides doesn't apply for this container. However, isolation for other resources like file system or process namespace is still in place.
 
 
 ### Configuration Options

@@ -2,6 +2,8 @@
 
 set -e 
 
+LOGFILE="/var/log/ssh_logins.log"
+
 if [[ -z ${LOCAL_UID} ]] || [[ ${LOCAL_UID} -eq 0 ]]; then
     LOCAL_UID=1000
 fi
@@ -33,9 +35,9 @@ echo "[+] Adjusting volume permissions."
 chown -R default:default /home/default
 
 echo "[+] Creating login log."
-touch /var/log/ssh_logins.log
-chmod 622 /var/log/ssh_logins.log
-tail -f /var/log/ssh_logins.log &
+echo -n > ${LOGFILE}
+chmod 622 ${LOGFILE}
+tail -f ${LOGFILE} &
 
 echo "[+] Starting sshd"
 /usr/sbin/sshd -D

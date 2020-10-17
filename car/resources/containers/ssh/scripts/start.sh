@@ -33,7 +33,7 @@ echo "[+] Adjusting volume permissions."
 chown -R default:default /home/default
 
 echo "[+] Creating login log."
-touch > /var/log/ssh_logins.log
+touch /var/log/ssh_logins.log
 chmod 622 /var/log/ssh_logins.log
 tail -f /var/log/ssh_logins.log &
 

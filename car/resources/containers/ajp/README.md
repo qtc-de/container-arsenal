@@ -57,7 +57,7 @@ the ``car_target_host`` environment variables during the startup:
 [+]	car_log_folder                /home/qtc/arsenal/ajp
 [+]	car_target_port               8009
 [+]	car_target_host               172.17.0.1
-[+]	car_http_port                 80
+[+]	car_http_port                 8001
 [+] 
 [+] Running: sudo -E docker-compose up
 Starting car.ajp ... done
@@ -75,10 +75,10 @@ it does not have its own IP address but uses the *network namespace* of your loc
 
 ```html
 [qtc@kali ~]$ ss -tlnp
-State                    Recv-Q                   Send-Q                                     Local Address:Port                                       Peer Address:Port                   Process
-LISTEN                   0                        4096                                           127.0.0.1:80                                              0.0.0.0:*
+State                    Recv-Q                   Send-Q                                     Local Address:Port                                       Peer Address:Port
+LISTEN                   0                        4096                                       127.0.0.1:8001                                           0.0.0.0:*
 
-[qtc@kali ~]$ curl 127.0.0.1
+[qtc@kali ~]$ curl 127.0.0.1:8001
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -125,7 +125,7 @@ You can also specify these options by using environment variables. The command `
 [qtc@kali ~]$ car env ajp
 [+] Available environment variables are:
 [+] Name                Current Value                   Description
-[+] car_http_port       80                              HTTP proxy port on your local machine.
+[+] car_http_port       8001                            HTTP proxy port on your local machine.
 [+] car_log_folder      /home/qtc/arsenal/ajp           Folder where mod_jk logs are stored (volume).
 [+] car_target_host     172.17.0.1                      Targeted server that exposes the AJP listener.
 [+] car_target_port     8009                            AJP port of the targeted server. Most of the times 8009 (the default) is what you want.

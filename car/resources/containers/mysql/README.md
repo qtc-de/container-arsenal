@@ -2,10 +2,9 @@
 
 ----
 
-The *mysql* container does simply start a *mysql* server with a root and one low privileged account. 
+The *mysql* container simply starts a *MySQL* server with a root and one low privileged account. 
 To be honest, it is not super useful, but sometimes I want to test some queries or try to connect
-some remote services with my own database. Therefore, the container can safe some time in these specific
-situations.
+some remote services with my own database. In these cases, the container can safe some time.
 
 To make it a little bit more useful, the container sets up a default database on startup and populates
 it with some data. By default, the ``default.users`` table is created with the following contents:
@@ -45,6 +44,11 @@ but the official image is more likely to be reused by other containers or projec
 Therefore, sticking to the official images in these cases is probably more memory efficient in the
 long term.
 
+There are also some custom *mariadb* images available on *Docker Hub* that manage to reduce the container
+size below ``50MB``. However, these images often strip functionalities or modify other internals. While
+the low size of ``50MB`` is very tempting, I fear that these modifications could be annoying when testing
+*SQL* queries, as in these cases you usually want the database to behave like the official image.
+
 
 ### Configuration Options
 
@@ -57,21 +61,21 @@ The following configuration options can be adjusted within your ``car.toml`` fil
 *  ``root_password``: Password of the root user account (randomly generated if not specified).
 *  ``mysql_password``: Password of the low privileged user account (randomly generated if not specified).
 *  ``mysql_user``: Username of the low privileged account (default, by default).
-*  ``mysql_database``: MySQL database name (default, by default).
+*  ``mysql_database``: *MySQL* database name (default, by default).
 
 In contrast to the [neo4j](../neo4j) container, *mysql* passwords will not change when the container
 is started with a pre-existent *mysql* database. If you want to start from a clean instance, you should
-run ``car clean mysql`` first. You can also specify these options by using environment
+run ``car clean mysql`` first. You can also specify container options by using environment
 variables. The command ``car env mysql`` explains their corresponding usage:
 
 ```console
 [qtc@kali ~]$ car env mysql
 [+] Available environment variables are:
 [+] Name                               Current Value                      Description
-[+] car_mysql_user                     default                            Default MySQL user that is created for database access.
+[+] car_mysql_user                     default                            MySQL user that is created for database access.
 [+] car_mysql_port                     127.0.0.1:3306                     MySQL port that is mapped to your local system.
 [+] car_mysql_folder                   /home/qtc/arsenal/mysql            Local folder where database contents are stored (volume).
 [+] car_root_password                                                     Password for the MySQL root account.
-[+] car_mysql_database                 default                            Default MySQL database.
+[+] car_mysql_database                 default                            MySQL database that is created during startup.
 [+] car_mysql_password                                                    Password for the default MySQL user account.
 ```

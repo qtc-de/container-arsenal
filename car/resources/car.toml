@@ -7,7 +7,7 @@
   log_folder = "<@:BASE:@>/ajp"
   target_port = "8009"
   target_host = "172.17.0.1"
-  http_port = "80"
+  http_port = "8001"
 
   [containers.ftp]
   ftp_folder = "<@:BASE:@>/ftp"
@@ -17,7 +17,7 @@
 
   [containers.h2b]
   h2b_folder = "<@:BASE:@>/h2b"
-  http_port = "8080"
+  http_port = "8001"
 
   [containers.mysql]
   mysql_folder = "<@:BASE:@>/mysql"

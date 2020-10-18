@@ -80,7 +80,7 @@ def forward():
     if use_ssl:
         s = ssl.wrap_socket(s, cert_reqs=ssl.CERT_NONE)
 
-    s.settimeout(10)
+    s.settimeout(15)
     target = (host, port)
 
     try:
@@ -95,4 +95,13 @@ def forward():
             master_data += data
 
     except ConnectionRefusedError:
-        return f"Target '{host}:{port}' refused the connection\n"
+        return f"Target '{host}:{port}' refused the connection.\n"
+
+    except socket.timeout:
+        return f"Target '{host}:{port}' did not respond within 15 seconds.\n"
+
+    except ConnectionResetError:
+        return f"Target '{host}:{port}' resetted the connection.\n"
+
+    except Exception as e:
+        return f"Unexpected exception: " + str(e) + "\n"

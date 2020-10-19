@@ -19,7 +19,7 @@ on *Docker Hub* may achieve an even more reasonable compression (probably even b
 
 While this is a reasonable amount of saved memory, I decided to stick with the base image. No matter
 if ``200MB`` or ``500MB``, both images are quite large, but the official image is more likely to
-being reused by other tools or containers. Therfore, even using the larger image could be more
+being reused by other tools or containers. Therefore, even using the larger image could be more
 memory saving in the long term. Custom builds with certain files being removed may break in some
 edge cases. Missing a vulnerability because the database did not work as expected would be a great
 issue.

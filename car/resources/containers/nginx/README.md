@@ -40,7 +40,7 @@ car.nginx    | [+] Starting nginx daemon.
 ```
 
 Now, an example file is placed within the ``~/arsenal/nginx/download`` folder and it is demonstrated that it can be
-accessed from whe *webroot* of the webserver.
+accessed from the *webroot* of the webserver.
 
 ```console
 [qtc@kali ~]$ echo "Hello World :D" > ~/arsenal/nginx/download/hello.txt

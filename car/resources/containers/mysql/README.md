@@ -36,7 +36,7 @@ password: 48181acd22b3edaebc8a447868a7df7ce629920a
 
 It is possible to reduce the container size of a *mariadb* quite a bit. By installing the
 *mariadb* package on a plain *alpine* image, the resulting container size is around ``200MB``.
-This is way smaller than the size of the official *mariadb* container, that is around ``350MB``.
+This is way smaller than the size of the official *mariadb* container, which is around ``350MB``.
 
 However, I decided that for container sizes that are larger than ``50MB`` I will use the official
 images instead of creating custom ones. No matter if ``200MB`` or ``350MB``, both are quite large,
@@ -63,8 +63,8 @@ The following configuration options can be adjusted within your ``car.toml`` fil
 *  ``mysql_user``: Username of the low privileged account (default, by default).
 *  ``mysql_database``: *MySQL* database name (default, by default).
 
-In contrast to the [neo4j](../neo4j) container, *mysql* passwords will not change when the container
-is started with a pre-existent *mysql* database. If you want to start from a clean instance, you should
+In contrast to the [neo4j](../neo4j) container, *MySQL* passwords will not change when the container
+is started with a pre-existent *MySQL* database. If you want to start from a clean instance, you should
 run ``car clean mysql`` first. You can also specify container options by using environment
 variables. The command ``car env mysql`` explains their corresponding usage:
 

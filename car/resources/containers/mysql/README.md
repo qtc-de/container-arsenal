@@ -71,11 +71,12 @@ variables. The command ``car env mysql`` explains their corresponding usage:
 ```console
 [qtc@kali ~]$ car env mysql
 [+] Available environment variables are:
-[+] Name                               Current Value                      Description
-[+] car_mysql_user                     default                            MySQL user that is created for database access.
-[+] car_mysql_port                     127.0.0.1:3306                     MySQL port that is mapped to your local system.
-[+] car_mysql_folder                   /home/qtc/arsenal/mysql            Local folder where database contents are stored (volume).
-[+] car_root_password                                                     Password for the MySQL root account.
-[+] car_mysql_database                 default                            MySQL database that is created during startup.
-[+] car_mysql_password                                                    Password for the default MySQL user account.
+[+] Name                   Current Value                     Description
+[+] car_mysql_user         default                           Default MySQL user that is created for database access.
+[+] car_mysql_port         127.0.0.1:3306                    MySQL port that is mapped to your local system.
+[+] car_mysql_folder       /home/qtc/arsenal/mysql           Local folder where database contents are stored (volume).
+[+] car_root_password                                        Password for the MySQL root account.
+[+] car_mysql_database     default                           Default MySQL database.
+[+] car_mysql_password                                       Password for the default MySQL user account.
+[+] car_local_uid          1000                              UID of the MySQL user.
 ```

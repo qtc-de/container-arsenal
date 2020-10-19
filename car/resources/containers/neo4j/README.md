@@ -40,10 +40,11 @@ generated password is used. If this is annoying for you, you can change the beha
 You can also specify options by using environment variables. The command ``car env ajp`` explains their corresponding usage:
 
 ```console
-[qtc@kali ~]$ car env neo4j 
+[qtc@kali ~]$ car env neo4j
 [+] Available environment variables are:
-[+] Name                               Current Value                      Description
-[+] car_http_port                      127.0.0.1:7474                     HTTP port for neo4j webinterface mapped to your local machine.
-[+] car_bolt_port                      127.0.0.1:7687                     BOLT port for Bloodhound access mapped to your local machine.
-[+] car_neo4j_folder                   /home/pentester/arsenal/neo4j      Folder where the neo4j database is stored (volume).
+[+] Name                 Current Value                     Description
+[+] car_http_port        127.0.0.1:7474                    HTTP port for neo4j webinterface mapped to your local machine.
+[+] car_bolt_port        127.0.0.1:7687                    BOLT port for Bloodhound access mapped to your local machine.
+[+] car_neo4j_folder     /home/qtc/arsenal/neo4j           Folder where the neo4j database is stored (volume).
+[+] car_local_uid        1000                              UID of the neo4j user.
 ```

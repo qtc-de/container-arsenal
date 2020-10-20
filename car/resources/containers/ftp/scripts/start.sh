@@ -32,5 +32,7 @@ chmod 750 /ftp/user
 chmod 777 /ftp/anon
 chmod 555 /ftp
 
+ln -sf /proc/1/fd/1 /var/log/vsftpd.log
+
 echo "[+] Starting vsftpd."
 /usr/sbin/vsftpd /etc/vsftpd/vsftpd_active.conf

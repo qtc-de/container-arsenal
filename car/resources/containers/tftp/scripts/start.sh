@@ -14,17 +14,11 @@ fi
 echo "[+] Adjusting volume permissions."
 chown default:default /ftp
 
-echo "[+] Starting tftpd."
-in.tftpd --listen --create -m /config/mapfile --user default --secure /ftp --verbose --address "0.0.0.0:${LISTEN_PORT}" 
+echo "[+] Starting syslogd."
+syslogd
 
-LIST_CMD='find /ftp -type f | xargs ls -ld'
-echo "[+] Current server contents:"
-eval $LIST_CMD | tee /tmp/files_old
+echo "[+] Starting TFTP server."
+in.tftpd --listen --create -m /config/mapfile --user default --secure /ftp -vv --address "0.0.0.0:${LISTEN_PORT}" 
 
-echo "[+] New uploaded files:"
-while true; do
-    sleep 5
-    eval $LIST_CMD > /tmp/files_new
-    diff /tmp/files_old /tmp/files_new | grep -E "^\+[^+]" | cut -f2 -d"+"
-    cp /tmp/files_new /tmp/files_old
-done
+touch /var/log/messages
+tail -f /var/log/messages

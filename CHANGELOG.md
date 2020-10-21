@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   * *env* (display available environment variables for a container)
   * *build* (build a container without running it)
   * *images* (show all already build containers)
+  * *shell* (spawn an interactive shell in a running container)
   * *wipe* (remove a car container image)
 * Add colored output.
 * Add more detailed documentation for each container.
@@ -21,6 +22,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Add arbitrary *UID* support. Previously, volume permissions were always set
   to ``1000:1000``, which was annoying when using a different *UID*. Now, *car* always
   uses your local *UID* (except you are *root*. In this case, *UID* ``1000`` is still the default).
+* Add verbose logging for more containers (e.g. *ftp* and *tftp*, which not logged at all
+  in previous versions).
 
 ### Changed
 

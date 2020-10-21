@@ -42,6 +42,24 @@ def get_args(request):
     return [host, port, content, use_ssl]
 
 
+def prepare_socket(use_ssl):
+    '''
+    Prepare the socket for the connection.
+
+    Parameters:
+        use_ssl             (boolean)               Decides whether to use ssl
+
+    Returns:
+        socket              (socket)                Socket object
+    '''
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    if use_ssl:
+        s = ssl.wrap_socket(s, cert_reqs=ssl.CERT_NONE)
+
+    s.settimeout(15)
+    return s
+
+
 @app.route('/')
 def server_status():
     '''
@@ -76,11 +94,7 @@ def forward():
     except InvalidArgsException as e:
         return str(e)
 
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    if use_ssl:
-        s = ssl.wrap_socket(s, cert_reqs=ssl.CERT_NONE)
-
-    s.settimeout(15)
+    s = prepare_socket(use_ssl)
     target = (host, port)
 
     try:
@@ -104,4 +118,4 @@ def forward():
         return f"Target '{host}:{port}' resetted the connection.\n"
 
     except Exception as e:
-        return f"Unexpected exception: " + str(e) + "\n"
+        return "Unexpected exception: " + str(e) + "\n"

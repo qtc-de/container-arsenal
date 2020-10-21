@@ -85,6 +85,31 @@ def error(text, key=None, text2=None, end="\n"):
         keyword(key, text2, end)
 
 
+def display_env(env):
+    '''
+    Takes an dictionary of environment variables and prints it color formatted.
+
+    Paramaters:
+        env             (dict)                  Environment for the subprocess.call function
+
+    Returns:
+        None
+    '''
+    info("Environment Variables:")
+    for key, value in env.items():
+
+        if key == "PATH":
+            continue
+
+        print("[+]", end="\t")
+        termcolor.cprint(key.ljust(30), "blue", end="")
+
+        if len(value) > 45:
+            value = value[0:45] + "[...]"
+
+        termcolor.cprint(value, "yellow")
+
+
 def verbose_call(cmd, cwd=None, env=None):
     '''
     Wrapper aroud subprocess.call that prints the specified command before executing it.
@@ -102,20 +127,7 @@ def verbose_call(cmd, cwd=None, env=None):
             cmd = ["sudo"] + cmd
 
     if env:
-        info("Environment Variables:")
-        for key, value in env.items():
-
-            if key == "PATH":
-                continue
-
-            print("[+]", end="\t")
-            termcolor.cprint(key.ljust(30), "blue", end="")
-
-            if len(value) > 45:
-                value = value[0:45] + "[...]"
-
-            termcolor.cprint(value, "yellow")
-
+        display_env(env)
         info("")
 
     info("Running:", ' '.join(cmd))
@@ -346,7 +358,6 @@ def clean(name):
     subprocess.call(["rm", "-r", path])
 
 
-
 def clean_all():
     '''
     Removes the top level resource folder of each container.
@@ -407,7 +418,7 @@ def start_container(name, rebuild=False, remove=False):
     # the actual resource folders will be created by the docker deamon and
     # are owned by root. To allow an easy cleanup process, we create non existing
     # resource folders during container startup with permissions of the current user
-    resource_folder = create_resource_folder(name)
+    create_resource_folder(name)
     verbose_call(['docker-compose', 'up'], cwd=base_folder, env=env)
 
     if remove:
@@ -436,7 +447,7 @@ def start_local(rebuild=False, remove=False):
         error("Resource folder is not generated automatically.")
 
     else:
-        with open(f'./.car_name') as name_file:
+        with open('./.car_name') as name_file:
             name = name_file.readline().strip()
         check_existence(name)
         create_resource_folder(name)

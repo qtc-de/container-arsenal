@@ -25,6 +25,9 @@ parser_rm.add_argument('container', metavar='container', help=container_help_all
 parser_build = subparsers.add_parser('build', help='build a container')
 parser_build.add_argument('container', metavar='container', help=container_help_all)
 
+parser_shell = subparsers.add_parser('shell', help='spawn a shell inside a running container')
+parser_shell.add_argument('container', metavar='container', help=container_help[:-5])
+
 parser_env = subparsers.add_parser('env', help='list environment variables for the corresponding container')
 parser_env.add_argument('container', metavar='container', help=container_help[:-5])
 
@@ -114,6 +117,11 @@ def main():
     if args.command == 'env':
 
         car.show_env(c)
+        sys.exit(0)
+
+    if args.command == 'shell':
+
+        car.shell(c)
         sys.exit(0)
 
     if args.command == 'wipe':

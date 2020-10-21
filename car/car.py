@@ -740,3 +740,20 @@ def show_images():
 
         if line.startswith("car"):
             info(line)
+
+
+def shell(name):
+    '''
+    Execute an interactive shell (sh) inside a running car container.
+
+    Paramaters:
+        name                (string)                Name of a container
+
+    Returns:
+        None
+    '''
+    check_existence(name)
+    container_name = f'car.{name}'
+
+    cmd = ['docker', 'exec', '-it', container_name, 'sh']
+    verbose_call(cmd)

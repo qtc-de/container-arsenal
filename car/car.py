@@ -1,4 +1,5 @@
 import os
+import re
 import sys
 import toml
 import shutil
@@ -155,6 +156,26 @@ def prepare_env(config):
         env[env_variable] = value
 
     return env
+
+
+def get_compose_file():
+    '''
+    Tries to open the docker-compose file from the current directory and returns its contents.
+
+    Paramaters:
+        None
+
+    Returns:
+        content         (string)                Content of the compose file.
+    '''
+    try:
+        with open("docker-compose.yml") as f:
+            content = f.read()
+            return content
+
+    except FileNotFoundError:
+        error("Unable to load", "docker-compose.yml", "file from current working directory")
+        sys.exit(1)
 
 
 def init(dry):
@@ -756,4 +777,80 @@ def shell(name):
     container_name = f'car.{name}'
 
     cmd = ['docker', 'exec', '-it', container_name, 'sh']
+    verbose_call(cmd)
+
+
+def shell_local():
+    '''
+    Spawn an interactive shell inside the container specified by the
+    docker-compose.yml from the current working directory.
+
+    Paramaters:
+        None
+
+    Returns:
+        None
+    '''
+    compose_file = get_compose_file()
+    match = re.search("container_name: ([a-zA-Z.-_/]+)\n", compose_file)
+
+    if match:
+        container_name = match.group(1)
+    else:
+        error("Unable to find container name in", "docker-compose.yml")
+
+    cmd = ['docker', 'exec', '-it', container_name, 'sh']
+    verbose_call(cmd)
+
+
+def exec_local(command, interactive=False):
+    '''
+    Execute {cmd} inside the container specified by the current docker-compose.yml
+    file.
+
+    Paramaters:
+        command             (string)                Command to execute
+        interactive         (boolean)               Interactive command?
+
+    Returns:
+        None
+    '''
+    compose_file = get_compose_file()
+    match = re.search("container_name: ([a-zA-Z.-_/]+)\n", compose_file)
+
+    if match:
+        container_name = match.group(1)
+    else:
+        error("Unable to find container name in", "docker-compose.yml")
+
+    cmd = ['docker', 'exec']
+
+    if interactive:
+        cmd.append('-it')
+
+    cmd.append(container_name)
+    cmd.append(command)
+
+    verbose_call(cmd)
+
+
+def wipe_local():
+    '''
+    Removes the docker image specified in the current docker-compose.yml file.
+
+    Paramaters:
+        None
+
+    Returns:
+        None
+    '''
+    compose_file = get_compose_file()
+    match = re.search("image: ([a-zA-Z.-_/]+)\n", compose_file)
+
+    if match:
+        image_name = match.group(1)
+    else:
+        error("Unable to find image name in", "docker-compose.yml")
+
+    cmd = ['docker', 'image', 'rm', image_name]
     verbose_call(cmd)

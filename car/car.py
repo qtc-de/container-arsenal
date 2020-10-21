@@ -803,7 +803,7 @@ def shell_local():
         None
     '''
     compose_file = get_compose_file()
-    match = re.search("container_name: ([a-zA-Z.-_/]+)\n", compose_file)
+    match = re.search("container_name: ([a-zA-Z.\-_\/]+)\n", compose_file)
 
     if match:
         container_name = match.group(1)
@@ -827,7 +827,7 @@ def exec_local(command, interactive=False):
         None
     '''
     compose_file = get_compose_file()
-    match = re.search("container_name: ([a-zA-Z.-_/]+)\n", compose_file)
+    match = re.search("container_name: ([a-zA-Z.\-_\/]+)\n", compose_file)
 
     if match:
         container_name = match.group(1)
@@ -856,7 +856,7 @@ def wipe_local():
         None
     '''
     compose_file = get_compose_file()
-    match = re.search("image: ([a-zA-Z.-_/]+)\n", compose_file)
+    match = re.search("image: ([a-zA-Z.\-_\/]+)\n", compose_file)
 
     if match:
         image_name = match.group(1)

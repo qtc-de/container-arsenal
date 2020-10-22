@@ -50,7 +50,24 @@ $ python3 setup.py sdist
 $ pip3 install dist/*
 ```
 
-Additionally, *container-arsenal* ships a [bash-completion](./car/resources/bash_completion.d/car) script.
+#### Updating
+
+When updating to a newer version of *container-arsenal* it is generally sufficient to repeat the above mentioned
+installation process. However, this will only update the python script and all resources that are shipped within
+the installer, old container images are not updated automatically.
+
+When significant container changes where applied (you can check the [CHANGELOG.MD](./CHANGELOG.MD) to identify this),
+you should run the following commands to update all *car*-related docker images:
+
+```console
+$ car rm all              # removes all running / stopped containers
+$ car wipe all            # removes all car related docker images
+$ car build all           # builds all available car images
+```
+
+#### Bash Completion
+
+*container-arsenal* ships a [bash-completion](./car/resources/bash_completion.d/car) script.
 The completion script is installed automatically, but relies on the [completion-helpers](https://github.com/qtc-de/completion-helpers)
 package. If *completion-helpers* is already installed, autocompletion for *car* should
 work after installing the *pip* package. Otherwise, you may need to copy the completion script manually:

@@ -56,7 +56,7 @@ When updating to a newer version of *container-arsenal* it is generally sufficie
 installation process. However, this will only update the python script and all resources that are shipped within
 the installer, old container images are not updated automatically.
 
-When significant container changes where applied (you can check the [CHANGELOG.MD](./CHANGELOG.MD) to identify this),
+When significant container changes were applied (you can check the [CHANGELOG.MD](./CHANGELOG.MD) to identify this),
 you should run the following commands to update all *car*-related docker images:
 
 ```console

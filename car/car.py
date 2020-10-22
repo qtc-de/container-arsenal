@@ -1,4 +1,5 @@
 import os
+import re
 import sys
 import toml
 import shutil
@@ -84,6 +85,31 @@ def error(text, key=None, text2=None, end="\n"):
         keyword(key, text2, end)
 
 
+def display_env(env):
+    '''
+    Takes an dictionary of environment variables and prints it color formatted.
+
+    Paramaters:
+        env             (dict)                  Environment for the subprocess.call function
+
+    Returns:
+        None
+    '''
+    info("Environment Variables:")
+    for key, value in env.items():
+
+        if key == "PATH":
+            continue
+
+        print("[+]", end="\t")
+        termcolor.cprint(key.ljust(30), "blue", end="")
+
+        if len(value) > 45:
+            value = value[0:45] + "[...]"
+
+        termcolor.cprint(value, "yellow")
+
+
 def verbose_call(cmd, cwd=None, env=None):
     '''
     Wrapper aroud subprocess.call that prints the specified command before executing it.
@@ -101,20 +127,7 @@ def verbose_call(cmd, cwd=None, env=None):
             cmd = ["sudo"] + cmd
 
     if env:
-        info("Environment Variables:")
-        for key, value in env.items():
-
-            if key == "PATH":
-                continue
-
-            print("[+]", end="\t")
-            termcolor.cprint(key.ljust(30), "blue", end="")
-
-            if len(value) > 45:
-                value = value[0:45] + "[...]"
-
-            termcolor.cprint(value, "yellow")
-
+        display_env(env)
         info("")
 
     info("Running:", ' '.join(cmd))
@@ -155,6 +168,26 @@ def prepare_env(config):
         env[env_variable] = value
 
     return env
+
+
+def get_compose_file():
+    '''
+    Tries to open the docker-compose file from the current directory and returns its contents.
+
+    Paramaters:
+        None
+
+    Returns:
+        content         (string)                Content of the compose file.
+    '''
+    try:
+        with open("docker-compose.yml") as f:
+            content = f.read()
+            return content
+
+    except FileNotFoundError:
+        error("Unable to load", "docker-compose.yml", "file from current working directory")
+        sys.exit(1)
 
 
 def init(dry):
@@ -325,7 +358,6 @@ def clean(name):
     subprocess.call(["rm", "-r", path])
 
 
-
 def clean_all():
     '''
     Removes the top level resource folder of each container.
@@ -386,7 +418,7 @@ def start_container(name, rebuild=False, remove=False):
     # the actual resource folders will be created by the docker deamon and
     # are owned by root. To allow an easy cleanup process, we create non existing
     # resource folders during container startup with permissions of the current user
-    resource_folder = create_resource_folder(name)
+    create_resource_folder(name)
     verbose_call(['docker-compose', 'up'], cwd=base_folder, env=env)
 
     if remove:
@@ -415,7 +447,7 @@ def start_local(rebuild=False, remove=False):
         error("Resource folder is not generated automatically.")
 
     else:
-        with open(f'./.car_name') as name_file:
+        with open('./.car_name') as name_file:
             name = name_file.readline().strip()
         check_existence(name)
         create_resource_folder(name)
@@ -537,6 +569,8 @@ def mirror(name):
     container_conf = get_container_config(name)
     for key, value in container_conf.items():
         content = content.replace('${car_' + key + '}', value)
+
+    content = content.replace('${car_local_uid}', str(os.getuid()))
 
     with open(f'./{name}/docker-compose.yml', 'w') as compose_file:
         compose_file.write(content)
@@ -738,3 +772,99 @@ def show_images():
 
         if line.startswith("car"):
             info(line)
+
+
+def shell(name):
+    '''
+    Execute an interactive shell (sh) inside a running car container.
+
+    Paramaters:
+        name                (string)                Name of a container
+
+    Returns:
+        None
+    '''
+    check_existence(name)
+    container_name = f'car.{name}'
+
+    cmd = ['docker', 'exec', '-it', container_name, 'sh']
+    verbose_call(cmd)
+
+
+def shell_local():
+    '''
+    Spawn an interactive shell inside the container specified by the
+    docker-compose.yml from the current working directory.
+
+    Paramaters:
+        None
+
+    Returns:
+        None
+    '''
+    compose_file = get_compose_file()
+    match = re.search("\n\s+container_name: ([a-zA-Z0-9.\-_\/]+)\n", compose_file)
+
+    if match:
+        container_name = match.group(1)
+    else:
+        error("Unable to find valid container name in", "docker-compose.yml")
+        sys.exit(1)
+
+    cmd = ['docker', 'exec', '-it', container_name, 'sh']
+    verbose_call(cmd)
+
+
+def exec_local(command, interactive=False):
+    '''
+    Execute {cmd} inside the container specified by the current docker-compose.yml
+    file.
+
+    Paramaters:
+        command             (string)                Command to execute
+        interactive         (boolean)               Interactive command?
+
+    Returns:
+        None
+    '''
+    compose_file = get_compose_file()
+    match = re.search("\n\s+container_name: ([a-zA-Z0-9.\-_\/]+)\n", compose_file)
+
+    if match:
+        container_name = match.group(1)
+    else:
+        error("Unable to find valid container name in", "docker-compose.yml")
+        sys.exit(1)
+
+    cmd = ['docker', 'exec']
+
+    if interactive:
+        cmd.append('-it')
+
+    cmd.append(container_name)
+    cmd.append(command)
+
+    verbose_call(cmd)
+
+
+def wipe_local():
+    '''
+    Removes the docker image specified in the current docker-compose.yml file.
+
+    Paramaters:
+        None
+
+    Returns:
+        None
+    '''
+    compose_file = get_compose_file()
+    match = re.search("\n\s+image: ([a-zA-Z0-9.\-_\/]+)\n", compose_file)
+
+    if match:
+        image_name = match.group(1)
+    else:
+        error("Unable to find valid image name in", "docker-compose.yml")
+        sys.exit(1)
+
+    cmd = ['docker', 'image', 'rm', image_name]
+    verbose_call(cmd)

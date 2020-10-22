@@ -1,15 +1,15 @@
-### samba
+### Samba
 
 ----
 
-This container starts a *samba share* that can be accessed via the *SMB protocol*. The server
+This container starts a *Samba share* that can be accessed via the *SMB protocol*. The server
 exposes a *public* and a *private share* and does only map port *445* to your local system.
 The password for the *private share* is generated randomly during container startup and
 the corresponding username is ``default``.
 
 Without valid credentials, it is only possible to access the *public share*. The *public share*
 allows uploading and downloading files for any user (or guest). The corresponding file storage
-is the ``public`` resource folder of the container (e.g. ``~/arsenal/samba/public``. The private
+is the ``public`` resource folder of the container (e.g. ``~/arsenal/samba/public``). The private
 share can only be accessed with valid credentials. The corresponding file storage is the 
 ``private`` resource folder of the container (e.g. ``~/arsenal/samba/private``).
 
@@ -23,13 +23,11 @@ container:
 
 ```console
 [qtc@kali ~]$ car run samba
-[+] Resource folder /home/qtc/arsenal/samba does not exist.
-[+] Creating new resource folder.
 [+] Environment Variables:
+[+]	car_local_uid                 1000
 [+]	car_samba_folder              /home/qtc/arsenal/samba
 [+]	car_public_folder             /home/qtc/arsenal/samba/public
 [+]	car_private_folder            /home/qtc/arsenal/samba/private
-[+]	car_nb_port                   139
 [+]	car_smb_port                  445
 [+] 
 [+] Running: sudo -E docker-compose up
@@ -55,7 +53,7 @@ shares exist, although not being visible.
 	IPC$            IPC       IPC Service (car SMB sever)
 ```
 
-Now we try to upload a file to the *public share* from a *Windows system*:
+Now we try to upload a file to the *public share* from a *Windows host* within our network:
 
 ```console
 C:\Users\qtc>echo Hello World :D > test.txt
@@ -63,15 +61,15 @@ C:\Users\qtc>copy test.txt \\192.168.42.124\public
         1 file(s) copied.
 ```
 
-Back on our machine, we can verify that the file arrived:
+Back on our machine, we can verify that the file arrived in the resource folder of the *public share*:
 
 ```console
 [qtc@kali ~]$ cat ~/arsenal/samba/public/test.txt 
 Hello World :D
 ```
 
-By using the credentials generated during the container startup, we could also
-access the private share:
+By using the credentials generated during container startup, we could also
+access the *private share*:
 
 ```console
 C:\Users\qtc>net use Y: \\192.168.42.124\private /user:default 4ongYvsA
@@ -80,7 +78,7 @@ C:\Users\qtc>copy test.txt Y:
         1 file(s) copied.
 ```
 
-Back on our local machine, the file is available in the *private* share:
+Back on our local machine, the file is available in the resource folder of the *private share*:
 
 ```console
 [qtc@kali ~]$ cat ~/arsenal/samba/private/test.txt 
@@ -105,6 +103,7 @@ You can also specify these options by using environment variables. The command `
 [+] Available environment variables are:
 [+] Name                   Current Value                             Description
 [+] car_smb_port           445                                       SMB port that is mapped to your local machine.
-[+] car_public_folder      /home/pentester/arsenal/samba/public      Public resource folder mapped into the container (volume).
-[+] car_private_folder     /home/pentester/arsenal/samba/private     Private resource folder mapped into the container (volume).
+[+] car_public_folder      /home/qtc/arsenal/samba/public            Public resource folder mapped into the container (volume).
+[+] car_private_folder     /home/qtc/arsenal/samba/private           Private resource folder mapped into the container (volume).
+[+] car_local_uid          1000                                      UID of the SMB user.
 ```

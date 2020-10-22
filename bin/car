@@ -25,6 +25,9 @@ parser_rm.add_argument('container', metavar='container', help=container_help_all
 parser_build = subparsers.add_parser('build', help='build a container')
 parser_build.add_argument('container', metavar='container', help=container_help_all)
 
+parser_shell = subparsers.add_parser('shell', help='spawn a shell inside a running container')
+parser_shell.add_argument('container', metavar='container', help=container_help)
+
 parser_env = subparsers.add_parser('env', help='list environment variables for the corresponding container')
 parser_env.add_argument('container', metavar='container', help=container_help[:-5])
 
@@ -116,10 +119,20 @@ def main():
         car.show_env(c)
         sys.exit(0)
 
+    if args.command == 'shell':
+
+        if c == '.':
+            car.shell_local()
+        else:
+            car.shell(c)
+        sys.exit(0)
+
     if args.command == 'wipe':
 
         if c == 'all':
             car.wipe_all()
+        elif c == '.':
+            car.wipe_local()
         else:
             car.wipe(c)
         sys.exit(0)
@@ -134,7 +147,10 @@ def main():
         if not args.cmd:
             args.cmd = 'sh'
             args.it = True
-        car.exec(c, args.cmd, interactive=args.it)
+        if c == '.':
+            car.exec_local(args.cmd, interactive=args.it)
+        else:
+            car.exec(c, args.cmd, interactive=args.it)
         sys.exit(0)
 
     if args.command == 'clean':

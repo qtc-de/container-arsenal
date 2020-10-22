@@ -1,12 +1,12 @@
-### nginx
+### Nginx
 
 ----
 
-The *nginx* container starts a *nginx* webserver that maps an *HTTP* and an *HTTPS* port to your local system. 
-Beside providing an easy way for file downloads, the server has also a directory with *WebDav* enabled,
+The *nginx* container starts an *Nginx* webserver that maps an *HTTP* and an *HTTPS* port to your local system. 
+Beside providing an easy way for file downloads, the server has also a directory with *WebDAV* enabled,
 which can be used for file uploads.
 
-To offer files for a download, just place them in the ``download`` resource folder of the container (e.g.
+To prepare files for downloads, just place them in the ``download`` resource folder of the container (e.g.
 ``~/arsenal/nginx/download`` and they will be accessible within the *webroot* of the *HTTP* server. To upload
 files, you have to use the *PUT* method on the ``/uploads`` endpoint. Your files will be saved inside the
 ``upload`` resource folder (e.g. ``~/arsenal/nginx/upload``). Access to the upload folder of the webserver
@@ -40,7 +40,7 @@ car.nginx    | [+] Starting nginx daemon.
 ```
 
 Now, an example file is placed within the ``~/arsenal/nginx/download`` folder and it is demonstrated that it can be
-accessed from whe *webroot* of the webserver.
+accessed from the *webroot* of the webserver.
 
 ```console
 [qtc@kali ~]$ echo "Hello World :D" > ~/arsenal/nginx/download/hello.txt
@@ -83,4 +83,5 @@ You can also specify these options by using environment variables. The command `
 [+] car_https_port          443                                        HTTPS port that is mapped to your local system.
 [+] car_upload_folder       /home/qtc/arsenal/nginx/upload             Upload resource folder of the container (volume).
 [+] car_download_folder     /home/qtc/arsenal/nginx/download           Download resource folder of the container (volume).
+[+] car_local_uid           1000                                       UID of the nginx user.
 ```

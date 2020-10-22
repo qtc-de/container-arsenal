@@ -2,13 +2,16 @@
 
 ----
 
-This docker container implements a proxy server which forwards the body of incoming *HTTP* requests to a different host.
+This *docker container* implements a proxy server that forwards the body of incoming *HTTP* requests to a different host.
 The response from the targeted server is encapsulated into a *HTTP* response message and send back to the client.
-To specify a target, simply send the two *GET* parameters ``host`` and ``port`` inside of the *HTTP* request. The
-body of the *HTTP* request is then forwarded to the corresponding target.
+To specify a target, simply use the two *GET* parameters ``host`` and ``port`` inside of the *HTTP* request. The
+body of the *HTTP* request is then forwarded to the specified target.
 
 Currently the container is running the *Flask development server*. I guess this should be sufficient for the purpose of this project.
-However, one could also set up a *nginx reverse-proxy* in front of the actual application, but I think it is an overkill.
+However, one could also set up a *nginx reverse-proxy* in front of the actual application, but this is probably an overkill.
+In future, the *Flask* application may be replaced with an optimized binary for handling *HTTP* requests. Since most *HTTP* features
+are not required for the proxy functionality, this should greatly reduce the container size. The advantage of the *Flask* application,
+on the other hand, is that you can add modifications and debugging statements pretty easily.
 
 
 ### Example Usage
@@ -18,62 +21,67 @@ However, one could also set up a *nginx reverse-proxy* in front of the actual ap
 In the following, an example usage of the container is demonstrated. First of all, the container needs to be started:
 
 ```console
-[qtc@kali h2b]$ car run h2b
-[+] Running: 'sudo docker-compose up'
-Starting car.h2b ... done
+[qtc@kali ~]$ car run h2b
+[+] Environment Variables:
+[+]	car_local_uid                 1000
+[+]	car_h2b_folder                /home/qtc/arsenal/h2b
+[+]	car_http_port                 8001
+[+]
+[+] Running: sudo -E docker-compose up
+Creating car.h2b ... done
 Attaching to car.h2b
 car.h2b    |  * Serving Flask app "h2b.py"
 car.h2b    |  * Environment: production
 car.h2b    |    WARNING: This is a development server. Do not use it in a production deployment.
 car.h2b    |    Use a production WSGI server instead.
 car.h2b    |  * Debug mode: off
-car.h2b    |  * Running on http://0.0.0.0:5000/ (Press CTRL+C to quit)
+car.h2b    |  * Running on http://127.0.0.1:8001/ (Press CTRL+C to quit)
 ```
 
-When we open a *netcat* listener on a machine within our local network on port ``4444``:
+In order to provide the target server, a *netcat* listener within the local network is started on ``192.168.42.139:4444``:
 
 ```console
-[qtc@kali ~]$ nc -vlp 4444
+[user@other ~]$ nc -vlp 4444
 Ncat: Version 7.80 ( https://nmap.org/ncat )
 Ncat: Listening on :::4444
 Ncat: Listening on 0.0.0.0:4444
 ```
 
-Now we can send a *POST* request, containing our remote target within the ``host`` and ``port`` *GET* parameters.
-The corresponding content should arrive at our netcat listener.
+Now we can send a *POST* request, containing the remote target within the ``host`` and ``port`` *GET* parameters, to
+the proxy port (default: ``8001``).  The body of the *POST* request should be forwarded and arrive at the *netcat listener*.
 
 ```console
-[qtc@kali ~]$ curl -X POST 'http://127.0.0.1/forward?host=172.20.0.1&port=4444' -d "Test Message"
+[qtc@kali ~]$ curl -X POST 'http://127.0.0.1:8001/forward?host=192.168.42.139&port=4444' -d "Example Message"
 [...]
 
-[qtc@kali ~]$ nc -vlp 4444
+[user@other ~]$ nc -vlp 4444
 Ncat: Version 7.80 ( https://nmap.org/ncat )
 Ncat: Listening on :::4444
 Ncat: Listening on 0.0.0.0:4444
-Ncat: Connection from 172.20.0.2.
-Ncat: Connection from 172.20.0.2:43780.
-Test Message
+Ncat: Connection from 192.168.42.1.
+Ncat: Connection from 192.168.42.1:50298.
+Example Message
 ```
 
 When responding to this message in the *netcat* terminal, the final content will be passed back as *HTTP response*:
 
 ```console
-[qtc@kali ~]$ nc -vlp 4444
+[user@other ~]$ nc -vlp 4444
 Ncat: Version 7.80 ( https://nmap.org/ncat )
 Ncat: Listening on :::4444
 Ncat: Listening on 0.0.0.0:4444
-Ncat: Connection from 172.20.0.2.
-Ncat: Connection from 172.20.0.2:43786.
-Test Message
-Hello :)
-[qtc@kali ~]$ 
+Ncat: Connection from 192.168.42.1.
+Ncat: Connection from 192.168.42.1:50298.
+Example Message
+Hi :D
+[user@other ~]$
 [...]
 
-[qtc@kali ~]$ curl -X POST 'http://127.0.0.1/forward?host=172.20.0.1&port=4444' -d "Test Message"
-Hello :)
+[qtc@kali ~]$ curl -X POST 'http://127.0.0.1:8001/forward?host=192.168.42.139&port=4444' -d "Example Message"
+Hi :D
 ```
 
-When you are facing a *SSL* protected service, you can specify ``ssl=true`` as an additional *GET* paramater.
+When you are facing a *SSL* protected service, you can specify ``ssl=true`` as an additional *GET* parameter.
 The forwarded connection is then made using *SSL* without applying certificate validation.
 
 
@@ -96,7 +104,7 @@ Recently I saw a service that communicated by using plain *XML* messages. A vali
 
 It was rather easy to identify that the ``<name>-tag`` is vulnerable to *SQL injection* attacks, but the injection was blind and it was difficult
 to extract information from the database. It would be great to use *sqlmap* in these situations, but as far as I know, *sqlmap* does not
-support *non-HTTP* protocols. 
+support *non-HTTP* protocols.
 
 By using this docker container, you can simply solve the above mentioned problem. First of all, you wrap the *XML* message mentioned above
 inside a *HTTP POST* request. Instead of using this request with *sqlmap* against the targeted service directly, you use it against this docker
@@ -108,10 +116,10 @@ container and specify the targeted host and port by using the corresponding *GET
 ----
 
 In the current state, the proxy does only support stateless protocols / connections. If the targeted service wants to keep the *TCP* channel
-opened and does not act stateless, this container will currently not work. 
+opened and does not act stateless, this container will currently not work.
 
 One could try to implement support for statefull protocols / connections, but it is difficult. Theoretically, the socket of the *TCP* connection
-can be stored by the server (e.g. in form of a *session-storage*), but if the targeted protocol is unknown, it is difficult to implement the correct 
+can be stored by the server (e.g. in form of a *session-storage*), but if the targeted protocol is unknown, it is difficult to implement the correct
 message flow.
 
 In future, support for some known statefull protocols may be added. Feel free to contribute.
@@ -124,7 +132,7 @@ In future, support for some known statefull protocols may be added. Feel free to
 The following configuration options can be adjusted within your ``car.toml`` file:
 
 * ``h2b_folder``: Top level ressource folder of the container. In the current configuration this folder is not used.
-* ``http_port``: HTTP port of the container that exposes the proxy interface.
+* ``http_port``: *HTTP* port of the proxy that is opened on your local machine.
 
 You can also specify these options by using environment variables. The command ``car env h2b`` explains their corresponding usage:
 
@@ -132,5 +140,5 @@ You can also specify these options by using environment variables. The command `
 [qtc@kali ~]$ car env h2b
 [+] Available environment variables are:
 [+] Name                               Current Value                      Description
-[+] car_http_port                      80                                 HTTP proxy port opened on your local machine.
+[+] car_http_port                      8001                               HTTP proxy port opened on your local machine.
 ```

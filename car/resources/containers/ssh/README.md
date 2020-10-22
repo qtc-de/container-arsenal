@@ -1,19 +1,18 @@
-### ssh
+## SSH
 
 ----
 
-This container starts an *alpine based ssh server* with a single user account (username: ``default``). 
-The password for the user account is generated randomly during the container startup and is displayed
+This container starts an *alpine based ssh server* with a single allowed user account (username: ``default``). 
+The password for the user account is generated randomly during container startup and is displayed
 in the launching terminal. The *home folder* of the user ``default`` is mapped to the top level resource
-folder of the container (docker volume).
+folder of the container as a *docker volume*.
 
-The *sshd_config* enforces a custom command during the *ssh login*. This command logs the remote *IP address*
-together with the local username and displays them inside the launching terminal. This can tell you, whether
-unexpected logins have occured. By default, the *sshd_config* has root login disabled. You can enable
-it as described in the section [enabling root login](#enabling-root-login).
+By default, the *sshd_config* has *root login* disabled and only allows *ssh access* for the user ``default``. You
+can enable *root access* as described in the section [enabling root login](#enabling-root-login). However,
+notice that this has some security implications.
 
 Port forwarding and tunneling is allowed by the *sshd_config*. The main benefit of this container is that
-*ssh* can be used for easy port forwarding and file transfers.
+*ssh* can be used for port forwarding, file transfers and network tunnels.
 
 
 ### Example Usage
@@ -25,6 +24,7 @@ First of all, we start the *ssh* container on our local machine:
 ```console
 [qtc@kali ~]$ car run ssh
 [+] Environment Variables:
+[+]	car_local_uid                 1000
 [+]	car_ssh_folder                /home/qtc/arsenal/ssh
 [+]	car_ssh_port                  22
 [+] 
@@ -44,20 +44,20 @@ The *container configuration* maps the *ssh port* (``22``) to your local system:
 
 ```console
 [qtc@kali ~]$ ss -tlnp
-State                    Recv-Q                   Send-Q                                     Local Address:Port                                       Peer Address:Port                   Process                   
-LISTEN                   0                        4096                                                   *:22                                                    *:*  
+State                    Recv-Q                   Send-Q                                     Local Address:Port                                       Peer Address:Port
+LISTEN                   0                        4096                                                   *:22                                                    *:*
 ```
 
-On a remote host, we open now a webserver listening on ``127.0.0.1:8000`` and attempt to forward
-the corresponding port to our *ssh container*:
+On a remote host, we open a webserver listening on ``127.0.0.1:8000`` and attempt to forward
+the corresponding port to the *ssh container*:
 
 ```console
-[qtc@other ~]$ ssh 192.168.42.124 -l default -R 0.0.0.0:8000:127.0.0.1:8000
+[user@other ~]$ ssh 192.168.42.124 -l default -R 0.0.0.0:8000:127.0.0.1:8000
 default@192.168.42.124's password:
-~ $
-
-[qtc@other www]$ echo Hello World :D > test.txt
-[qtc@other www]$ python3 -m http.server --bind 127.0.0.1 8000
+4c8e831e9d2d:~ $
+[...]
+[user@other www]$ echo Hello World :D > test.txt
+[user@other www]$ python3 -m http.server --bind 127.0.0.1 8000
 Serving HTTP on 127.0.0.1 port 8000 (http://127.0.0.1:8000/) ...
 ```
 
@@ -77,15 +77,15 @@ Hello World :D
 ----
 
 Per default, only the user *default* can use *ssh* to connect to the container. This can be limiting, if you want to
-forward ports with a privileged port number (like 445 -> 445). To make this possible, you have to enable
-root login on the container. You can do the following to achieve this:
+forward privileged ports (e.g. ``445`` -> ``445``). To make this possible, you have to enable
+*root login* on the container. You can do the following to achieve this:
 
 1. Mirror the ssh container ``$ car mirror ssh``
 2. Enable root login on the mirror ``$ cd ssh && bash toggle-root.sh``
 3. Run the mirrored container ``$ car run .``
 
 With root login enabled, the container will create a random password for the root account and allows root
-logins via ssh. Please notice that allowing root access to a container has certain security implications
+logins via *ssh*. Please notice that allowing root access to a container has certain security implications
 and is not considered best practice. Be careful with it and watch the server logs for unexpected root logins.
 
 
@@ -106,4 +106,5 @@ You can also specify these options by using environment variables. The command `
 [+] Name               Current Value                   Description
 [+] car_ssh_folder     /home/qtc/arsenal/ssh           SSH resource folder. Mapped as a volume into the container.
 [+] car_ssh_port       22                              SSH port mapped to your local machine.
+[+] car_local_uid      1000                            UID of the SSH user.
 ```

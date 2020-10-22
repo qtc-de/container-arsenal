@@ -34,13 +34,14 @@ mentioned above, *Docker* seems to be ideal to get an easy manageable solution.
 
 -----
 
-*car* can be build and installed as a *pip package*. The following command installs *car* for your current user profile:
+*container-arsenal* can be build and installed as a *pip package*. The following command installs *container-arsenal*
+for your current user profile:
 
 ```console
 $ pip3 install container-arsenal
 ```
 
-You can also build *car* from source by running the following commands:
+You can also build *container-arsenal* from source by running the following commands:
 
 ```console
 $ git clone https://github.com/qtc-de/container-arsenal
@@ -49,7 +50,24 @@ $ python3 setup.py sdist
 $ pip3 install dist/*
 ```
 
-Additionally, *car* ships a [bash-completion](./car/resources/bash_completion.d/car) script.
+#### Updating
+
+When updating to a newer version of *container-arsenal* it is generally sufficient to repeat the above mentioned
+installation process. However, this will only update the python script and all resources that are shipped within
+the installer, old container images are not updated automatically.
+
+When significant container changes where applied (you can check the [CHANGELOG.MD](./CHANGELOG.MD) to identify this),
+you should run the following commands to update all *car*-related docker images:
+
+```console
+$ car rm all              # removes all running / stopped containers
+$ car wipe all            # removes all car related docker images
+$ car build all           # builds all available car images
+```
+
+#### Bash Completion
+
+*container-arsenal* ships a [bash-completion](./car/resources/bash_completion.d/car) script.
 The completion script is installed automatically, but relies on the [completion-helpers](https://github.com/qtc-de/completion-helpers)
 package. If *completion-helpers* is already installed, autocompletion for *car* should
 work after installing the *pip* package. Otherwise, you may need to copy the completion script manually:
@@ -105,7 +123,7 @@ private  public
 ```
 
 If you want to learn more about the different containers of *container-arsenal*, just check the corresponding
-documentation as referenced by the next section.
+documentation as referenced in the next section.
 
 
 ### Available Containers
@@ -113,12 +131,12 @@ documentation as referenced by the next section.
 -----
 
 The following paragraph lists all currently available containers of the *container-arsenal*. Notice that each container folder contains a
-dedicated *README.md* where you can find more specific information about the corresponding container. Just click on the links listed
+dedicated ``README.md`` where you can find more specific information about the corresponding container. Just click on the links listed
 below:
 
 * [ajp](car/resources/containers/ajp) - *AJP* proxy server to access *JSERV* ports via *HTTP*.
 * [ftp](car/resources/containers/ftp) - *vsftpd* server that allows authenticated and anonymous access.
-* [h2b](car/resources/containers/h2b) - A *http-to-binary* proxy that allows accessing *non-HTTP* services using *HTTP* focussed tools.
+* [h2b](car/resources/containers/h2b) - A *http-to-binary* proxy that allows accessing *non-HTTP* services using *HTTP* focused tools.
 * [mysql](car/resources/containers/mysql) - Just a *MySQL* server with randomly generated password protected user accounts.
 * [neo4j](car/resources/containers/neo4j) - Plain *Neo4j* database. Useful for tools like *BloodHound*.
 * [nginx](car/resources/containers/nginx) - *nginx* server with *WebDAV* enabled. Supports *HTTP* and *HTTPS*.
@@ -131,33 +149,36 @@ below:
 
 -----
 
-After installing the *container-arsenal*, a configuration file will be placed at ``~/.config/car/car.toml``.
-This configuration file contains default mappings for the provided containers. The configuration for the
-**samba** container looks for example like this:
+After installing *container-arsenal*, a configuration file will be placed at ``~/.config/car/car.toml``.
+This configuration file contains some global variables and default mappings for the provided containers.
+The first few lines look like this:
 
 ```toml
 [containers]
   sudo_required = true
   volume_base_path = "~/arsenal"
+```
 
-  [...]
+The ``[containers]`` section contains parameters that apply to all available containers. The ``sudo_required``
+setting determines whether *docker commands* have to be prefixed with ``sudo``, whereas the ``volume_base_path``
+specifies the default local directory, where *docker volumes* for the containers will be stored.
 
+Apart from such global configuration options, the ``car.toml`` file also contains container specific options.
+The following snipped shows the configuration for the *samba* container:
+
+```toml
   [containers.samba]
   samba_folder = "<@:BASE:@>/samba"
   public_folder = "<@:BASE:@>/samba/public"
   private_folder = "<@:BASE:@>/samba/private"
-  nb_port= "139"
   smb_port = "445"
 ```
 
-As you can see, the configuration file does specify a *volume_base_path*, which is by default set to ``~/arsenal``.
-This is there your container volumes will be stored. The individual locations for the volumes are configured
-in the different container sections. The above *samba* container will run with two volumes that will be mapped
-to ``~/arsenal/samba/public`` and ``~/arsenal/samba/private``.
-
-The top level folder ``~/arsenal/samba`` is also included in the configuration file, but will not be mapped into
-the container. Each container needs a top level folder definition with the naming scheme ``<CONTAINER_NAME>_folder``.
-*car* needs this top level folder information for managing resources and permissions. For containers that do not
+This configuration shows, that the *samba* container runs with two volumes that will be mapped to
+``~/arsenal/samba/public`` and ``~/arsenal/samba/private``. The top level folder ``~/arsenal/samba``
+is also included in the configuration file, but will not be mapped into the container. Each container
+needs a top level folder definition with the naming scheme ``<CONTAINER_NAME>_folder``. *car* needs
+this top level folder information for managing resources and permissions. For containers that do not
 require subfolders, like the **ssh** container, a top level folder is even sufficient.
 
 Internally, the folder definitions from the ``cat.toml`` file are just included into the ``docker-compose.yml``
@@ -219,7 +240,7 @@ services:
     build: .
     environment:
       ENABLE_ROOT: 0
-      LOCAL_UID: ${car_local_uid}
+      LOCAL_UID: 1002
     volumes:
       - /home/qtc/arsenal/ssh:/home/default
       - ./scripts/start.sh:/scripts/start.sh
@@ -229,8 +250,41 @@ services:
       - "22:22"
 ```
 
-If you want to apply your custom port change now, you can simply modify the mapping inside the ``docker-compose.yml`` and then run
-``car run .`` from within the *mirrored* folder.
+If you now want to apply your custom port change, you can simply modify the mapping inside the ``docker-compose.yml`` file and then use
+`` car run .`` from within the *mirrored* folder.
+
+Apart from *mirroring*, you can also use environment variables to modify the container behavior. The command ``car env <container>`` can be
+used to list available environment variables:
+
+```console
+[qtc@kali ~]$ car env ssh
+[+] Available environment variables are:
+[+] Name               Current Value                   Description
+[+] car_ssh_folder     /home/qtc/arsenal/ssh     SSH resource folder. Mapped as a volume into the container.
+[+] car_ssh_port       22                              SSH port mapped to your local machine.
+[+] car_local_uid      1000                            UID of the SSH user.
+```
+
+By setting the corresponding environment variable explicitly, you can change its default value during container startup:
+
+```console
+[qtc@kali ~]$ car_ssh_port=2222 car run ssh
+[+] Environment Variables:
+[+]	car_local_uid                 1000
+[+]	car_ssh_folder                /home/qtc/arsenal/ssh
+[+]	car_ssh_port                  2222
+[+]
+[+] Running: sudo -E docker-compose up
+Recreating car.ssh ... done
+Attaching to car.ssh
+car.ssh    | [+] Creating default user...
+car.ssh    | [+] IP address of the container: 172.18.0.2
+car.ssh    | [+] No password was specified.
+car.ssh    | [+] Generated random password for user 'default': SrAeThIp
+car.ssh    | [+] Adjusting volume permissions.
+car.ssh    | [+] Creating login log.
+car.ssh    | [+] Starting sshd
+```
 
 
 ### About Sudo
@@ -238,7 +292,7 @@ If you want to apply your custom port change now, you can simply modify the mapp
 ----
 
 By default, *container-arsenal* uses ``sudo`` to invoke all docker relevant commands. This is probably not required
-when being part of the *docker-group*. In these cases, you can apply the following setting within your ``car.toml``
+when being member of the *docker-group*. In this case, you can apply the following setting within your ``car.toml``
 configuration file:
 
 ```console
@@ -251,11 +305,11 @@ configuration file:
 When running with ``sudo_required=true``, each *docker-command* is prefixed with ``sudo -E``. The ``-E`` switch
 for ``sudo`` is used to inherit all environment variables of the parent process and is normally not recommended
 (as probably unwanted environment variables are inherited too). However, in the case of *container-arsenal* the
-command in executed from within a dedicated environment, that just contains container relevant environment variables.
+command is executed from within a dedicated environment, which just contains container relevant environment variables.
 Therefore, this should not be an issue.
 
 Usage of ``sudo -E`` might be forbidden for users that are only able to run certain commands with ``sudo``. *container-arsenal*
-assumes that you are able to run ``(ALL)`` commands as sudo, as in this case the following applies:
+assumes that you are able to run ``(ALL)`` commands with sudo, as in this case the following applies:
 
 > SETENV and NOSETENV
 > These tags override the value of the setenv option on a per-command basis. Note that if SETENV has been set for a command,
@@ -272,10 +326,10 @@ is usually almost equivalent to full *root* access to the system.
 
 -----
 
-When creating the containers for this project I looked on many different repositories for useful *Dockerfiles*. Certain parts of the *Dockerfiles*
+When creating the containers for this project I searched many different repositories for useful *Dockerfiles*. Certain parts of the *Dockerfiles*
 provided inside this repository are probably very similar to others that can be found on *GitHub*. I did not wrote down all the references,
 but if you think that your name should be listed here, feel free to contact me :)
 
-For all others I want to say thank you for making your work open source <3
+For all others: thank you for working on open source projects <3
 
 *Copyright 2020, Tobias Neitzel and the container-arsenal contributors.*

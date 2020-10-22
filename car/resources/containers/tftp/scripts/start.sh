@@ -14,5 +14,11 @@ fi
 echo "[+] Adjusting volume permissions."
 chown default:default /ftp
 
-echo "[+] Starting tftpd."
-in.tftpd --foreground --create -m /config/mapfile --user default --secure /ftp --verbose --address "0.0.0.0:${LISTEN_PORT}"
+echo "[+] Starting syslogd."
+syslogd
+
+echo "[+] Starting TFTP server."
+in.tftpd --listen --create -m /config/mapfile --user default --secure /ftp -vv --address "0.0.0.0:${LISTEN_PORT}" 
+
+touch /var/log/messages
+tail -f /var/log/messages

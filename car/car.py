@@ -803,12 +803,13 @@ def shell_local():
         None
     '''
     compose_file = get_compose_file()
-    match = re.search("container_name: ([a-zA-Z.\-_\/]+)\n", compose_file)
+    match = re.search("\n\s+container_name: ([a-zA-Z0-9.\-_\/]+)\n", compose_file)
 
     if match:
         container_name = match.group(1)
     else:
-        error("Unable to find container name in", "docker-compose.yml")
+        error("Unable to find valid container name in", "docker-compose.yml")
+        sys.exit(1)
 
     cmd = ['docker', 'exec', '-it', container_name, 'sh']
     verbose_call(cmd)
@@ -827,12 +828,13 @@ def exec_local(command, interactive=False):
         None
     '''
     compose_file = get_compose_file()
-    match = re.search("container_name: ([a-zA-Z.\-_\/]+)\n", compose_file)
+    match = re.search("\n\s+container_name: ([a-zA-Z0-9.\-_\/]+)\n", compose_file)
 
     if match:
         container_name = match.group(1)
     else:
-        error("Unable to find container name in", "docker-compose.yml")
+        error("Unable to find valid container name in", "docker-compose.yml")
+        sys.exit(1)
 
     cmd = ['docker', 'exec']
 
@@ -856,12 +858,13 @@ def wipe_local():
         None
     '''
     compose_file = get_compose_file()
-    match = re.search("image: ([a-zA-Z.\-_\/]+)\n", compose_file)
+    match = re.search("\n\s+image: ([a-zA-Z0-9.\-_\/]+)\n", compose_file)
 
     if match:
         image_name = match.group(1)
     else:
-        error("Unable to find image name in", "docker-compose.yml")
+        error("Unable to find valid image name in", "docker-compose.yml")
+        sys.exit(1)
 
     cmd = ['docker', 'image', 'rm', image_name]
     verbose_call(cmd)

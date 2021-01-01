@@ -640,6 +640,7 @@ def show_env(name):
     offset2 += 5
 
     info("Available environment variables are:")
+    info("")
     info("Name".ljust(offset1), end="")
     print("Current Value".ljust(offset2), end="")
     print("Description")

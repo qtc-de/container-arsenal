@@ -25,11 +25,4 @@ echo "[+] Building mod_jk.so..."
     echo '#include <sys/socket.h>' > /usr/include/sys/socketvar.h
     make
 
-echo "[+] Copying mod_jk.so to the webroot"
-    cp apache-2.0/mod_jk.so /var/www/localhost/htdocs/
-    IP=$(ip a | grep  -e "eth0$" | egrep -o "inet \d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}" | cut -f2 -d" ")
-
 echo "[+] mod_jk.so is ready!"
-echo "[+] You can download it here: http://$IP/mod_jk.so"
-
-httpd -DFOREGROUND

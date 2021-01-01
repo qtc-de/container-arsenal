@@ -8,7 +8,7 @@ resources. Additionally, container arsenal ships a *python* script that can be u
 
 ![](https://github.com/qtc-de/container-arsenal/workflows/master%20Python%20CI/badge.svg?branch=master)
 ![](https://github.com/qtc-de/container-arsenal/workflows/develop%20Python%20CI/badge.svg?branch=develop)
-![example-usage](resources/example.gif)
+![example-usage](https://tneitzel.eu/73201a92878c0aba7c3419b7403ab604/car-example.gif)
 
 
 ### Description

@@ -4,7 +4,9 @@
 FROM alpine:3.12.0 AS builder
 COPY scripts/build_modjk.sh /build/build.sh
 WORKDIR /build
-RUN ./build.sh
+RUN set -ex \
+    && chmod +x ./build.sh \
+    && ./build.sh
 
 ###########################################
 ###          Container Stage            ###

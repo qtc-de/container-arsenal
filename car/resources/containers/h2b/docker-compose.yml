@@ -4,8 +4,8 @@ services:
 
   car.h2b:
     container_name: car.h2b
+    image: ghcr.io/qtc-de/container-arsenal/h2b:1.0.0
     build: .
-    image: car/h2b
     environment:
       FLASK_PORT: ${car_http_port}
     volumes:

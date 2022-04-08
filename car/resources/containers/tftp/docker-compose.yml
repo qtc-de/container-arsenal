@@ -4,7 +4,7 @@ services:
 
   car.tftp:
     container_name: car.tftp
-    image: car/tftp
+    image: ghcr.io/qtc-de/container-arsenal/tftp:1.0.0
     build: .
     environment:
       LISTEN_PORT: ${car_tftp_port}

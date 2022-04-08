@@ -4,7 +4,7 @@ services:
 
   car.ftp:
     container_name: car.ftp
-    image: car/ftp
+    image: ghcr.io/qtc-de/container-arsenal/ftp:1.0.0
     build: .
     environment:
       FTP_PORT: ${car_ftp_port}

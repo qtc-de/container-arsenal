@@ -4,7 +4,7 @@ services:
 
   car.neo4j:
     container_name: car.neo4j
-    image: car/neo4j
+    image: ghcr.io/qtc-de/container-arsenal/neo4j:1.0.0
     build: .
     environment:
       LOCAL_UID: ${car_local_uid}
@@ -12,5 +12,5 @@ services:
       - ${car_neo4j_folder}:/data
       - ./scripts/start.sh:/scripts/start.sh
     ports:
-      - "127.0.0.1:${car_http_port}:7474"
-      - "127.0.0.1:${car_bolt_port}:7687"
+      - "${car_http_port}:7474"
+      - "${car_bolt_port}:7687"

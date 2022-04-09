@@ -4,8 +4,8 @@ services:
 
   car.ajp:
     container_name: car.ajp
+    image: ghcr.io/qtc-de/container-arsenal/ajp:1.0.0
     build: .
-    image: car/ajp
     environment:
       TARGET_HOST: ${car_target_host}
       TARGET_PORT: ${car_target_port}

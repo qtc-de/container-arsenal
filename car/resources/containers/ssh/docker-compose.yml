@@ -4,7 +4,7 @@ services:
 
   car.ssh:
     container_name: car.ssh
-    image: car/ssh
+    image: ghcr.io/qtc-de/container-arsenal/ssh:1.0.0
     build: .
     environment:
       ENABLE_ROOT: 0

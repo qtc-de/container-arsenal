@@ -4,8 +4,8 @@ PubkeyAuthentication yes
 PasswordAuthentication yes
 ChallengeResponseAuthentication no
 
-AllowTcpForwarding yes
-PermitTunnel yes
+AllowTcpForwarding remote
+PermitTunnel no
 GatewayPorts clientspecified
 PermitRootLogin no
 

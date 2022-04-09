@@ -7,7 +7,7 @@ import car
 container_help = 'desired container name: ajp | ftp | h2b | mysql | neo4j | nginx | samba | ssh | tftp or .'
 container_help_all = 'desired container name: ajp | ftp | h2b | mysql | neo4j | nginx | samba | ssh | tftp | all or .'
 
-parser = argparse.ArgumentParser(description='''car provides easy access to a small set of useful docker containers''')
+parser = argparse.ArgumentParser(description='''car v2.1.0 - commandline interface for the container arsenal''')
 parser.add_argument('--dry', action='store_true', help="only display docker compose commands without executing them")
 subparsers = parser.add_subparsers(dest='command')
 

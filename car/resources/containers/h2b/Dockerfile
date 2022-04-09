@@ -1,4 +1,4 @@
-FROM alpine:3.14.6
+FROM alpine:3.15.4
 
 RUN set -ex \
     && apk --no-cache add python3 py3-pip \

@@ -1,7 +1,7 @@
 ###########################################
 ###             Build Stage             ###
 ###########################################
-FROM alpine:3.12.0 AS builder
+FROM alpine:3.15.4 AS builder
 COPY scripts/build_modjk.sh /build/build.sh
 WORKDIR /build
 RUN set -ex \
@@ -11,7 +11,7 @@ RUN set -ex \
 ###########################################
 ###          Container Stage            ###
 ###########################################
-FROM alpine:3.12.0
+FROM alpine:3.15.4
 
 RUN set -ex \
     && apk add --no-cache apache2 \

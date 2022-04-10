@@ -1,7 +1,7 @@
 import os
-import re
 import sys
 import toml
+import yaml
 import shutil
 import termcolor
 import subprocess
@@ -16,48 +16,58 @@ this.sudo_required = None
 this.volume_base_path = None
 
 
-def keyword(key, suffix=None, end="\n"):
+def keyword(key: str, suffix: str = None, end: str = "\n") -> None:
     '''
     Helper function that prints a highlighted keyword and an opional suffix.
 
     Parameters:
-        key             (string)                Keyword to print
-        suffix          (string)                Text to print after keyword
-        end             (string)                End character for the last print
+        key             Keyword to print
+        suffix          Text to print after keyword
+        end             End character for the last print
+
+    Returns:
+        None
     '''
     if suffix is None:
         termcolor.cprint(key, "yellow", end=end)
+
     else:
         termcolor.cprint(key, "yellow", end=" ")
         print(suffix, end=end)
 
 
-def plain(text, key, text2=None, end="\n"):
+def plain(text: str, key: str, text2: str = None, end: str = "\n") -> None:
     '''
     Helper function that prints a highlighted keyword, prefixed by non highlighted
     text and followed by an optional suffix.
 
     Parameters:
-        text            (string)                Prefix text before the keyword
-        key             (string)                Keyword to print
-        text2           (string)                Text to print after keyword
-        end             (string)                End character for the last print
+        text            Prefix text before the keyword
+        key             Keyword to print
+        text2           Text to print after keyword
+        end             End character for the last print
+
+    Returns:
+        None
     '''
     print(text, end=" ")
     keyword(key, text2, end=end)
 
 
-def info(text, key=None, text2=None, end="\n"):
+def info(text: str, key: str = None, text2: str = None, end: str = "\n") -> None:
     '''
     Helper function that prints a highlighted keyword, prefixed by non highlighted
     text and followed by an optional suffix. At the beginning of the line, the
     character sequence '[+]' is added.
 
     Parameters:
-        text            (string)                Prefix text before the keyword
-        key             (string)                Keyword to print
-        text2           (string)                Text to print after keyword
-        end             (string)                End character for the last print
+        text            Prefix text before the keyword
+        key             Keyword to print
+        text2           Text to print after keyword
+        end             End character for the last print
+
+    Returns:
+        None
     '''
     if key is None:
         print("[+] " + text, end=end)
@@ -66,17 +76,20 @@ def info(text, key=None, text2=None, end="\n"):
         keyword(key, text2, end)
 
 
-def error(text, key=None, text2=None, end="\n"):
+def error(text: str, key: str = None, text2: str = None, end: str = "\n") -> None:
     '''
     Helper function that prints a highlighted keyword, prefixed by non highlighted
     text and followed by an optional suffix. At the beginning of the line, the
     character sequence '[-]' is added.
 
     Parameters:
-        text            (string)                Prefix text before the keyword
-        key             (string)                Keyword to print
-        text2           (string)                Text to print after keyword
-        end             (string)                End character for the last print
+        text            Prefix text before the keyword
+        key             Keyword to print
+        text2           Text to print after keyword
+        end             End character for the last print
+
+    Returns:
+        None
     '''
     if key is None:
         print("[-] " + text, end=end)
@@ -85,12 +98,12 @@ def error(text, key=None, text2=None, end="\n"):
         keyword(key, text2, end)
 
 
-def display_env(env):
+def display_env(env: dict) -> None:
     '''
     Takes an dictionary of environment variables and prints it color formatted.
 
     Paramaters:
-        env             (dict)                  Environment for the subprocess.call function
+        env             Environment for the subprocess.call function
 
     Returns:
         None
@@ -110,14 +123,17 @@ def display_env(env):
         termcolor.cprint(value, "yellow")
 
 
-def verbose_call(cmd, cwd=None, env=None):
+def verbose_call(cmd: list[str], cwd: str = None, env: dict = None) -> None:
     '''
     Wrapper aroud subprocess.call that prints the specified command before executing it.
 
     Parameters:
-        cmd             (list[string])          Command sequence to execute
-        cwd             (string)                Current working directory for the command
-        env             (dict)                  Environment for the subprocess.call function
+        cmd             Command sequence to execute
+        cwd             Current working directory for the command
+        env             Environment for the subprocess.call function
+
+    Returns:
+        None
     '''
     if this.sudo_required:
 
@@ -143,16 +159,16 @@ def verbose_call(cmd, cwd=None, env=None):
             pass
 
 
-def prepare_env(config):
+def prepare_env(config: dict) -> dict:
     '''
     Helper function that turns car specific environment variables into a dictionary that can
     be passed as the 'env' argument in the subprocess.call function.
 
     Parameters:
-        config          (dict)                  Container configuration
+        config          Container configuration
 
     Returns:
-        env             (dict)                  Environment dictionary
+        env             Environment dictionary
     '''
     env = dict()
     env["PATH"] = os.environ.get("PATH")
@@ -170,7 +186,7 @@ def prepare_env(config):
     return env
 
 
-def get_compose_file():
+def get_compose_file() -> str:
     '''
     Tries to open the docker-compose file from the current directory and returns its contents.
 
@@ -178,7 +194,7 @@ def get_compose_file():
         None
 
     Returns:
-        content         (string)                Content of the compose file.
+        content         Content of the compose file.
     '''
     try:
         with open("docker-compose.yml") as f:
@@ -190,13 +206,37 @@ def get_compose_file():
         sys.exit(1)
 
 
-def init(dry):
+def get_compose_property(prop: str) -> str:
+    '''
+    Reads the docker-compose file from the current working directory and returns the requested
+    property from it:
+
+    Parameters:
+        prop            Property to look for
+
+    Returns:
+        name            Container name stored in local docker-compose.yml file
+    '''
+    try:
+        compose_file = yaml.safe_load(get_compose_file())
+        return compose_file(prop)
+
+    except yaml.parser.ParserError:
+        error("The local file", "docker-compose.yml", "contains invalid content.")
+        sys.exit(1)
+
+    except KeyError:
+        error("Unable to find property", prop, "in local docker-compose.yml")
+        sys.exit(1)
+
+
+def init(dry: bool) -> None:
     '''
     Initializes the car module by setting configuration options which were read in
     from a .toml file
 
     Parameters:
-        dry             (boolean)               Only print docker-compose commands instead of running them
+        dry             Only print docker-compose commands instead of running them
 
     Returns:
         None
@@ -226,7 +266,7 @@ def init(dry):
         os.makedirs(this.volume_base_path)
 
 
-def list_containers():
+def list_containers() -> list[str]:
     '''
     Just returns a list of available containers.
 
@@ -234,36 +274,36 @@ def list_containers():
         None
 
     Returns:
-        containers              (list)              List of available containers
+        containers              List of available containers
     '''
     return this.containers
 
 
-def expand(raw):
+def expand(raw: str) -> str:
     '''
     Takes some input containing placeholders and replaces them with the corresponding values.
 
     Parameters:
-        raw                 (string)                Some input with placeholders.
+        raw                 Some input with placeholders.
 
     Returns:
-        expanded            (string)                Path with expanded placeholders.
+        expanded            Path with expanded placeholders.
     '''
     expanded = raw.replace('<@:BASE:@>', this.volume_base_path)
     return expanded
 
 
-def check_existence(name, verbose=True, exit=True):
+def check_existence(name: str, verbose: bool = True, exit: bool = True) -> bool:
     '''
     Checks wheter the specified container is available inside the container arsenal.
 
     Parameters:
-        name                (string)                Name of a container.
-        verbose             (boolean)               Print error messages if not existend.
-        exit                (boolean)               End execution if not existend.
+        name                Name of a container.
+        verbose             Print error messages if not existend.
+        exit                End execution if not existend.
 
     Returns:
-        result              (boolean)               True or False ;)
+        result              True or False ;)
     '''
     if name not in this.containers:
 
@@ -276,26 +316,26 @@ def check_existence(name, verbose=True, exit=True):
     return True
 
 
-def get_resource_folder(name):
+def get_resource_folder(name: str) -> str:
     '''
     Returns the path of the top level ressource folder for the specified container.
 
     Parameters:
-        name                (string)                Name of a container.
+        name                Name of a container.
 
     Returns:
-        path                (string)                Path to the top level ressource folder
+        path                Path to the top level ressource folder
     '''
     check_existence(name)
     return expand(this.config['containers'][name][f'{name}_folder'])
 
 
-def create_resource_folder(name):
+def create_resource_folder(name: str) -> None:
     '''
     Creates the resource folder for a container if it does not already exist.
 
     Parameters:
-        name                (string)                Name of a container.
+        name                Name of a container.
 
     Returns:
         None
@@ -307,26 +347,26 @@ def create_resource_folder(name):
         os.makedirs(resource_folder)
 
 
-def get_container_folder(name):
+def get_container_folder(name: str) -> str:
     '''
     Returns the path of the container directory, where the compose file is located.
 
     Parameters:
-        name                (string)                Name of a container.
+        name                Name of a container.
 
     Returns:
-        path                (string)                Path to the top level ressource folder
+        path                Path to the top level ressource folder
     '''
     check_existence(name)
     return f'{this.module_path}/resources/containers/{name}'
 
 
-def clean(name):
+def clean(name: str) -> None:
     '''
     Removes the top level resource folder of the specified container.
 
     Parameters:
-        name                (string)                Name of a container.
+        name                Name of a container.
 
     Returns:
         None
@@ -358,7 +398,7 @@ def clean(name):
     subprocess.call(["rm", "-r", path])
 
 
-def clean_all():
+def clean_all() -> None:
     '''
     Removes the top level resource folder of each container.
 
@@ -372,15 +412,15 @@ def clean_all():
         clean(container)
 
 
-def get_container_config(name):
+def get_container_config(name: str) -> dict:
     '''
     Returns container specific configurations from the car.toml file for the specified container
 
     Parameters:
-        name                (string)                Name of a container.
+        name                Name of a container.
 
     Returns:
-        container_conf      (dict)                  Dictionary containing configuration options
+        container_conf      Dictionary containing configuration options
     '''
     check_existence(name)
     container_conf = this.config['containers'][name]
@@ -391,16 +431,16 @@ def get_container_config(name):
     return container_conf
 
 
-def start_container(name, rebuild=False, remove=False):
+def start_container(name: str, rebuild: bool = False, remove: bool = False) -> None:
     '''
     Starts the specified container. This is done by running 'sudo docker-compose up' with a current
     working directory set to the corresponding container directory. All configuration options from the
     car.toml file will we supplied as environment variables to the 'sudo docker-compose up' call.
 
     Parameters:
-        name                (string)                Name of a container
-        rebuild             (boolean)               Force rebuilding of the container
-        remove              (boolean)               Autoremove container after shutdown
+        name                Name of a container
+        rebuild             Force rebuilding of the container
+        remove              Autoremove container after shutdown
 
     Returns:
         None
@@ -425,15 +465,15 @@ def start_container(name, rebuild=False, remove=False):
         verbose_call(['docker-compose', 'down'], cwd=base_folder, env=env)
 
 
-def start_local(rebuild=False, remove=False):
+def start_local(rebuild: bool = False, remove: bool = False) -> None:
     '''
     Basically the same as the 'start_container(...)' function, but does always launch from the current working
     directory. In this case, many checks like container existence or the creation of resource folders is skipped.
     What remains is basically just a wrapper around 'docker-compose.up'.
 
     Parameters:
-        rebuild             (boolean)               Force rebuilding of the container
-        remove              (boolean)               Autoremove container after shutdown
+        rebuild             Force rebuilding of the container
+        remove              Autoremove container after shutdown
 
     Returns:
         None
@@ -460,13 +500,13 @@ def start_local(rebuild=False, remove=False):
         verbose_call(cmd)
 
 
-def stop_container(name):
+def stop_container(name: str) -> None:
     '''
     Stops the specified container. This is the preffered method to shutdown a running container.
     However, one can also hit ctrl-c to shutdown a container.
 
     Parameters:
-        name                (string)                Name of a container.
+        name                Name of a container.
 
     Returns:
         None
@@ -479,7 +519,7 @@ def stop_container(name):
     verbose_call(['docker-compose', 'stop'], cwd=base_folder, env=env)
 
 
-def stop_local():
+def stop_local() -> None:
     '''
     Basically the same as the 'stop_container(...)' method, but uses the 'docker-compose.yml'
     from the current working directory.
@@ -494,12 +534,12 @@ def stop_local():
     verbose_call(cmd)
 
 
-def rm_container(name):
+def rm_container(name: str) -> None:
     '''
     Removes a stopped container.
 
     Parameters:
-        name                (string)                Name of a container.
+        name                Name of a container.
 
     Returns:
         None
@@ -512,7 +552,7 @@ def rm_container(name):
     verbose_call(['docker-compose', 'down'], cwd=base_folder, env=env)
 
 
-def rm_all_containers():
+def rm_all_containers() -> None:
     '''
     Removes all stopped containers that are known by the arsenal.
 
@@ -526,7 +566,7 @@ def rm_all_containers():
         rm_container(container)
 
 
-def rm_local():
+def rm_local() -> None:
     '''
     Removes the container that was started by the current directory 'docker-compose.yml'.
 
@@ -540,14 +580,14 @@ def rm_local():
     verbose_call(cmd)
 
 
-def mirror(name):
+def mirror(name: str) -> None:
     '''
     Copies a container folder to the current working directory. All environment variables
     inside the 'docker-compose.yml' are replaced with their corresponding values specified
     inside the 'car.toml' configuration file.
 
     Paramaters:
-        name                (string)                Name of a container
+        name                Name of a container
 
     Returns:
         None
@@ -581,14 +621,14 @@ def mirror(name):
     info("Done.")
 
 
-def exec(name, command, interactive=False):
+def exec(name: str, command: str, interactive: str = False):
     '''
     Execute {cmd} inside a running car container.
 
     Paramaters:
-        name                (string)                Name of a container
-        command             (string)                Command to execute
-        interactive         (boolean)               Interactive command?
+        name                Name of a container
+        command             Command to execute
+        interactive         Interactive command?
 
     Returns:
         None
@@ -607,12 +647,12 @@ def exec(name, command, interactive=False):
     verbose_call(cmd)
 
 
-def show_env(name):
+def show_env(name: str) -> None:
     '''
     Display possible environment variables for the corresponding container.
 
     Paramaters:
-        name                (string)                Name of a container
+        name                Name of a container
 
     Returns:
         None
@@ -671,12 +711,12 @@ def show_env(name):
         print(".")
 
 
-def wipe(name):
+def wipe(name: str) -> None:
     '''
     Removes the image of the specified container.
 
     Paramaters:
-        name                (string)                Name of a container
+        name                Name of a container
 
     Returns:
         None
@@ -688,7 +728,7 @@ def wipe(name):
     verbose_call(cmd)
 
 
-def wipe_all():
+def wipe_all() -> None:
     '''
     Removes all car images.
 
@@ -702,12 +742,12 @@ def wipe_all():
         wipe(container)
 
 
-def build(name):
+def build(name: str) -> None:
     '''
     Builds the specified container.
 
     Paramaters:
-        name                (string)                Name of a container
+        name                Name of a container
 
     Returns:
         None
@@ -720,7 +760,7 @@ def build(name):
     verbose_call(['docker-compose', 'build'], cwd=base_folder, env=env)
 
 
-def build_all():
+def build_all() -> None:
     '''
     Build all containers of the arsenal.
 
@@ -734,7 +774,7 @@ def build_all():
         build(container)
 
 
-def build_local():
+def build_local() -> None:
     '''
     Builds the container from the current working directory.
     Basically just an alias for 'docker-compose build'.
@@ -749,7 +789,7 @@ def build_local():
     verbose_call(cmd)
 
 
-def show_images():
+def show_images() -> None:
     '''
     Print a list of currently build car images.
 
@@ -771,16 +811,16 @@ def show_images():
     info(lines[0])
     for line in lines[1:]:
 
-        if line.startswith("car"):
+        if line.startswith("ghcr.io/qtc-de/container-arsenal"):
             info(line)
 
 
-def shell(name):
+def shell(name: str) -> None:
     '''
     Execute an interactive shell (sh) inside a running car container.
 
     Paramaters:
-        name                (string)                Name of a container
+        name                Name of a container
 
     Returns:
         None
@@ -792,7 +832,7 @@ def shell(name):
     verbose_call(cmd)
 
 
-def shell_local():
+def shell_local() -> None:
     '''
     Spawn an interactive shell inside the container specified by the
     docker-compose.yml from the current working directory.
@@ -803,39 +843,25 @@ def shell_local():
     Returns:
         None
     '''
-    compose_file = get_compose_file()
-    match = re.search("\n\s+container_name: ([a-zA-Z0-9.\-_\/]+)\n", compose_file)
-
-    if match:
-        container_name = match.group(1)
-    else:
-        error("Unable to find valid container name in", "docker-compose.yml")
-        sys.exit(1)
+    container_name = get_compose_property('container_name')
 
     cmd = ['docker', 'exec', '-it', container_name, 'sh']
     verbose_call(cmd)
 
 
-def exec_local(command, interactive=False):
+def exec_local(command: str, interactive: bool = False) -> None:
     '''
     Execute {cmd} inside the container specified by the current docker-compose.yml
     file.
 
     Paramaters:
-        command             (string)                Command to execute
-        interactive         (boolean)               Interactive command?
+        command             Command to execute
+        interactive         Interactive command?
 
     Returns:
         None
     '''
-    compose_file = get_compose_file()
-    match = re.search("\n\s+container_name: ([a-zA-Z0-9.\-_\/]+)\n", compose_file)
-
-    if match:
-        container_name = match.group(1)
-    else:
-        error("Unable to find valid container name in", "docker-compose.yml")
-        sys.exit(1)
+    container_name = get_compose_property('container_name')
 
     cmd = ['docker', 'exec']
 
@@ -848,7 +874,7 @@ def exec_local(command, interactive=False):
     verbose_call(cmd)
 
 
-def wipe_local():
+def wipe_local() -> None:
     '''
     Removes the docker image specified in the current docker-compose.yml file.
 
@@ -858,14 +884,37 @@ def wipe_local():
     Returns:
         None
     '''
-    compose_file = get_compose_file()
-    match = re.search("\n\s+image: ([a-zA-Z0-9.\-_\/]+)\n", compose_file)
-
-    if match:
-        image_name = match.group(1)
-    else:
-        error("Unable to find valid image name in", "docker-compose.yml")
-        sys.exit(1)
+    image_name = get_compose_property('image')
 
     cmd = ['docker', 'image', 'rm', image_name]
     verbose_call(cmd)
+
+
+def pull(name: str) -> None:
+    '''
+    Pulls a prebuild container from GitHub.
+
+    Parameters:
+        name                Name of a container.
+
+    Returns:
+        None
+    '''
+    check_existence(name)
+    base_folder = get_container_folder(name)
+
+    verbose_call(['docker-compose', 'pull'], cwd=base_folder)
+
+
+def pull_all() -> None:
+    '''
+    Pulls all containers that are available on GitHub.
+
+    Parameters:
+        None
+
+    Returns:
+        None
+    '''
+    for container in this.containers:
+        pull_container(container)

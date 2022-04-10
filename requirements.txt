@@ -1,2 +1,3 @@
-toml==0.10.0
-termcolor==1.1.0
+toml
+PyYAML
+termcolor

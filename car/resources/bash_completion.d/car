@@ -20,7 +20,7 @@ _car() {
         if [[ $cur == -* ]]; then
             opts="-h --help --dry"
         else
-            opts="run stop rm build shell env wipe clean exec mirror list images"
+            opts="run stop rm build shell env wipe clean exec mirror list images pull"
         fi
 
 
@@ -57,7 +57,7 @@ _car() {
         fi
 
 
-	elif _comp_contains "rm clean build wipe" $arg; then
+	elif _comp_contains "rm clean build wipe pull" $arg; then
 
         if [[ $cur == -* || $args -ge 3 ]]; then
             opts="-h --help"

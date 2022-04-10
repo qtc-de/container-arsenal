@@ -66,7 +66,7 @@ class PostInstall(install):
         '''
         config_dir = Path.home().joinpath('.config/car')
         config_file = config_dir.joinpath('car.toml')
-        default_config = module_path.joinpath('/car/resources/car.toml')
+        default_config = module_path.joinpath('car/resources/car.toml')
 
         config_dir.mkdir(exist_ok=True)
 
@@ -129,7 +129,8 @@ setup(
                  },
     install_requires=[
                         'toml',
-                        'termcolor'
+                        'PyYAML',
+                        'termcolor',
                      ],
     scripts=[
                 f'bin/{name}',

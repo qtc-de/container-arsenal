@@ -722,7 +722,7 @@ def wipe(name: str) -> None:
         None
     '''
     check_existence(name)
-    container_name = f'car/{name}'
+    container_name = f'ghcr.io/qtc-de/container-arsenal/{name}'
 
     cmd = ['docker', 'image', 'rm', container_name]
     verbose_call(cmd)

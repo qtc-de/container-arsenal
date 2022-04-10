@@ -5,6 +5,7 @@ import yaml
 import shutil
 import termcolor
 import subprocess
+from pathlib import Path
 
 this = sys.modules[__name__]
 
@@ -14,6 +15,30 @@ this.containers = None
 this.module_path = None
 this.sudo_required = None
 this.volume_base_path = None
+
+
+def nested_lookup(nested_dict: dict, key: str) -> str:
+    '''
+    Find a key within a nested dictionary.
+
+    Parameters:
+        nested_dict         Nested dictionary
+        key                 Key to look for
+
+    Returns:
+        str                 Result for the looked up key
+    '''
+    if key in nested_dict:
+        return nested_dict[key]
+
+    for value in filter(lambda x: type(x) == dict, nested_dict.values()):
+
+        result = nested_lookup(value, key)
+
+        if result is not None:
+            return result
+
+    return None
 
 
 def keyword(key: str, suffix: str = None, end: str = "\n") -> None:
@@ -186,47 +211,52 @@ def prepare_env(config: dict) -> dict:
     return env
 
 
-def get_compose_file() -> str:
+def get_compose_file(path: str = ".") -> str:
     '''
     Tries to open the docker-compose file from the current directory and returns its contents.
 
     Paramaters:
-        None
+        path            Path to look for the compose file in
 
     Returns:
         content         Content of the compose file.
     '''
+    compose_file = Path(path).joinpath("docker-compose.yml")
+
     try:
-        with open("docker-compose.yml") as f:
-            content = f.read()
-            return content
+        return compose_file.read_text()
 
     except FileNotFoundError:
         error("Unable to load", "docker-compose.yml", "file from current working directory")
         sys.exit(1)
 
 
-def get_compose_property(prop: str) -> str:
+def get_compose_property(prop: str, path: str = ".") -> str:
     '''
     Reads the docker-compose file from the current working directory and returns the requested
     property from it:
 
     Parameters:
         prop            Property to look for
+        path            Path to look for the compose file in
 
     Returns:
-        name            Container name stored in local docker-compose.yml file
+        name            Container name stored in docker-compose.yml file
     '''
-    try:
-        compose_file = yaml.safe_load(get_compose_file())
-        return compose_file(prop)
+    compose_file = get_compose_file(path)
 
-    except yaml.parser.ParserError:
-        error("The local file", "docker-compose.yml", "contains invalid content.")
+    try:
+        compose_yml = yaml.safe_load(compose_file)
+        result = nested_lookup(compose_yml, prop)
+
+        if result is not None:
+            return result
+
+        error("Unable to find property", prop, f"in {compose_file}")
         sys.exit(1)
 
-    except KeyError:
-        error("Unable to find property", prop, "in local docker-compose.yml")
+    except yaml.parser.ParserError:
+        error("The file", compose_file, "contains invalid content.")
         sys.exit(1)
 
 
@@ -634,7 +664,9 @@ def exec(name: str, command: str, interactive: str = False):
         None
     '''
     check_existence(name)
-    container_name = f'car.{name}'
+
+    base_folder = get_container_folder(name)
+    container_name = get_compose_property("container_name", base_folder)
 
     cmd = ['docker', 'exec']
 
@@ -722,9 +754,11 @@ def wipe(name: str) -> None:
         None
     '''
     check_existence(name)
-    container_name = f'ghcr.io/qtc-de/container-arsenal/{name}'
 
-    cmd = ['docker', 'image', 'rm', container_name]
+    base_folder = get_container_folder(name)
+    image_name = get_compose_property("image", base_folder)
+
+    cmd = ['docker', 'image', 'rm', image_name]
     verbose_call(cmd)
 
 
@@ -826,7 +860,9 @@ def shell(name: str) -> None:
         None
     '''
     check_existence(name)
-    container_name = f'car.{name}'
+
+    base_folder = get_container_folder(name)
+    container_name = get_compose_property("container_name", base_folder)
 
     cmd = ['docker', 'exec', '-it', container_name, 'sh']
     verbose_call(cmd)

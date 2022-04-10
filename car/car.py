@@ -903,7 +903,10 @@ def pull(name: str) -> None:
     check_existence(name)
     base_folder = get_container_folder(name)
 
-    verbose_call(['docker-compose', 'pull'], cwd=base_folder)
+    container_conf = get_container_config(name)
+    env = prepare_env(container_conf)
+
+    verbose_call(['docker-compose', 'pull'], cwd=base_folder, env=env)
 
 
 def pull_all() -> None:

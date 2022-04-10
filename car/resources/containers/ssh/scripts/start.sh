@@ -13,7 +13,7 @@ fi
 
 if ! id "default" &>/dev/null; then
     echo "[+] Creating default user..."
-    adduser --disabled-password -s /bin/false --gecos "" -u ${LOCAL_UID} default
+    adduser --disabled-password -s /usr/bin/rssh --gecos "" -u ${LOCAL_UID} default
 fi
 
 if [ -z ${PASSWORD} ]; then

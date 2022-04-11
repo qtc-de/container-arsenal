@@ -2,10 +2,18 @@
 
 set -e
 
+FRESH="/root/.started_before"
 LOGFILE="/var/log/ssh_logins.log"
 
 IP=$(ip a | grep inet | grep -v 127.0.0.1 | grep -o "\([0-9]\{1,3\}\.\?\)\{4\}" | head -n 1)
 echo "[+] IP address of the container: ${IP}"
+
+if ! [[ -f ${FRESH} ]]; then
+    echo "[+] Regenerating SSH keys."
+    rm -f /etc/ssh/ssh_host_*
+    ssh-keygen -A
+    touch ${FRESH}
+fi
 
 if [[ -z ${LOCAL_UID} ]] || [[ ${LOCAL_UID} -eq 0 ]]; then
     LOCAL_UID=1000

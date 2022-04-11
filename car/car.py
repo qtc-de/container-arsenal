@@ -956,4 +956,4 @@ def pull_all() -> None:
         None
     '''
     for container in this.containers:
-        pull_container(container)
+        pull(container)

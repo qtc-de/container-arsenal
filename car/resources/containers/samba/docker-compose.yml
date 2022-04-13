@@ -4,7 +4,7 @@ services:
 
   car.samba:
     container_name: car.samba
-    image: ghcr.io/qtc-de/container-arsenal/samba:1.0.0
+    image: ghcr.io/qtc-de/container-arsenal/samba:1.0.1
     build: .
     environment:
       LOCAL_UID: ${car_local_uid}

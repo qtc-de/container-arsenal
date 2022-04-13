@@ -19,6 +19,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Disallow login on SSH container. Container can now only be used for remote portforwarding and file transfer (scp).
 * Adjusted directory structure of nging (required by current installed version)
 
+### Removed
+
+* Precompiled binaries (e.g. AJP). These are now compiled while building the containers
+
 
 ## [2.0.0] - Okt 22, 2020
 

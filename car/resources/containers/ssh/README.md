@@ -22,7 +22,7 @@ Port forwarding and tunneling is allowed by the *sshd_config*. The main benefit 
 First of all, we start the *ssh* container on our local machine:
 
 ```console
-[qtc@kali ~]$ car run ssh
+[qtc@devbox ~]$ car run ssh
 [+] Environment Variables:
 [+]	car_local_uid                 1000
 [+]	car_ssh_folder                /home/qtc/arsenal/ssh
@@ -43,7 +43,7 @@ car.ssh    | [+] Starting sshd
 The *container configuration* maps the *ssh port* (``22``) to your local system:
 
 ```console
-[qtc@kali ~]$ ss -tlnp
+[qtc@devbox ~]$ ss -tlnp
 State                    Recv-Q                   Send-Q                                     Local Address:Port                                       Peer Address:Port
 LISTEN                   0                        4096                                                   *:22                                                    *:*
 ```
@@ -67,7 +67,7 @@ is not opened on your local machine, but on the container. You can use the conta
 to access it:
 
 ```console
-[qtc@kali ~]$ curl 172.23.0.2:8000/test.txt
+[qtc@devbox ~]$ curl 172.23.0.2:8000/test.txt
 Hello World :D
 ```
 
@@ -101,7 +101,7 @@ The following configuration options can be adjusted within your ``car.toml`` con
 You can also specify these options by using environment variables. The command ``car env ssh`` explains their corresponding usage:
 
 ```console
-[qtc@kali ~]$ car env ssh
+[qtc@devbox ~]$ car env ssh
 [+] Available environment variables are:
 [+] Name               Current Value                   Description
 [+] car_ssh_folder     /home/qtc/arsenal/ssh           SSH resource folder. Mapped as a volume into the container.

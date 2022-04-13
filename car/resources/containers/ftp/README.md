@@ -14,7 +14,7 @@ Anonymous access works as usual for other *FTP* servers. After the login, the an
 see two different directories:
 
 ```console
-[qtc@kali ~]$ ftp 172.18.0.2
+[qtc@devbox ~]$ ftp 172.18.0.2
 Connected to 172.18.0.2.
 220 container arsenal FTP server
 Name (172.18.0.2:qtc): anonymous
@@ -55,7 +55,7 @@ local: test remote: test
 On startup, the container creates a user with name ``default`` and a randomly generated password:
 
 ```console
-[qtc@kali ~]$ car run ftp
+[qtc@devbox ~]$ car run ftp
 [+] Environment Variables:
 [+]	car_local_uid                 1000
 [+]	car_ftp_folder                /home/qtc/arsenal/ftp
@@ -78,7 +78,7 @@ After the login, also the user ``default`` is not able to write to the *ftp-root
 user ``default`` can use both directories ``anon`` and ``user`` for read and write operations.
 
 ```console
-[qtc@kali ~]$ ftp 172.18.0.2
+[qtc@devbox ~]$ ftp 172.18.0.2
 Connected to 172.18.0.2.
 220 container arsenal FTP Server server
 Name (172.18.0.2:qtc): default
@@ -123,7 +123,7 @@ the behavior of the container:
 You can also specify these options by using environment variables. The command ``car env ftp`` explains their corresponding usage:
 
 ```console
-[qtc@kali ~]$ car env ftp
+[qtc@devbox ~]$ car env ftp
 [+] Available environment variables are:
 [+] Name                Current Value                        Description
 [+] car_ftp_port        21                                   FTP port mapped to your local machine.

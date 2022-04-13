@@ -14,7 +14,7 @@ and can be accessed from your local host system (e.g. ``~/arsenal/tftp/``).
 First of all, we start the container on our local machine:
 
 ```console
-[qtc@kali ~]$ car run tftp
+[qtc@devbox ~]$ car run tftp
 [+] Environment Variables:
 [+]	car_local_uid                 1000
 [+]	car_tftp_folder               /home/qtc/arsenal/tftp
@@ -30,7 +30,7 @@ car.tftp    | [+] Starting tftpd.
 This should open the *UDP* port ``69`` (default *TFTP* port):
 
 ```console
-[qtc@kali ~]$ ss -ulnp
+[qtc@devbox ~]$ ss -ulnp
 State                    Recv-Q                   Send-Q                                     Local Address:Port                                       Peer Address:Port
 UNCONN                   0                        0                                                0.0.0.0:69                                              0.0.0.0:*
 ```
@@ -48,7 +48,7 @@ Back on our local machine, we should be able to find the uploaded file within ou
 (e.g. ``~/arsenal/tftp``):
 
 ```console
-[qtc@kali ~]$ cat arsenal/tftp/test.txt
+[qtc@devbox ~]$ cat arsenal/tftp/test.txt
 Hello World :D
 ```
 
@@ -76,7 +76,7 @@ The following configuration options can be adjusted within your ``car.toml`` con
 You can also specify these options by using environment variables. The command ``car env tftp`` explains their corresponding usage:
 
 ```console
-[qtc@kali ~]$ car env tftp
+[qtc@devbox ~]$ car env tftp
 [+] Available environment variables are:
 [+] Name                Current Value                    Description
 [+] car_tftp_port       69                               TFTP port opened on your local machine.

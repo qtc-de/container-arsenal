@@ -20,7 +20,7 @@ is only allowed with valid credentials that are randomly generated during the co
 In the following you find a demonstration of an example usage. First of all, the *nginx* container is started:
 
 ```console
-[qtc@kali ~]$ car run nginx 
+[qtc@devbox ~]$ car run nginx 
 [+] Environment Variables:
 [+]	car_nginx_folder              /home/qtc/arsenal/nginx
 [+]	car_download_folder           /home/qtc/arsenal/nginx/download
@@ -43,10 +43,10 @@ Now, an example file is placed within the ``~/arsenal/nginx/download`` folder an
 accessed from the *webroot* of the webserver.
 
 ```console
-[qtc@kali ~]$ echo "Hello World :D" > ~/arsenal/nginx/download/hello.txt
-[qtc@kali ~]$ curl 127.0.0.1/hello.txt
+[qtc@devbox ~]$ echo "Hello World :D" > ~/arsenal/nginx/download/hello.txt
+[qtc@devbox ~]$ curl 127.0.0.1/hello.txt
 Hello World :D
-[qtc@kali ~]$ curl -k https://127.0.0.1/hello.txt
+[qtc@devbox ~]$ curl -k https://127.0.0.1/hello.txt
 Hello World :D
 ```
 
@@ -54,9 +54,9 @@ Next, an example file is uploaded by using *WebDAV* access and it is demonstrate
 be found within the ``~/arsenal/nginx/upload`` folder.
 
 ```console
-[qtc@kali ~]$ echo "Hi World :)" > hi.txt
-[qtc@kali ~]$ curl -X PUT http://default:FTmnkR6K@127.0.0.1/upload/hi.txt -d @hi.txt 
-[qtc@kali ~]$ cat ~/arsenal/nginx/upload/hi.txt 
+[qtc@devbox ~]$ echo "Hi World :)" > hi.txt
+[qtc@devbox ~]$ curl -X PUT http://default:FTmnkR6K@127.0.0.1/upload/hi.txt -d @hi.txt 
+[qtc@devbox ~]$ cat ~/arsenal/nginx/upload/hi.txt 
 Hi World :)
 ```
 
@@ -76,7 +76,7 @@ The following configuration options can be adjusted within your ``car.toml`` con
 You can also specify these options by using environment variables. The command ``car env nginx`` explains their corresponding usage:
 
 ```console
-[qtc@kali ~]$ car env nginx 
+[qtc@devbox ~]$ car env nginx 
 [+] Available environment variables are:
 [+] Name                    Current Value                              Description
 [+] car_http_port           80                                         HTTP port that is mapped to your local system.

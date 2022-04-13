@@ -21,7 +21,7 @@ on the other hand, is that you can add modifications and debugging statements pr
 In the following, an example usage of the container is demonstrated. First of all, the container needs to be started:
 
 ```console
-[qtc@kali ~]$ car run h2b
+[qtc@devbox ~]$ car run h2b
 [+] Environment Variables:
 [+]	car_local_uid                 1000
 [+]	car_h2b_folder                /home/qtc/arsenal/h2b
@@ -51,7 +51,7 @@ Now we can send a *POST* request, containing the remote target within the ``host
 the proxy port (default: ``8001``).  The body of the *POST* request should be forwarded and arrive at the *netcat listener*.
 
 ```console
-[qtc@kali ~]$ curl -X POST 'http://127.0.0.1:8001/forward?host=192.168.42.139&port=4444' -d "Example Message"
+[qtc@devbox ~]$ curl -X POST 'http://127.0.0.1:8001/forward?host=192.168.42.139&port=4444' -d "Example Message"
 [...]
 
 [user@other ~]$ nc -vlp 4444
@@ -77,7 +77,7 @@ Hi :D
 [user@other ~]$
 [...]
 
-[qtc@kali ~]$ curl -X POST 'http://127.0.0.1:8001/forward?host=192.168.42.139&port=4444' -d "Example Message"
+[qtc@devbox ~]$ curl -X POST 'http://127.0.0.1:8001/forward?host=192.168.42.139&port=4444' -d "Example Message"
 Hi :D
 ```
 
@@ -137,7 +137,7 @@ The following configuration options can be adjusted within your ``car.toml`` fil
 You can also specify these options by using environment variables. The command ``car env h2b`` explains their corresponding usage:
 
 ```console
-[qtc@kali ~]$ car env h2b
+[qtc@devbox ~]$ car env h2b
 [+] Available environment variables are:
 [+] Name                               Current Value                      Description
 [+] car_http_port                      8001                               HTTP proxy port opened on your local machine.

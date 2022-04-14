@@ -27,16 +27,16 @@ https://user-images.githubusercontent.com/49147108/163109100-3da4697b-05e2-43a5-
 for your current user profile:
 
 ```console
-$ pip3 install --user container-arsenal
+[qtc@devbox ~]$ pip3 install --user container-arsenal
 ```
 
 You can also build *container-arsenal* from source by running the following commands:
 
 ```console
-$ git clone https://github.com/qtc-de/container-arsenal
-$ cd container-arsenal
-$ python3 setup.py sdist
-$ pip3 install dist/*
+[qtc@devbox ~]$ git clone https://github.com/qtc-de/container-arsenal
+[qtc@devbox ~]$ cd container-arsenal
+[qtc@devbox ~]$ python3 setup.py sdist
+[qtc@devbox ~]$ pip3 install dist/*
 ```
 
 *container-arsenal* ships an [autocompletion script](car/resources/bash_completion.d/car) for bash. With the

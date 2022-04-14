@@ -4,7 +4,7 @@ services:
 
   car.ssh:
     container_name: car.ssh
-    image: car/ssh
+    image: ghcr.io/qtc-de/container-arsenal/ssh:1.0.0
     build: .
     environment:
       ENABLE_ROOT: 0
@@ -14,5 +14,6 @@ services:
       - ./scripts/start.sh:/scripts/start.sh
       - ./config/sshd_config:/etc/ssh/sshd_config
       - ./config/sshrc:/etc/ssh/sshrc
+      - ./config/rssh.conf:/etc/rssh.conf
     ports:
       - "${car_ssh_port}:22"

@@ -22,7 +22,7 @@ In the following an example usage of the container is demonstrated. First of all
 container:
 
 ```console
-[qtc@kali ~]$ car run samba
+[qtc@devbox ~]$ car run samba
 [+] Environment Variables:
 [+]	car_local_uid                 1000
 [+]	car_samba_folder              /home/qtc/arsenal/samba
@@ -46,7 +46,7 @@ Therefore, the following output is expected and the *public* and *private*
 shares exist, although not being visible.
 
 ```console
-[qtqc@kali ~]$ smbclient -L //127.0.0.1 -N
+[qtqc@devbox ~]$ smbclient -L //127.0.0.1 -N
 
 	Sharename       Type      Comment
 	---------       ----      -------
@@ -64,7 +64,7 @@ C:\Users\qtc>copy test.txt \\192.168.42.124\public
 Back on our machine, we can verify that the file arrived in the resource folder of the *public share*:
 
 ```console
-[qtc@kali ~]$ cat ~/arsenal/samba/public/test.txt 
+[qtc@devbox ~]$ cat ~/arsenal/samba/public/test.txt 
 Hello World :D
 ```
 
@@ -81,7 +81,7 @@ C:\Users\qtc>copy test.txt Y:
 Back on our local machine, the file is available in the resource folder of the *private share*:
 
 ```console
-[qtc@kali ~]$ cat ~/arsenal/samba/private/test.txt 
+[qtc@devbox ~]$ cat ~/arsenal/samba/private/test.txt 
 Hello World :D 
 ```
 
@@ -99,7 +99,7 @@ The following configuration options can be adjusted within your ``car.toml`` con
 You can also specify these options by using environment variables. The command ``car env samba`` explains their corresponding usage:
 
 ```console
-[qtc@kali ~]$ car env samba
+[qtc@devbox ~]$ car env samba
 [+] Available environment variables are:
 [+] Name                   Current Value                             Description
 [+] car_smb_port           445                                       SMB port that is mapped to your local machine.

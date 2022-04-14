@@ -22,4 +22,4 @@ fi
 echo -e "${PASSWORD}\n${PASSWORD}" | smbpasswd -a -s -c /config/smb.conf default &> /dev/null
 
 echo "[+] Starting samba service."
-smbd --foreground --no-process-group --log-stdout --configfile /config/smb.conf
+smbd --foreground --no-process-group --debug-stdout --configfile /config/smb.conf

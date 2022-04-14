@@ -4,7 +4,7 @@ services:
 
   car.mysql:
       container_name: car.mysql
-      image: car/mysql
+      image: ghcr.io/qtc-de/container-arsenal/mysql:1.0.0
       build: .
       environment:
         MYSQL_ROOT_PASSWORD: "${car_root_password}"

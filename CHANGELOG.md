@@ -6,6 +6,24 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [2.1.0] - Apr 14, 2022
+
+### Added
+
+* Containers are now available as [GitHub packages](https://github.com/qtc-de?tab=packages&repo_name=container-arsenal).
+* Added the `pull` action to pull containers from *GitHub*
+
+### Changed
+
+* Updated container base images to the most recent versions
+* Disallow login on SSH container. Container can now only be used for remote portforwarding and file transfer (scp)
+* Adjusted directory structure of nginx (required by current installed version)
+
+### Removed
+
+* Removed precompiled binaries (e.g. *AJP connector*). These are now compiled while building the containers
+
+
 ## [2.0.0] - Okt 22, 2020
 
 ### Added

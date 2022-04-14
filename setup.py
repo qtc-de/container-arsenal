@@ -1,9 +1,7 @@
 #!/usr/bin/python3
 
-from os import makedirs
-from os.path import expanduser, abspath, dirname, isdir, isfile
 from shutil import copy
-
+from pathlib import Path
 from setuptools import setup
 from setuptools.command.install import install
 
@@ -15,64 +13,67 @@ with open("README.md", "r") as fh:
 
 class PostInstall(install):
     '''
-    Subclass to allow running commands after package installation. Required for setup of the
-    completion script and the configuration file.
+    Subclass to allow running commands after package installation. Required for
+    setup of the completion script and the configuration file.
     '''
     def run(self):
-        user_home = expanduser("~")
-        module_path = abspath(dirname(__file__))
+        module_path = Path(__file__).parent
 
-        PostInstall.setup_completion(user_home, module_path)
-        PostInstall.setup_config(user_home, module_path)
+        PostInstall.setup_completion(module_path)
+        PostInstall.setup_config(module_path)
 
         install.run(self)
 
-    def setup_completion(user_home, module_path):
+    def setup_completion(module_path: Path) -> None:
         '''
-        Checks whether the '~/.bash_completion.d' folder exists and copies the autocompletion script
-        into it. If the folder does not exist the function just returns. The completion script is
-        expected to be sored in the path: {mdoule_path}/{name}/resources/bash_completion.d/{name}
+        Checks whether the '~/.bash_completion.d' folder exists and copies the
+        autocompletion script into it. If the folder does not exist the function
+        just returns. The completion script is expected to be sored in the path:
+        {mdoule_path}/{name}/resources/bash_completion.d/{name}
 
         Parameters:
-             user_home              (string)            Absolute path to the users home dir
-             module_path            (string)            Absolute path to the module location
+             module_path        Absolute path to the module location
 
          Returns:
              None
         '''
+        completion_dir = Path.home().joinpath('.bash_completion.d')
+        completion_file = Path(f"{name}/resources/bash_completion.d/{name}")
 
-        completion_dir = f'{user_home}/.bash_completion.d/'
-        if not isdir(completion_dir):
+        if not completion_dir.is_dir():
             return
 
-        completion_file = f'{module_path}/{name}/resources/bash_completion.d/{name}'
-        completion_target = f'{completion_dir}/{name}'
+        completion_file = module_path.joinpath(completion_file)
+        completion_target = completion_dir.joinpath(name)
 
-        if not isfile(completion_file):
+        if not completion_file.is_file():
             return
 
         copy(completion_file, completion_target)
 
-    def setup_config(user_home, module_path):
+    def setup_config(module_path: Path) -> None:
         '''
-        The container arsenal ships a configuration file that is stored inside '~/.config/car'.
-        This folder needs to be created and the default config needs to be copied. Additionally,
-        the function creates a backup of the old configuration file (if present).
+        The container arsenal ships a configuration file that is stored inside
+        '~/.config/car'. This folder needs to be created and the default config
+        needs to be copied. Additionally, the function creates a backup of the
+        old configuration file (if present).
 
         Parameters:
-             user_home              (string)            Absolute path to the users home dir
-             module_path            (string)            Absolute path to the module location
+             module_path         Absolute path to the module location
 
          Returns:
              None
         '''
-        config_dir = f'{user_home}/.config/car/'
-        config_file = f'{user_home}/.config/car/car.toml'
-        default_config = f'{module_path}/car/resources/car.toml'
+        config_dir = Path.home().joinpath('.config/car')
+        config_file = config_dir.joinpath('car.toml')
+        default_config = module_path.joinpath('car/resources/car.toml')
 
-        makedirs(config_dir, exist_ok=True)
+        config_dir.mkdir(exist_ok=True)
 
-        if isfile(config_file):
+        if not default_config.is_file():
+            return
+
+        if config_file.is_file():
             copy(config_file, f'{config_file}.back')
 
         copy(default_config, config_file)
@@ -82,7 +83,7 @@ setup(
     url='https://github.com/qtc-de/container-arsenal',
     name='container-arsenal',
     author='Tobias Neitzel (@qtc_de)',
-    version='2.0.0',
+    version='2.1.0',
     author_email='',
 
     description='A small arsenal of useful docker containers and a script to easy start, stop and manage them.',
@@ -128,7 +129,8 @@ setup(
                  },
     install_requires=[
                         'toml',
-                        'termcolor'
+                        'PyYAML',
+                        'termcolor',
                      ],
     scripts=[
                 f'bin/{name}',

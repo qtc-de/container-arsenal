@@ -69,7 +69,7 @@ run ``car clean mysql`` first. You can also specify container options by using e
 variables. The command ``car env mysql`` explains their corresponding usage:
 
 ```console
-[qtc@kali ~]$ car env mysql
+[qtc@devbox ~]$ car env mysql
 [+] Available environment variables are:
 [+] Name                   Current Value                     Description
 [+] car_mysql_user         default                           Default MySQL user that is created for database access.

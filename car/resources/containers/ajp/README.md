@@ -31,7 +31,7 @@ server with *AJP* enabled (notice that the webinterface is filtered and it is no
 *tomcat* via *HTTP*).
 
 ```console
-[qtc@kali ~]$ nmap -p8009,8080 172.17.0.1
+[qtc@devbox ~]$ nmap -p8009,8080 172.17.0.1
 Starting Nmap 7.80 ( https://nmap.org ) at 2020-10-16 05:13 CEST
 Nmap scan report for 172.17.0.1
 Host is up (0.00011s latency).
@@ -50,7 +50,7 @@ the environment variable ``HOST`` within the ``docker-compose.yml`` file, or by 
 the ``car_target_host`` environment variables during the startup:
 
 ```console
-[qtc@kali ~]$ car_target_host=172.17.0.1 car run ajp
+[qtc@devbox ~]$ car_target_host=172.17.0.1 car run ajp
 [+] Environment Variables:
 [+]	car_local_uid                 1000
 [+]	car_ajp_folder                /home/qtc/arsenal/ajp
@@ -74,11 +74,11 @@ Now we can access the *tomcat* server by using the webserver exposed by the cont
 it does not have its own IP address but uses the *network namespace* of your local machine instead. You can access the webserver via *localhost*.
 
 ```html
-[qtc@kali ~]$ ss -tlnp
+[qtc@devbox ~]$ ss -tlnp
 State                    Recv-Q                   Send-Q                                     Local Address:Port                                       Peer Address:Port
 LISTEN                   0                        4096                                       127.0.0.1:8001                                           0.0.0.0:*
 
-[qtc@kali ~]$ curl 127.0.0.1:8001
+[qtc@devbox ~]$ curl 127.0.0.1:8001
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -122,7 +122,7 @@ The following configuration options can be adjusted within your ``car.toml`` con
 You can also specify these options by using environment variables. The command ``car env ajp`` explains their corresponding usage:
 
 ```console
-[qtc@kali ~]$ car env ajp
+[qtc@devbox ~]$ car env ajp
 [+] Available environment variables are:
 [+] Name                Current Value                   Description
 [+] car_http_port       8001                            HTTP proxy port on your local machine.

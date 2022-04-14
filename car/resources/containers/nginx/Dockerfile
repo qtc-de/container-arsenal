@@ -1,8 +1,8 @@
-FROM alpine:3.12.0
+FROM alpine:3.15.4
 
 RUN set -ex \
     && apk --no-cache add nginx apache2-utils shadow \
-    && mkdir /scripts /run/nginx/ \
+    && mkdir -p /scripts /run/nginx/ \
     && mkdir -p /var/www/html/download \
     && mkdir -p /var/www/html/upload
 

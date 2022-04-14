@@ -18,7 +18,7 @@ fi
 
 echo "[+] Creating .htpasswd file."
 echo "[+] WebDAV access allowed for default:${PASSWORD}"
-htpasswd -b -c /etc/nginx/conf.d/.htpasswd default ${PASSWORD} &> /dev/null
+htpasswd -b -c /etc/nginx/http.d/.htpasswd default ${PASSWORD} &> /dev/null
 
 echo "[+] Starting nginx daemon."
 /usr/sbin/nginx -g "daemon off;"

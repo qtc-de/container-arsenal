@@ -3,7 +3,47 @@
 ----
 
 This folder contains some more detailed information on the usage and internals
-of *container-arsenal*.
+of *container-arsenal*. It is not a complete documentation by now and many things
+are still missing. However, you may find the information you are looking for :)
+
+
+### Resource Folders
+
+----
+
+The *container-arsenal* documentation file in `~/.config/car/car.toml` specifies
+the location of a resource folder. The default is `~/arsenal`, as you can see
+in the configuration file:
+
+```toml
+[containers]
+  sudo_required = true
+  volume_base_path = "~/arsenal"
+```
+
+Each container from the arsenal is created with a volume mounted within the resource
+folder. The *ssh* container, for example, obtains a volume mapped to `~/arsenal/ssh`.
+These volumes are mapped to the *interesting* locations within the container. In case
+of the *ssh* container, the volume is mapped to the home folder of the *default* user.
+For the *ftp* container it is mapped to the *ftp root* and for *utils* containers like
+*neo4j*, it is mapped to the database storage location.
+
+This allows you to quickly access files that were uploaded into the containers or to
+preserve the state of a database after closing and restarting a container.
+
+
+### Container Access
+
+----
+
+If you need to troubleshoot something, it is useful to obtain a root shell within the
+containers. *container-arsenal* supports the `exec` and `shell` commands to make this
+quite simple:
+
+```console
+[qtc@devbox ~$] car shell ssh           # Launch a rootshell within the ssh container
+[qtc@devbox ~$] car exec ssh --cmd id   # Launch the id command in the ssh container
+```
 
 
 ### Configuration File

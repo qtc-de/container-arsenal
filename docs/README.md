@@ -41,8 +41,8 @@ containers. *container-arsenal* supports the `exec` and `shell` commands to make
 quite simple:
 
 ```console
-[qtc@devbox ~$] car shell ssh           # Launch a rootshell within the ssh container
-[qtc@devbox ~$] car exec ssh --cmd id   # Launch the id command in the ssh container
+[qtc@devbox ~]$ car shell ssh           # Launch a rootshell within the ssh container
+[qtc@devbox ~]$ car exec ssh --cmd id   # Launch the id command in the ssh container
 ```
 
 

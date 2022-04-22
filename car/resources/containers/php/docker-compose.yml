@@ -1,0 +1,20 @@
+version: '3.7'
+
+services:
+
+  car.php:
+    container_name: car.php
+    image: ghcr.io/qtc-de/container-arsenal/php:1.0.0
+    build: .
+    environment:
+      LOCAL_UID: ${car_local_uid}
+    volumes:
+      - ${car_public_folder}:/var/www/html/public/
+      - ${car_private_folder}:/var/www/html/private/
+      - ./config/default.conf:/etc/nginx/http.d/default.conf
+      - ./config/www.conf:/etc/php8/php-fpm.d/www.conf
+      - ./config/php.ini:/etc/php8/conf.d/php.ini
+      - ./scripts/start.sh:/scripts/start.sh
+    ports:
+      - "${car_http_port}:80"
+      - "${car_https_port}:443"

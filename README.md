@@ -8,7 +8,7 @@ resources. Additionally, *container-arsenal* ships a *python* script that can be
 
 ![](https://github.com/qtc-de/container-arsenal/workflows/master%20Python%20CI/badge.svg?branch=master)
 ![](https://github.com/qtc-de/container-arsenal/workflows/develop%20Python%20CI/badge.svg?branch=develop)
-[![](https://img.shields.io/badge/version-2.1.0-blue)](https://github.com/qtc-de/container-arsenal/releases)
+[![](https://img.shields.io/badge/version-2.2.0-blue)](https://github.com/qtc-de/container-arsenal/releases)
 [![](https://img.shields.io/badge/build%20system-pip-blue)](https://pypi.org/project/pip/)
 ![](https://img.shields.io/badge/python-9%2b-blue)
 [![](https://img.shields.io/badge/license-GPL%20v3.0-blue)](https://github.com/qtc-de/container-arsenal/blob/master/LICENSE)

@@ -101,9 +101,10 @@ You can also specify these options by using environment variables. The command `
 ```console
 [qtc@devbox ~]$ car env samba
 [+] Available environment variables are:
-[+] Name                   Current Value                             Description
-[+] car_smb_port           445                                       SMB port that is mapped to your local machine.
-[+] car_public_folder      /home/qtc/arsenal/samba/public            Public resource folder mapped into the container (volume).
-[+] car_private_folder     /home/qtc/arsenal/samba/private           Private resource folder mapped into the container (volume).
-[+] car_local_uid          1000                                      UID of the SMB user.
+[+] 
+[+] Name                   Current Value                       Description
+[+] car_smb_port           445                                 SMB port that is mapped to your local machine.
+[+] car_public_folder      /home/qtc/arsenal/samba/public      Public resource folder mapped into the container (volume).
+[+] car_private_folder     /home/qtc/arsenal/samba/private     Private resource folder mapped into the container (volume).
+[+] car_local_uid          1000                                UID of the SMB user.
 ```

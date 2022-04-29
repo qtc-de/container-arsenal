@@ -125,9 +125,10 @@ You can also specify these options by using environment variables. The command `
 ```console
 [qtc@devbox ~]$ car env ftp
 [+] Available environment variables are:
-[+] Name                Current Value                        Description
-[+] car_ftp_port        21                                   FTP port mapped to your local machine.
-[+] car_user_folder     /home/qtc/arsenal/ftp/user           Volume location for the FTP user folder.
-[+] car_anon_folder     /home/qtc/arsenal/ftp/anon           Volume location for the FTP anonymous folder.
-[+] car_local_uid       1000                                 UID of the FTP user.
+[+] 
+[+] Name                Current Value                  Description
+[+] car_ftp_port        21                             FTP port mapped to your local machine.
+[+] car_user_folder     /home/qtc/arsenal/ftp/user     Volume location for the FTP user folder.
+[+] car_anon_folder     /home/qtc/arsenal/ftp/anon     Volume location for the FTP anonymous folder.
+[+] car_local_uid       1000                           UID of the FTP user.
 ```

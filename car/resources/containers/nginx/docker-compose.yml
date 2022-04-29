@@ -4,7 +4,7 @@ services:
 
   car.nginx:
     container_name: car.nginx
-    image: ghcr.io/qtc-de/container-arsenal/nginx:1.0.0
+    image: ghcr.io/qtc-de/container-arsenal/nginx:1.1.0
     build: .
     environment:
       LOCAL_UID: ${car_local_uid}
@@ -12,7 +12,6 @@ services:
       - ${car_upload_folder}:/var/www/html/upload/
       - ${car_download_folder}:/var/www/html/download/
       - ./config:/etc/nginx/http.d
-      - ./ssl:/etc/nginx/ssl/
       - ./scripts/start.sh:/scripts/start.sh
     ports:
       - "${car_http_port}:80"

@@ -1,0 +1,5 @@
+car_http_port       HTTP port that is mapped to your local system.
+car_https_port      HTTPS port that is mapped to your local system.
+car_public_folder   Folder to serve php files from (volume).
+car_private_folder  Password protected folder to serve php files from (volume).
+car_local_uid       UID of the nginx user.

@@ -11,11 +11,11 @@ groupmod -g ${LOCAL_UID} nginx &> /dev/null
 echo "[+] Adjusting volume permissions."
 chown -R -P nginx:nginx /var/www/html
 
-if ! [ -f /etc/nginx/ssl/webdav-cert.pem ]; then
+if ! [ -f /etc/nginx/ssl/runner-cert.pem ]; then
     echo "[+] Creating TLS certificate."
     openssl req -new -newkey rsa:4096 -days 365 -nodes -x509 \
-        -subj "/C=ME/ST=TheShire/L=Frogmorton/O=LOTR/OU=Hobbits/CN=webdav-server" \
-        -keyout /etc/nginx/ssl/webdav-key.pem  -out /etc/nginx/ssl/webdav-cert.pem &> /dev/null
+        -subj "/C=ME/ST=TheShire/L=Frogmorton/O=LOTR/OU=Hobbits/CN=php-runner" \
+        -keyout /etc/nginx/ssl/runner-key.pem  -out /etc/nginx/ssl/runner-cert.pem &> /dev/null
 fi
 
 if [ -z ${PASSWORD} ]; then
@@ -25,8 +25,11 @@ if [ -z ${PASSWORD} ]; then
 fi
 
 echo "[+] Creating .htpasswd file."
-echo "[+] WebDAV access allowed for default:${PASSWORD}"
+echo "[+] Access to /private allowed for: default:${PASSWORD}"
 htpasswd -b -c /etc/nginx/http.d/.htpasswd default ${PASSWORD} &> /dev/null
+
+echo "[+] Starting php-fpm8."
+/usr/sbin/php-fpm8 -D
 
 echo "[+] Starting nginx daemon."
 /usr/sbin/nginx -g "daemon off;"

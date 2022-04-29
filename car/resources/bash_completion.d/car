@@ -13,7 +13,7 @@ _car() {
     _get_first_arg
 
     COMPREPLY=()
-    CONTAINERS="neo4j h2b mysql tftp nginx ftp samba ajp ssh"
+    CONTAINERS="neo4j h2b mysql tftp nginx ftp samba ajp ssh php"
 
 	if [[ $args -eq 1 ]]; then
 

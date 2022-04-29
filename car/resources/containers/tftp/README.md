@@ -78,8 +78,9 @@ You can also specify these options by using environment variables. The command `
 ```console
 [qtc@devbox ~]$ car env tftp
 [+] Available environment variables are:
-[+] Name                Current Value                    Description
-[+] car_tftp_port       69                               TFTP port opened on your local machine.
-[+] car_tftp_folder     /home/qtc/arsenal/tftp           TFTP root folder used as volume in the container.
-[+] car_local_uid       1000                             UID of the TFTP user.
+[+] 
+[+] Name                Current Value              Description
+[+] car_tftp_port       69                         TFTP port opened on your local machine.
+[+] car_tftp_folder     /home/qtc/arsenal/tftp     TFTP root folder used as volume in the container.
+[+] car_local_uid       1000                       UID of the TFTP user.
 ```

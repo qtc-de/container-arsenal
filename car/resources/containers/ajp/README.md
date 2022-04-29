@@ -124,10 +124,11 @@ You can also specify these options by using environment variables. The command `
 ```console
 [qtc@devbox ~]$ car env ajp
 [+] Available environment variables are:
-[+] Name                Current Value                   Description
-[+] car_http_port       8001                            HTTP proxy port on your local machine.
-[+] car_log_folder      /home/qtc/arsenal/ajp           Folder where mod_jk logs are stored (volume).
-[+] car_target_host     172.17.0.1                      Targeted server that exposes the AJP listener.
-[+] car_target_port     8009                            AJP port of the targeted server. Most of the times 8009 (the default) is what you want.
-[+] car_local_uid       1000                            UID of the Apache user.
+[+] 
+[+] Name                Current Value             Description
+[+] car_http_port       8001                      HTTP proxy port on your local machine.
+[+] car_log_folder      /home/qtc/arsenal/ajp     Folder where mod_jk logs are stored (volume).
+[+] car_target_host     172.17.0.1                Targeted server that exposes the AJP listener.
+[+] car_target_port     8009                      AJP port of the targeted server. Most of the times 8009 (the default) is what you want.
+[+] car_local_uid       1000                      UID of the Apache user.
 ```

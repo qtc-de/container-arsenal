@@ -139,6 +139,7 @@ You can also specify these options by using environment variables. The command `
 ```console
 [qtc@devbox ~]$ car env h2b
 [+] Available environment variables are:
-[+] Name                               Current Value                      Description
-[+] car_http_port                      8001                               HTTP proxy port opened on your local machine.
+[+] 
+[+] Name               Current Value             Description
+[+] car_http_port      8001                      HTTP proxy port opened on your local machine.
 ```

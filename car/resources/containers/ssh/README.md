@@ -103,8 +103,9 @@ You can also specify these options by using environment variables. The command `
 ```console
 [qtc@devbox ~]$ car env ssh
 [+] Available environment variables are:
-[+] Name               Current Value                   Description
-[+] car_ssh_folder     /home/qtc/arsenal/ssh           SSH resource folder. Mapped as a volume into the container.
-[+] car_ssh_port       22                              SSH port mapped to your local machine.
-[+] car_local_uid      1000                            UID of the SSH user.
+[+] 
+[+] Name               Current Value             Description
+[+] car_ssh_folder     /home/qtc/arsenal/ssh     SSH resource folder. Mapped as a volume into the container.
+[+] car_ssh_port       22                        SSH port mapped to your local machine.
+[+] car_local_uid      1000                      UID of the SSH user.
 ```

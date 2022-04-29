@@ -83,12 +83,13 @@ The following configuration options can be adjusted within your ``car.toml`` con
 You can also specify these options by using environment variables. The command ``car env php`` explains their corresponding usage:
 
 ```console
-[qtc@devbox ~]$ car env nginx 
+[qtc@devbox ~]$ car env php
 [+] Available environment variables are:
-[+] Name                    Current Value                              Description
-[+] car_http_port           127.0.0.1:80                               HTTP port that is mapped to your local system.
-[+] car_https_port          127.0.0.1:443                              HTTPS port that is mapped to your local system.
-[+] car_upload_folder       /home/qtc/arsenal/nginx/upload             Upload resource folder of the container (volume).
-[+] car_download_folder     /home/qtc/arsenal/nginx/download           Download resource folder of the container (volume).
-[+] car_local_uid           1000                                       UID of the nginx user.
+[+] 
+[+] Name                   Current Value                     Description
+[+] car_http_port          127.0.0.1:80                      HTTP port that is mapped to your local system.
+[+] car_https_port         127.0.0.1:443                     HTTPS port that is mapped to your local system.
+[+] car_public_folder      /home/qtc/arsenal/php/public      Folder to serve php files from (volume).
+[+] car_private_folder     /home/qtc/arsenal/php/private     Password protected folder to serve php files from (volume).
+[+] car_local_uid          1000                              UID of the nginx user.
 ```

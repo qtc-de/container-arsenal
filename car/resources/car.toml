@@ -43,8 +43,8 @@
   php_folder = "<@:BASE:@>/php"
   public_folder = "<@:BASE:@>/php/public"
   private_folder = "<@:BASE:@>/php/private"
-  http_port = "80"
-  https_port = "443"
+  http_port = "127.0.0.1:80"
+  https_port = "127.0.0.1:443"
 
   [containers.samba]
   samba_folder = "<@:BASE:@>/samba"

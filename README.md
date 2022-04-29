@@ -69,8 +69,9 @@ links listed below to get more details:
 
 **Utils Containers**
 
-* [mysql](car/resources/containers/mysql) - Plain *MySQL* server with randomly generated password protected user accounts.
+* [mysql](car/resources/containers/mysql) - Plain *MySQL* server with randomly generated password protected user accounts
 * [neo4j](car/resources/containers/neo4j) - Plain *Neo4j* database. Useful for tools like *BloodHound*
+* [php](car/resources/containers/php) - *nginx* server with *PHP* enabled. Can be used to quickly test some *PHP* stuff
 
 
 ### Getting and Updating Containers

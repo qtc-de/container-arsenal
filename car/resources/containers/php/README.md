@@ -9,7 +9,9 @@ or when you need to serve dynamically created content to a client.
 
 Downloadable files and *php* scripts need to be placed in one of the resource folders (`~/arsenal/php/public` or
 `~/arsenal/php/private`). The `public` folder is accessible via *HTTP(S)* without any restrictions. The `private`
-folder requires *Basic authentication* using a password that is randomly generated at container startup.
+folder requires *Basic authentication* using a password that is randomly generated at container startup. To prevent
+some dangerous mistakes, the container binds only to localhost per default. You need to modify your `car.toml` or
+set the corresponding `car_http_port` and `car_https_port` environment variables to expose it to other interfaces.
 
 
 ### Example Usage
@@ -25,8 +27,8 @@ In the following you find a short example usage. First of all, the *php* contain
 [+]	car_php_folder                /home/qtc/arsenal/php
 [+]	car_public_folder             /home/qtc/arsenal/php/public
 [+]	car_private_folder            /home/qtc/arsenal/php/private
-[+]	car_http_port                 80
-[+]	car_https_port                443
+[+]	car_http_port                 127.0.0.1:80
+[+]	car_https_port                127.0.0.1:443
 [+] 
 [+] Running: docker-compose up
 Starting car.php ... done
@@ -84,8 +86,8 @@ You can also specify these options by using environment variables. The command `
 [qtc@devbox ~]$ car env nginx 
 [+] Available environment variables are:
 [+] Name                    Current Value                              Description
-[+] car_http_port           80                                         HTTP port that is mapped to your local system.
-[+] car_https_port          443                                        HTTPS port that is mapped to your local system.
+[+] car_http_port           127.0.0.1:80                               HTTP port that is mapped to your local system.
+[+] car_https_port          127.0.0.1:443                              HTTPS port that is mapped to your local system.
 [+] car_upload_folder       /home/qtc/arsenal/nginx/upload             Upload resource folder of the container (volume).
 [+] car_download_folder     /home/qtc/arsenal/nginx/download           Download resource folder of the container (volume).
 [+] car_local_uid           1000                                       UID of the nginx user.
